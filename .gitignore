@@ -23,3 +23,5 @@
 hs_err_pid*
 replay_pid*
 wildfly-mcp-server/target/
+/wildfly-chat-bot/target/
+/wildfly-chat-bot/target/dependency-reduced-pom.xml

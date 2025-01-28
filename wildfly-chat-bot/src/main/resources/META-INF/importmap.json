@@ -1,0 +1,20 @@
+{
+  "imports" : {
+    "@lit-labs/ssr-dom-shim/" : "/_static/labs/ssr-dom-shim/1.2.1/",
+    "@types/trusted-types" : "/_static/trusted-types/2.0.7/index.js",
+    "lit-element/" : "/_static/lit-element/4.1.1/",
+    "@lit/reactive-element" : "/_static/reactive-element/2.0.4/reactive-element.js",
+    "lit-html/" : "/_static/lit-html/3.2.1/",
+    "@types/trusted-types/" : "/_static/trusted-types/2.0.7/",
+    "lit/" : "/_static/lit/3.2.0/",
+    "lit-html" : "/_static/lit-html/3.2.1/lit-html.js",
+    "wc-bubble/" : "/_static/wc-bubble/0.1.7/dist/",
+    "wc-chatbot/" : "/_static/wc-chatbot/0.2.0/dist/",
+    "lit-element" : "/_static/lit-element/4.1.1/index.js",
+    "wc-chatbot" : "/_static/wc-chatbot/0.2.0/dist/wc-chatbot.js",
+    "lit" : "/_static/lit/3.2.0/index.js",
+    "@lit/reactive-element/" : "/_static/reactive-element/2.0.4/",
+    "wc-bubble" : "/_static/wc-bubble/0.1.7/dist/wc-bubble.js",
+    "@lit-labs/ssr-dom-shim" : "/_static/labs/ssr-dom-shim/1.2.1/index.js"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "wildfly": {
+            "command": "/home/jdenise/Downloads/openjdk-21.0.2_linux-x64_bin/jdk-21.0.2/bin/java",
+            "args": [ "-Dorg.wildfly.user.name=admin",
+                      "-Dorg.wildfly.user.password=admin",
+                     "-jar",
+                    "/home/jdenise/workspaces/mcp/wildfly-mcp/target/wildfly-mcp-server-1.0.0.Final-SNAPSHOT-runner.jar"]
+    }
+  }
+}
