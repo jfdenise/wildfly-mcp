@@ -64,7 +64,47 @@ public class ChatWebSocket {
                 help.append("<p><b>/prompt</b>: Get system prompt" + "<br></p>");
                 help.append("<p><b>/prompt-list</b>: List prompts" + "<br></p>");
                 help.append("<p><b>/prompt-run <prompt name></b>: Run the prompt" + "<br></p>");
-                this.remote.sendString(help.toString(), WriteCallback.NOOP);
+                String table="<table>\n" +
+"  <caption>\n" +
+"    Front-end web developer course 2021\n" +
+"  </caption>\n" +
+"  <thead>\n" +
+"    <tr>\n" +
+"      <th scope=\"col\">Person</th>\n" +
+"      <th scope=\"col\">Most interest in</th>\n" +
+"      <th scope=\"col\">Age</th>\n" +
+"    </tr>\n" +
+"  </thead>\n" +
+"  <tbody>\n" +
+"    <tr>\n" +
+"      <th scope=\"row\">Chris</th>\n" +
+"      <td>HTML tables</td>\n" +
+"      <td>22</td>\n" +
+"    </tr>\n" +
+"    <tr>\n" +
+"      <th scope=\"row\">Dennis</th>\n" +
+"      <td>Web accessibility</td>\n" +
+"      <td>45</td>\n" +
+"    </tr>\n" +
+"    <tr>\n" +
+"      <th scope=\"row\">Sarah</th>\n" +
+"      <td>JavaScript frameworks</td>\n" +
+"      <td>29</td>\n" +
+"    </tr>\n" +
+"    <tr>\n" +
+"      <th scope=\"row\">Karen</th>\n" +
+"      <td>Web performance</td>\n" +
+"      <td>36</td>\n" +
+"    </tr>\n" +
+"  </tbody>\n" +
+"  <tfoot>\n" +
+"    <tr>\n" +
+"      <th scope=\"row\" colspan=\"2\">Average age</th>\n" +
+"      <td>33</td>\n" +
+"    </tr>\n" +
+"  </tfoot>\n" +
+"</table>";
+                this.remote.sendString(table, WriteCallback.NOOP);
                 return;
             }
             if ("/prompt".equals(message)) {

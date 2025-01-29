@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.websocket.server.JettyWebSocketServlet;
 import org.eclipse.jetty.websocket.server.JettyWebSocketServletFactory;
 
@@ -37,10 +38,11 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         ChatConfiguration config = ChatConfiguration.parseArguments(args);
-        System.setProperty("org.eclipse.jetty.io.IdleTimeout._idleTimeout","600000");
         if (config.debug) {
-            Logger logger = LogManager.getLogger("org.eclipse.jetty");
-            Configurator.setLevel(logger.getName(), Level.DEBUG);      
+            Logger logger1 = LogManager.getLogger("org.eclipse.jetty");
+              Logger logger2 = LogManager.getLogger("dev.langchain4j");
+            Configurator.setLevel(logger1.getName(), Level.DEBUG);      
+            Configurator.setLevel(logger2.getName(), Level.DEBUG);      
         }
         MCPConfig mcpConfig = MCPConfig.parseConfig(config.configFile);
         List<McpClient> clients = new ArrayList<>();
@@ -71,7 +73,6 @@ public class Main {
                     .build();
         } else {
             if (config.chatModel.provider.equals("ollama")) {
-                System.out.println("MODEL " + config.chatModel.model + (config.chatModel.embedding == null ? "" : ":" + config.chatModel.embedding));
                 chatModel = OllamaChatModel.builder()
                         .modelName(config.chatModel.model + (config.chatModel.embedding == null ? "" : ":" + config.chatModel.embedding))
                         .baseUrl("http://127.0.0.1:11434")
@@ -114,8 +115,11 @@ public class Main {
     }
 
     public static Server newServer(int port, Bot bot, List<McpClient> clients, PromptHandler promptHandler) {
-        Server server = new Server(port);
-
+        Server server = new Server();
+        ServerConnector connector = new ServerConnector(server);
+        connector.setIdleTimeout(Duration.ofMinutes(10).toMillis());
+        connector.setPort(port);
+        server.addConnector(connector);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);

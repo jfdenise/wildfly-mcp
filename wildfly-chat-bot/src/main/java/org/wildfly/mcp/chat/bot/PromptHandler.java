@@ -17,8 +17,7 @@ import java.util.Set;
 public class PromptHandler {
 
     private static final String DEFAULT_PROMPT = """
-            You have tools to interact with running WildFly servers and the users
-            will ask you to perform operations like getting status, readling log files, retrieving prometheus metrics.
+            You are aWildFly assistant. Use configured wildfly tools to interact with running WildFly servers.
             """;
     private static final String PROMETHEUS = """
                                              using available tools, get Prometheus metrics from wildfly server.

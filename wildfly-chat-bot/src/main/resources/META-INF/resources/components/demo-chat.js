@@ -46,7 +46,7 @@ export class DemoChat extends LitElement {
                 let bubbles = chatBot.shadowRoot.querySelectorAll("chat-bubble");
                 let bubble = bubbles.item(bubbles.length - 1);
                 let msgBubble = bubble.shadowRoot.querySelectorAll("div.chat-bubble");
-                msgBubble[0].style.maxWidth ="100%";
+                msgBubble[0].style.maxWidth ="90%";
                 // let msgContent = bubble.shadowRoot.querySelectorAll("div.chat-content");
                 // msgContent[0].style.width ="100%";
                 // msgContent[0].style.maxWidth ="100%";
