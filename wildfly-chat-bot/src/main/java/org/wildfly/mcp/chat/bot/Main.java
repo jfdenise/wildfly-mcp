@@ -6,6 +6,7 @@ import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.mcp.client.transport.McpTransport;
 import dev.langchain4j.mcp.client.transport.stdio.StdioMcpTransport;
+import dev.langchain4j.model.anthropic.AnthropicChatModel;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
@@ -25,17 +26,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.eclipse.jetty.websocket.server.JettyWebSocketServlet;
 import org.eclipse.jetty.websocket.server.JettyWebSocketServletFactory;
 
 public class Main {
 
-    private static final String PROMPT = """
-            You have tools to interact with running WildFly servers and the users
-            will ask you to perform operations like getting status, readling log files, retrieving prometheus metrics.
-            """;
     public static void main(String[] args) throws Exception {
         ChatConfiguration config = ChatConfiguration.parseArguments(args);
+        System.setProperty("org.eclipse.jetty.io.IdleTimeout._idleTimeout","600000");
+        if (config.debug) {
+            Logger logger = LogManager.getLogger("org.eclipse.jetty");
+            Configurator.setLevel(logger.getName(), Level.DEBUG);      
+        }
         MCPConfig mcpConfig = MCPConfig.parseConfig(config.configFile);
         List<McpClient> clients = new ArrayList<>();
         for (Entry<String, MCPServerConfig> entry : mcpConfig.mcpServers.entrySet()) {
@@ -60,8 +66,8 @@ public class Main {
             chatModel = OpenAiChatModel.builder()
                     .apiKey(System.getenv("OPENAI_API_KEY"))
                     .modelName(config.chatModel.model)
-                    .logRequests(true)
-                    .logResponses(true)
+                    .logRequests(config.debug)
+                    .logResponses(config.debug)
                     .build();
         } else {
             if (config.chatModel.provider.equals("ollama")) {
@@ -69,24 +75,37 @@ public class Main {
                 chatModel = OllamaChatModel.builder()
                         .modelName(config.chatModel.model + (config.chatModel.embedding == null ? "" : ":" + config.chatModel.embedding))
                         .baseUrl("http://127.0.0.1:11434")
-                        .logRequests(true)
-                        .logResponses(true)
+                        .logRequests(config.debug)
+                        .logResponses(config.debug)
                         .build();
             } else {
-                throw new Exception("Unsupported model");
+                if (config.chatModel.provider.equals("anthropic")) {
+                    chatModel = AnthropicChatModel.builder()
+                            // API key can be created here: https://console.anthropic.com/settings/keys
+                            .apiKey(System.getenv("ANTHROPIC_API_KEY"))
+                            .modelName(config.chatModel.model + (config.chatModel.embedding == null ? "" : ":" + config.chatModel.embedding))
+                            .logRequests(config.debug)
+                            .logResponses(config.debug)
+                            // Other parameters can be set as well
+                            .build();
+                } else {
+                    throw new Exception("Unsupported model");
+                }
             }
         }
-
+        PromptHandler promptHandler = new PromptHandler();
         Bot bot = AiServices.builder(Bot.class)
                 .chatLanguageModel(chatModel)
                 .toolProvider(toolProvider)
-                .systemMessageProvider(chatMemoryId -> PROMPT)
+                .systemMessageProvider(chatMemoryId -> {
+                    return promptHandler.getPrompt();
+                })
                 .build();
 
         try {
-           Server server = newServer(8888, bot);
-           server.start();
-           server.join();
+            Server server = newServer(8888, bot, clients, promptHandler);
+            server.start();
+            server.join();
         } finally {
             for (McpClient client : clients) {
                 client.close();
@@ -94,7 +113,7 @@ public class Main {
         }
     }
 
-    public static Server newServer(int port, Bot bot) {
+    public static Server newServer(int port, Bot bot, List<McpClient> clients, PromptHandler promptHandler) {
         Server server = new Server(port);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -106,7 +125,7 @@ public class Main {
             @Override
             protected void configure(JettyWebSocketServletFactory factory) {
                 factory.setIdleTimeout(Duration.ofMinutes(10));
-                factory.addMapping("/chatbot", (req, res) -> new ChatWebSocket(bot));
+                factory.addMapping("/chatbot", (req, res) -> new ChatWebSocket(bot, clients, promptHandler));
             }
         };
         Servlet mapResource = new ImportMapServlet();

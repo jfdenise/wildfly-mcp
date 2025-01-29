@@ -39,14 +39,14 @@ export class DemoTitle extends LitElement {
     render() {
         return html`
             <div class="title">
-                <h1>WildFly Bot</h1>
+                <h1>WildFly Chat Bot</h1>
             </div>
             <div class="explanation">
                 This bot can connect to your WildFly servers and help you monitor  the server.
                 
                 Suggested questions that you can try:
                 <ul>
-                    <li>Hi, could you connect to the WildFly server running on host localhost and port 9990 with the user name admin and password admin and get its status?</li>
+                    <li>Hi, could you connect to the WildFly server and get its status?</li>
                     <li>
                 </ul>
             </div>

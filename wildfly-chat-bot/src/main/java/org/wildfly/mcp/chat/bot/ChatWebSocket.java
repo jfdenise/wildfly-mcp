@@ -4,6 +4,10 @@
  */
 package org.wildfly.mcp.chat.bot;
 
+import dev.langchain4j.agent.tool.ToolSpecification;
+import dev.langchain4j.mcp.client.McpClient;
+import java.util.List;
+import java.util.Map.Entry;
 import org.eclipse.jetty.websocket.api.RemoteEndpoint;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WriteCallback;
@@ -22,9 +26,13 @@ public class ChatWebSocket {
     private Session session;
     private RemoteEndpoint remote;
     private final Bot bot;
+    private final List<McpClient> clients;
+    private final PromptHandler promptHandler;
 
-    public ChatWebSocket(Bot bot) {
+    public ChatWebSocket(Bot bot, List<McpClient> clients, PromptHandler promptHandler) {
         this.bot = bot;
+        this.clients = clients;
+        this.promptHandler = promptHandler;
     }
 
     @OnWebSocketClose
@@ -39,7 +47,7 @@ public class ChatWebSocket {
         this.session = session;
         this.remote = this.session.getRemote();
         LOG.info("WebSocket Connect: {}", session);
-        this.remote.sendString("Hello, I am a WildFly robot, how can I help?", WriteCallback.NOOP);
+        this.remote.sendString("\"Hello, I am a WildFly robot, how can I help? Type '/help' for builtin commands.", WriteCallback.NOOP);
     }
 
     @OnWebSocketError
@@ -50,6 +58,52 @@ public class ChatWebSocket {
     @OnWebSocketMessage
     public void onWebSocketText(String message) {
         if (this.session != null && this.session.isOpen() && this.remote != null) {
+            if ("/help".equals(message)) {
+                StringBuilder help = new StringBuilder();
+                help.append("<p><b>/tools</b>: List tools" + "<br></p>");
+                help.append("<p><b>/prompt</b>: Get system prompt" + "<br></p>");
+                help.append("<p><b>/prompt-list</b>: List prompts" + "<br></p>");
+                help.append("<p><b>/prompt-run <prompt name></b>: Run the prompt" + "<br></p>");
+                this.remote.sendString(help.toString(), WriteCallback.NOOP);
+                return;
+            }
+            if ("/prompt".equals(message)) {
+                this.remote.sendString(promptHandler.getPrompt(), WriteCallback.NOOP);
+                return;
+            }
+            if ("/prompt-list".equals(message)) {
+                StringBuilder prompts = new StringBuilder();
+                for (Entry<String, String> entry : promptHandler.getPrompts()) {
+                    prompts.append("<p><b>" + entry.getKey() + "</b>:" + entry.getValue() + "<br></p>");
+                }
+                this.remote.sendString(prompts.toString(), WriteCallback.NOOP);
+                return;
+            }
+            if (message.startsWith("/prompt-run")) {
+                String name = message.substring("/prompt-run".length());
+                String prompt = promptHandler.getPrompt(name.trim());
+                if (prompt == null) {
+                    this.remote.sendString("Hoops...prompt " + name.trim() + " doesn't exist...", WriteCallback.NOOP);
+                } else {
+                    String reply = bot.chat(prompt);
+                    this.remote.sendString(reply, WriteCallback.NOOP);
+                }
+                return;
+            }
+            if ("/tools".equals(message)) {
+                StringBuilder tools = new StringBuilder();
+                for (McpClient client : clients) {
+                    List<ToolSpecification> specs = client.listTools();
+                    for (ToolSpecification s : specs) {
+                        tools.append("<p><b>" + s.name() + "</b>: " + s.description() + "<br></p>");
+                    }
+                }
+                this.remote.sendString(tools.toString(), WriteCallback.NOOP);
+                return;
+            }
+            if (message.startsWith("/")) {
+                this.remote.sendString("Invalid help command " + message, WriteCallback.NOOP);
+            }
             String reply = bot.chat(message);
             this.remote.sendString(reply, WriteCallback.NOOP);
         }
