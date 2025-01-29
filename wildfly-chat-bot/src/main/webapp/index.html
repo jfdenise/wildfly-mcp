@@ -1,0 +1,92 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="shortcut icon" type="image/png" href="favicon.ico">
+        <link rel="stylesheet" href="fonts/red-hat-font.min.css">
+
+        <title>WildFly Chat Bot</title>
+        <script src="/rest/_importmap/dynamic-importmap.js"></script>
+        <!-- End Load -->
+        <script type="module">
+            import 'components/demo-title.js';
+            import 'components/demo-chat.js';
+            import 'wc-chatbot';
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const e = document.getElementsByTagName("chat-bot")[0]
+                const s = e.shadowRoot;
+                s.querySelector(".chatbot-container").style.width = "90%";
+                s.querySelector(".chatbot-header h3").innerText = "WildFly Bot"
+            });
+
+        </script>
+        <style>
+            :root {
+                --main-bg-color: hsla(0, 0%, 100%, 0.21);
+                --main-highlight-text-color: white;
+            }
+
+            body {
+                margin: 0;
+                width: 100%;
+                height: 100vh;
+                font-family: 'Red Hat Text', sans-serif;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                background: var(--main-bg-color);
+            }
+
+            chat-bot {
+                --chatbot-avatar-bg-color: grey;
+                --chatbot-avatar-margin: 10%;
+                --chatbot-header-bg-color: grey;
+                ;
+                --chatbot-header-title-color: #FFFFFF;
+                --chatbot-body-bg-color: var(--main-bg-color);
+                --chatbot-send-button-color: grey;
+                ;
+            }
+
+            .middle {
+                margin-top: 2em;
+                overflow: hidden;
+                width: 50%;
+                margin-left: auto;
+                margin-right: auto;
+                display: flex;
+            }
+            .home {
+                background-image: url("img/wildfly_hero_r3v1.jpg");
+            }
+            .logo-wrapper {
+                max-width: 30rem;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .center-logo {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                width: 50%;
+            }
+        </style>
+    </head>
+
+    <body class="home">
+        <div class="logo-wrapper">
+            <img class="center-logo" src="img/wildfly_icons_one-color-logo.png">
+        </div>
+    <demo-title></demo-title>
+
+    <div class="middle">
+        <demo-chat>
+            <chat-bot></chat-bot>
+        </demo-chat>
+    </div>
+
+</body>
+</html>
