@@ -16,12 +16,19 @@ import java.util.Map;
  */
 public class MCPConfig {
 
-    public static class MCPServerConfig {
+    public static class MCPServerStdioConfig {
 
         public String command;
         public List<String> args;
     }
-    public Map<String, MCPServerConfig> mcpServers;
+
+    public static class MCPServerSSEConfig {
+
+        public String url;
+    }
+
+    public Map<String, MCPServerStdioConfig> mcpServers;
+    public Map<String, MCPServerSSEConfig> mcpSSEServers;
 
     public static MCPConfig parseConfig(Path configFile) throws Exception {
         String content = new String(Files.readAllBytes(configFile));

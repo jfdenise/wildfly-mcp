@@ -9,6 +9,7 @@ import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.mcp.client.transport.McpTransport;
+import dev.langchain4j.mcp.client.transport.http.HttpMcpTransport;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.tool.ToolProvider;
@@ -29,7 +30,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.wildfly.ai.chatbot.MCPConfig.MCPServerConfig;
+import org.wildfly.ai.chatbot.MCPConfig.MCPServerSSEConfig;
+import org.wildfly.ai.chatbot.MCPConfig.MCPServerStdioConfig;
 
 /**
  * WebSocket server endpoint example
@@ -65,19 +67,33 @@ public class ChatBotWebSocketEndpoint {
             Path p = Paths.get(System.getProperty("org.wildfly.ai.chatbot.mcp.config", "./mcp.json"));
             MCPConfig mcpConfig = MCPConfig.parseConfig(p);
             clients = new ArrayList<>();
-            for (Map.Entry<String, MCPServerConfig> entry : mcpConfig.mcpServers.entrySet()) {
-                List<String> cmd = new ArrayList<>();
-                cmd.add(entry.getValue().command);
-                cmd.addAll(entry.getValue().args);
-                McpTransport transport = new FixMcpProtocol.Builder()
-                        .command(cmd)
-                        .logEvents(true)
-                        .build();
-                McpClient mcpClient = new DefaultMcpClient.Builder()
-                        .transport(transport)
-                        .clientName(entry.getKey())
-                        .build();
-                clients.add(mcpClient);
+            if (mcpConfig.mcpServers != null) {
+                for (Map.Entry<String, MCPServerStdioConfig> entry : mcpConfig.mcpServers.entrySet()) {
+                    List<String> cmd = new ArrayList<>();
+                    cmd.add(entry.getValue().command);
+                    cmd.addAll(entry.getValue().args);
+                    McpTransport transport = new FixMcpProtocol.Builder()
+                            .command(cmd)
+                            .logEvents(true)
+                            .build();
+                    McpClient mcpClient = new DefaultMcpClient.Builder()
+                            .transport(transport)
+                            .clientName(entry.getKey())
+                            .build();
+                    clients.add(mcpClient);
+                }
+            }
+            if (mcpConfig.mcpSSEServers != null) {
+                for (Map.Entry<String, MCPServerSSEConfig> entry : mcpConfig.mcpSSEServers.entrySet()) {
+                    McpTransport transport = new HttpMcpTransport.Builder()
+                            .sseUrl(entry.getValue().url)
+                            .build();
+                    McpClient mcpClient = new DefaultMcpClient.Builder()
+                            .transport(transport)
+                            .clientName(entry.getKey())
+                            .build();
+                    clients.add(mcpClient);
+                }
             }
             ToolProvider toolProvider = McpToolProvider.builder()
                     .mcpClients(clients)
