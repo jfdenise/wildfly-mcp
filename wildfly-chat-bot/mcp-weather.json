@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "wildfly": {
+            "command": "java",
+            "args": [ "-Dorg.wildfly.user.name=admin",
+                      "-Dorg.wildfly.user.password=admin",
+                     "-jar",
+                    "../wildfly-mcp-server/target/wildfly-mcp-server-1.0.0.Final-SNAPSHOT-runner.jar"]
+    },
+    "weather": {
+            "command": "java",
+            "args": [ "-jar",
+                    "../mcp-stdio-sse-gatway/target/mcp-stdio-sse-gateway-1.0.0.Final-SNAPSHOT-client.jar",
+                    "http://127.0.0.1:8080/sse"]
+    }
+  }
+  
+}

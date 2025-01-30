@@ -142,50 +142,55 @@ public class ChatBotWebSocketEndpoint {
         for (McpClient client : clients) {
             client.close();
         }
+        session.getBasicRemote().sendText("The session has been closed...");
     }
 
     // This method receives a Message that contains a command
     // The Message object is "decoded" by the MessageDecoder class
     @OnMessage
     public String onMessage(String question, Session session) throws IOException {
-        if ("/help".equals(question)) {
-            StringBuilder help = new StringBuilder();
-            help.append("<p><b>/tools</b>: List tools" + "<br></p>");
-            help.append("<p><b>/prompt</b>: Get system prompt" + "<br></p>");
-            help.append("<p><b>/prompt-list</b>: List prompts" + "<br></p>");
-            help.append("<p><b>/prompt-run <prompt name></b>: Run the prompt" + "<br></p>");
-            return help.toString();
-        }
-        if ("/prompt-list".equals(question)) {
-            StringBuilder prompts = new StringBuilder();
-            for (Map.Entry<String, String> entry : promptHandler.getPrompts()) {
-                prompts.append("<p><b>" + entry.getKey() + "</b>:" + entry.getValue() + "<br></p>");
+        try {
+            if ("/help".equals(question)) {
+                StringBuilder help = new StringBuilder();
+                help.append("<p><b>/tools</b>: List tools" + "<br></p>");
+                help.append("<p><b>/prompt</b>: Get system prompt" + "<br></p>");
+                help.append("<p><b>/prompt-list</b>: List prompts" + "<br></p>");
+                help.append("<p><b>/prompt-run <prompt name></b>: Run the prompt" + "<br></p>");
+                return help.toString();
             }
-            return prompts.toString();
-        }
-        if (question.startsWith("/prompt-run")) {
-            String name = question.substring("/prompt-run".length());
-            String prompt = promptHandler.getPrompt(name.trim());
-            if (prompt == null) {
-                return "Hoops...prompt " + name.trim() + " doesn't exist...";
-            } else {
-                return bot.chat(prompt);
+            if ("/prompt-list".equals(question)) {
+                StringBuilder prompts = new StringBuilder();
+                for (Map.Entry<String, String> entry : promptHandler.getPrompts()) {
+                    prompts.append("<p><b>" + entry.getKey() + "</b>:" + entry.getValue() + "<br></p>");
+                }
+                return prompts.toString();
             }
-        }
-        if ("/tools".equals(question)) {
-            StringBuilder tools = new StringBuilder();
-            for (McpClient client : clients) {
-                List<ToolSpecification> specs = client.listTools();
-                for (ToolSpecification s : specs) {
-                    tools.append("<p><b>" + s.name() + "</b>: " + s.description() + "<br></p>");
+            if (question.startsWith("/prompt-run")) {
+                String name = question.substring("/prompt-run".length());
+                String prompt = promptHandler.getPrompt(name.trim());
+                if (prompt == null) {
+                    return "Hoops...prompt " + name.trim() + " doesn't exist...";
+                } else {
+                    return bot.chat(prompt);
                 }
             }
-            return tools.toString();
+            if ("/tools".equals(question)) {
+                StringBuilder tools = new StringBuilder();
+                for (McpClient client : clients) {
+                    List<ToolSpecification> specs = client.listTools();
+                    for (ToolSpecification s : specs) {
+                        tools.append("<p><b>" + s.name() + "</b>: " + s.description() + "<br></p>");
+                    }
+                }
+                return tools.toString();
+            }
+            if (question.startsWith("/")) {
+                return "Invalid help command " + question;
+            }
+            return bot.chat(question);
+        } catch (Exception ex) {
+            return "Arghhh...An internal error occured " + ex.toString();
         }
-        if (question.startsWith("/")) {
-            return "Invalid help command " + question;
-        }
-        return bot.chat(question);
     }
 
     // Exception handling
