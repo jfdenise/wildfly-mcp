@@ -31,6 +31,11 @@ This chatbot has also been tried with the `llama3.2:3b` and provided good result
 GROQ_CHAT_MODEL_NAME=llama3-70b-8192 GROQ_API_KEY=<Your groq key> java -jar target/wildfly-chat-bot-bootable.jar -Dwildfly.chatbot.llm.name=groq
 ```
 
+## User password handling
+
+The WildFly chat bot doesn't require you to set the username and password required to interact with WildFly servers in your questions. You have the 
+ability to configure user name and passwords for a given host/port. The WildFly chat bot will use those users when interacting with the WildFly servers.
+
 ## Configuring the WildFly chatbot
 
 | Env Variable    | Description |

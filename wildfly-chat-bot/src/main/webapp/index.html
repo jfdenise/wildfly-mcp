@@ -17,6 +17,13 @@
                 const objDiv = document.getElementById("chat-body");
                 objDiv.scrollTop = objDiv.scrollHeight;
             }
+            function disableToolbox(disabled) {
+                const toolbox = document.getElementById('chatbot-toolbox');
+                const buttons = toolbox.querySelectorAll('button');
+                for (const button of buttons) {
+                    button.disabled = disabled;
+                }
+            }
             function createChatBot() {
                 displayWaitingPopup();
                 const protocol = (window.location.protocol === 'https:') ? 'wss' : 'ws';
@@ -44,6 +51,7 @@
                             if (event.target.msg.value !== "") {
                                 userContent(event.target.msg.value);
                                 socket.send(JSON.stringify({kind: "user_question", value: event.target.msg.value}));
+                                disableToolbox(true);
                             }
                             form.reset();
                             scrollIt();
@@ -67,7 +75,7 @@
                 form.appendChild(inputDiv);
 
                 const button2 = document.createElement('button')
-                button2.innerHTML = 'tools';
+                button2.innerHTML = 'Call tools';
                 button2.addEventListener('click', (event) => {
                     event.preventDefault();
                     const objDiv = document.getElementById("chat-body");
@@ -79,7 +87,7 @@
                     }
                 });
                 const button3 = document.createElement('button')
-                button3.innerHTML = 'prompts';
+                button3.innerHTML = 'Use prompts';
                 button3.addEventListener('click', (event) => {
                     event.preventDefault();
                     const objDiv = document.getElementById("chat-body");
@@ -90,9 +98,34 @@
                         }
                     }
                 });
+                const button4 = document.createElement('button')
+                button4.innerHTML = 'Add user';
+                button4.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const objDiv = document.getElementById("chat-body");
+                    const cb = objDiv.querySelectorAll('chat-bubble[loading]')
+                    if (cb.length === 0) {
+                        if (event.target !== null) {
+                            displayAddUserPopup(socket);
+                        }
+                    }
+                });
+                const button5 = document.createElement('button')
+                button5.innerHTML = 'Remove user';
+                button5.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const objDiv = document.getElementById("chat-body");
+                    const cb = objDiv.querySelectorAll('chat-bubble[loading]')
+                    if (cb.length === 0) {
+                        if (event.target !== null) {
+                            socket.send(JSON.stringify({kind: "list_users"}));
+                        }
+                    }
+                });
                 const inputDiv2 = document.createElement('div')
                 inputDiv2.classList.add('chatbot-toolbox');
-                inputDiv2.append(button2, button3)
+                inputDiv2.id = "chatbot-toolbox";
+                inputDiv2.append(button2, button3, button4, button5);
                 chatFooter.appendChild(form);
 
                 chatContainer.append(chatBody, chatFooter, inputDiv2);
@@ -122,7 +155,7 @@
                                 return;
                             } else {
                                 if (msg.kind === "prompts") {
-                                    displayToolboxPopup(socket, msg.value, "Available Prompts", "use", "use_prompt", "Retrieving selected prompt");
+                                    displayToolboxPopup(socket, msg.value, "Available Prompts", "Use", "use_prompt", "Retrieving selected prompt", false);
                                     return;
                                 } else {
                                     if (msg.kind === "emulate_user_question") {
@@ -130,7 +163,34 @@
                                         socket.send(JSON.stringify({kind: "user_question", value: msg.value}));
                                         return;
                                     } else if (msg.kind === "tools") {
-                                        displayToolboxPopup(socket, msg.value, "Available Tools", "call", "call_tool", "Calling selected tool");
+                                        displayToolboxPopup(socket, msg.value, "Available Tools", "Call", "call_tool", "Calling selected tool", false);
+                                        return;
+                                    } else if (msg.kind === "users") {
+                                        var arr = [];
+                                        for (const auser of msg.value) {
+                                            var args =[];
+                                            var host = {name: "host", description: "", value: auser.host};
+                                            args.push(host);
+                                            var port = {name: "port", description: "", value: auser.port};
+                                            args.push(port);
+                                            var user = {name: "name", description: "", value: auser.name};
+                                            args.push(user);
+                                            var obj = {name:"", description:"User " + auser.name, arguments: args}
+                                            arr.push(obj);
+                                        }
+                                        displayToolboxPopup(socket, arr, "Configured Users", "Remove", "remove_user", "Removing selected user", false);
+                                        return;
+                                    } else if (msg.kind === "select_user") {
+                                        var arr = [];
+                                        for (const auser of msg.users) {
+                                            var args =[];
+                                            var user = {name: "name", description: "", value: auser.name};
+                                            args.push(user);
+                                            var obj = {name:"", description:"", arguments: args}
+                                            
+                                            arr.push(obj);
+                                        }
+                                        displayToolboxPopup(socket, arr, "WARNING. Multiple users exist for the same WildFly server, you must select one.", "Select", "select_user_reply", "Selecting user", true);
                                         return;
                                     }
                                 }
@@ -144,17 +204,21 @@
                         bubbleElement2.setAttribute("loading", "true");
                         objDiv.appendChild(bubbleElement2);
                         configureBubble(bubbleElement2);
+                        disableToolbox(true);
+                    } else {
+                        disableToolbox(false);
                     }
                     scrollIt();
                 }
             }
 
-            function displayToolboxPopup(socket, items, headerText, okButtonText, socketOperation, waitingPopupMessage) {
+            function displayToolboxPopup(socket, items, headerText, okButtonText, socketOperation, waitingPopupMessage, disableCancel) {
                 var modal = document.getElementById("toolbox-popup");
                 modal.style.display = "block";
                 var header = document.getElementById("toolbox-popup-header");
                 header.innerHTML = headerText;
                 const popupCancel = document.getElementById("toolbox-popup-cancel-button");
+                popupCancel.disabled = disableCancel;
                 popupCancel.onclick = function () {
                     modal.style.display = "none";
                 };
@@ -212,20 +276,108 @@
                             let itemArgDescLabel = document.createElement('p');
                             itemArgDescLabel.textContent = arg.description;
                             itemArgElement.appendChild(itemArgDescLabel);
-                            
                             let itemArgInput = document.createElement('input');
                             itemArgInput.classList.add("toolbox-popup-item-arg-input");
                             itemArgInput.id = arg.name;
-                            let argInputPlaceHolder = "Optional argument";
-                            if (arg.required === "true") {
-                                argInputPlaceHolder = "Required argument";
+                            if (arg.hasOwnProperty("value")) {
+                                itemArgInput.value = arg.value;
+                                itemArgInput.readOnly = true;
+                            } else {
+                                let argInputPlaceHolder = "Optional argument";
+                                if (arg.required === "true") {
+                                    argInputPlaceHolder = "Required argument";
+                                }
+                                itemArgInput.setAttribute("placeholder", argInputPlaceHolder);
                             }
-                            itemArgInput.setAttribute("placeholder", argInputPlaceHolder);
                             itemArgElement.appendChild(itemArgInput);
                             itemElement.appendChild(itemArgElement);
                         }
                     }
                 }
+            }
+            
+            function displayAddUserPopup(socket) {
+                var modal = document.getElementById("add-user-popup");
+                modal.style.display = "block";
+                var header = document.getElementById("add-user-popup-header");
+                header.innerHTML = "Add a user used when connecting to the WildFly server";
+                const itemsDiv = document.getElementById("add-user-popup-body");
+                itemsDiv.innerHTML = '';
+                
+                let itemHostElement = document.createElement('div');
+                itemsDiv.appendChild(itemHostElement);
+                itemHostElement.classList.add("add-user-popup-item-arg");
+                let itemHostLabel = document.createElement('p');
+                itemHostLabel.textContent = "host:";
+                itemHostElement.appendChild(itemHostLabel);
+                let itemHostInput = document.createElement('input');
+                itemHostInput.classList.add("add-user-popup-item-arg-input");
+                itemHostInput.id = "host";
+                itemHostInput.setAttribute("placeholder", "Optional. localhost by default");
+                itemHostElement.appendChild(itemHostInput);
+
+                let itemPortElement = document.createElement('div');
+                itemsDiv.appendChild(itemPortElement);
+                itemPortElement.classList.add("add-user-popup-item-arg");
+                let itemPortLabel = document.createElement('p');
+                itemPortLabel.textContent = "port:";
+                itemPortElement.appendChild(itemPortLabel);
+                let itemPortInput = document.createElement('input');
+                itemPortInput.classList.add("add-user-popup-item-arg-input");
+                itemPortInput.id = "port";
+                itemPortInput.setAttribute("placeholder", "Optional. 9990 by default");
+                itemPortElement.appendChild(itemPortInput);
+                
+                let itemUserElement = document.createElement('div');
+                itemsDiv.appendChild(itemUserElement);
+                itemUserElement.classList.add("add-user-popup-item-arg");
+                let itemUserLabel = document.createElement('p');
+                itemUserLabel.textContent = "username:";
+                itemUserElement.appendChild(itemUserLabel);
+                let itemUserInput = document.createElement('input');
+                itemUserInput.classList.add("add-user-popup-item-arg-input");
+                itemUserInput.id = "user";
+                itemUserInput.setAttribute("placeholder", "Required. User name");
+                itemUserElement.appendChild(itemUserInput);
+                
+                let itemPasswordElement = document.createElement('div');
+                itemsDiv.appendChild(itemPasswordElement);
+                itemPasswordElement.classList.add("add-user-popup-item-arg");
+                let itemPasswordLabel = document.createElement('p');
+                itemPasswordLabel.textContent = "password:";
+                itemPasswordElement.appendChild(itemPasswordLabel);
+                let itemPasswordInput = document.createElement('input');
+                itemPasswordInput.classList.add("add-user-popup-item-arg-input");
+                itemPasswordInput.id = "password";
+                itemPasswordInput.type = "password";
+                itemPasswordInput.setAttribute("placeholder", "Required. User password");
+                itemPasswordElement.appendChild(itemPasswordInput);
+                
+                const popupCancel = document.getElementById("add-user-popup-cancel-button");
+                popupCancel.onclick = function () {
+                    modal.style.display = "none";
+                };
+                const popupUse = document.getElementById("add-user-popup-ok-button");
+                popupUse.disabled = true;
+                popupUse.onclick = function () {
+                    modal.style.display = "none";
+                    socket.send(JSON.stringify({kind: "add_user", value: {host: itemHostInput.value, port: itemPortInput.value, name: itemUserInput.value, password: itemPasswordInput.value}}));
+                };
+                
+                itemUserInput.onkeyup = function () {
+                    if (itemUserInput.value.trim() !== "" && itemPasswordInput.value.trim() !== "") {
+                        popupUse.disabled = false;
+                    } else {
+                        popupUse.disabled = true;
+                    }
+                };
+                itemPasswordInput.onkeyup = function () {
+                    if (itemUserInput.value.trim() !== "" && itemPasswordInput.value.trim() !== "") {
+                        popupUse.disabled = false;
+                    } else {
+                        popupUse.disabled = true;
+                    }
+                };
             }
 
             function displayWaitingPopup() {
@@ -302,6 +454,7 @@
                 bubbleElement2.setAttribute("loading", "true");
                 objDiv.appendChild(bubbleElement2);
                 configureBubble(bubbleElement2);
+                disableToolbox(true);
                 scrollIt();
             }
 
@@ -330,11 +483,11 @@
                 padding: 10px;
                 display: flex;
             }
-            .chatbot-toolbox, .toolbox-popup-footer {
+            .chatbot-toolbox, .toolbox-popup-footer, .add-user-popup-footer {
                 display: flex;
             }
 
-            .chatbot-input input, .toolbox-popup-item-arg input {
+            .chatbot-input input, .toolbox-popup-item-arg input, .add-user-popup-item-arg input {
                 flex: 1;
                 border: none;
                 padding: 5px;
@@ -438,7 +591,7 @@
               width: 60%;
             }
 
-            .toolbox-popup-content {
+            .toolbox-popup-content, .add-user-popup-content {
                 box-shadow:10px 5px 5px;
                 border-radius: 3px;
                 font-size: 24px;
@@ -450,7 +603,7 @@
                 display: flex;
                 flex-direction: column;
             }
-            .toolbox-popup-body {
+            .toolbox-popup-body, .add-user-popup-body {
                 height: 500px;
                 overflow-y: auto;
                 padding: 8px;
@@ -460,7 +613,7 @@
                 flex-direction: column;
                 //background-color: #9dbfde;
             }
-            .toolbox-popup-item {
+            .toolbox-popup-item, .add-user-popup-item {
                 width: 98%;
                 height:auto;
                 padding: 8px;
@@ -502,7 +655,18 @@
                     <button id="toolbox-popup-cancel-button">Cancel</button>
                 </div>
                 </div>
-                
+            </div>
+            <div id="add-user-popup" class="modal">
+                <!-- Modal content -->
+                <div class="add-user-popup-content">
+                    <div><p id="add-user-popup-header"></p></div>
+                    <div id="add-user-popup-body" class="add-user-popup-body"></div>
+                    <div id="add-user-popup-footer" class="toolbox-popup-footer">
+                    <button id="add-user-popup-ok-button">Add</button>
+                    <button id="add-user-popup-cancel-button">Cancel</button>
+                    </div>
+                </div>
+                </div>
             </div>
         </div>
     </body>

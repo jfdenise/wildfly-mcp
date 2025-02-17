@@ -7,7 +7,7 @@ This MCP server is a Java quarkus fat jar application that you can configure in 
 This MCP server (a Tool in AI terminologie) helps you troubleshoot running WildFly servers using natural language.
 You can ask questions such as:
 
-`Hi, could you connect to the WildFly server running on host localhost and port 9990 with the user name admin and password admin and get the content of the log file, analyze it and check for errors?`
+`Hi, could you get my WildFly server log file, analyze it and check for errors?`
 
 ## Download the latest WildFly MCP binary
 
@@ -79,6 +79,8 @@ You can set the user name and password in the tool shell command using the syste
   }
 }
 ``` 
+NOTE: It is not advised, in particular when connected to a non local LLM model to directly provide your credentials in the question you are 
+asking to the chatbot. Use system properties (or env variables) that allow you to provide the password.
 
 ### Note on security
 
@@ -222,11 +224,7 @@ Make sure to first start you WildFly sever.
 
 ### Logging
 
-* Hi, could you connect to the WildFly server running on host localhost and port 9990 with the user name chatbot-user and password foo then enable the security logging?
-* Hi, could you connect to the WildFly server running on host localhost and port 9990 with the user name chatbot-user and password chatbot-user then enable the security logging?
-
-Then attempt to connect to the server with invalid credentials, that the chatbot will analyze in the next question.
-
+* Hi, could you connect to the WildFly server running on host localhost and port 9990 then enable the security logging?
 * Hi, could you connect to the WildFly server and get the content of the log file, analyze it and check for errors?
 * Hi, could you disable the security logging?
 

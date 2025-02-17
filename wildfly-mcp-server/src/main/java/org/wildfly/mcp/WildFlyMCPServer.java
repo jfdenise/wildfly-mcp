@@ -188,7 +188,7 @@ public class WildFlyMCPServer {
             String category = findCategory(loggingCategory);
             GetLoggersResponse response = wildflyClient.call(new GetLoggersRequest(server, user));
             if (response.result != null && !response.result.contains(category)) {
-                return buildErrorResponse("The logging category " + loggingCategory + " is not already enabled, you should first enabled it.");
+                return buildErrorResponse("The logging category " + loggingCategory + " is not already enabled, you should first enable it.");
             }
             wildflyClient.call(new RemoveLoggerRequest(server, user, category));
             return buildResponse("The logging category " + loggingCategory + " has been removed by using the " + category + " logger.");

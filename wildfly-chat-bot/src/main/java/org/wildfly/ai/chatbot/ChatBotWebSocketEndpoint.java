@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
@@ -47,6 +48,7 @@ import java.util.logging.Level;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.wildfly.ai.chatbot.MCPConfig.MCPServerSSEConfig;
 import org.wildfly.ai.chatbot.MCPConfig.MCPServerStdioConfig;
+import org.wildfly.ai.chatbot.WildFlyCredentialsHandler.UserPassword;
 
 @ServerEndpoint(value = "/chatbot")
 public class ChatBotWebSocketEndpoint {
@@ -70,7 +72,8 @@ public class ChatBotWebSocketEndpoint {
     private String llmName;
     private boolean disabledAcceptance;
     private PromptHandler promptHandler;
-    private ToolHandler toolHandler;
+    public ToolHandler toolHandler;
+    private WildFlyCredentialsHandler credentialsHandler = new WildFlyCredentialsHandler();
     private Bot bot;
     private List<McpClient> clients = new ArrayList<>();
     private final List<McpTransport> transports = new ArrayList<>();
@@ -84,8 +87,11 @@ public class ChatBotWebSocketEndpoint {
             logger.info("Initialize");
             MCPConfig mcpConfig = MCPConfig.parseConfig(mcpConfigFile);
             clients = new ArrayList<>();
+            Map<String, McpClient> toolToClient = new HashMap<>();
+            Map<String, ToolDescription> wildflyTools = new HashMap<>();
             if (mcpConfig.mcpServers != null) {
                 for (Map.Entry<String, MCPServerStdioConfig> entry : mcpConfig.mcpServers.entrySet()) {
+                    boolean isWildFly = entry.getKey().equals("wildfly");
                     List<String> cmd = new ArrayList<>();
                     cmd.add(entry.getValue().command);
                     cmd.addAll(entry.getValue().args);
@@ -98,7 +104,15 @@ public class ChatBotWebSocketEndpoint {
                             .transport(transport)
                             .clientName(entry.getKey())
                             .build();
-                    clients.add(new McpClientInterceptor(mcpClient, this));
+                                       // We discover wildfly tools
+                    List<ToolDescription> tools = ToolHandler.getTools(mcpClient);
+                    for(ToolDescription td : tools) {
+                        toolToClient.put(td.name, mcpClient);
+                        if (isWildFly) {
+                            wildflyTools.put(td.name, td);
+                        }
+                    }
+                    clients.add(new McpClientInterceptor(mcpClient, this, credentialsHandler));
                 }
             }
             if (mcpConfig.mcpSSEServers != null) {
@@ -111,14 +125,18 @@ public class ChatBotWebSocketEndpoint {
                             .transport(transport)
                             .clientName(entry.getKey())
                             .build();
-                    clients.add(new McpClientInterceptor(mcpClient, this));
+                    List<ToolDescription> tools = ToolHandler.getTools(mcpClient);
+                    for(ToolDescription td : tools) {
+                        toolToClient.put(td.name, mcpClient);
+                    }
+                    clients.add(new McpClientInterceptor(mcpClient, this, credentialsHandler));
                 }
             }
             ToolProvider toolProvider = McpToolProvider.builder()
                     .mcpClients(clients)
                     .build();
             promptHandler = new PromptHandler(transports);
-            toolHandler = new ToolHandler(clients);
+            toolHandler = new ToolHandler(toolToClient, clients, wildflyTools);
             ChatLanguageModel model = null;
             if (llmName != null) {
                 if (llmName.equals("ollama")) {
@@ -198,6 +216,22 @@ public class ChatBotWebSocketEndpoint {
         }
         return false;
     }
+    
+    String selectUser(String tool, List<UserPassword> users) {
+        try {
+            logger.info("Must select a user to call: " + tool);
+            Map<String, Object> map = new HashMap<>();
+            map.put("kind", "select_user");
+            map.put("users", users);
+            session.getBasicRemote().sendText(toJson(map));
+            String reply = workQueue.take();
+            logger.info("Unlocked in waiting thread: " + reply);
+            return reply;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 
     @OnClose
     public void onClose(Session session) throws Exception {
@@ -225,11 +259,61 @@ public class ChatBotWebSocketEndpoint {
                 return;
             }
             if ("list_prompts".equals(kind)) {
-                promptHandler.getPrompts();
                 Map<String, Object> map = new HashMap<>();
                 map.put("kind", "prompts");
                 map.put("value", promptHandler.getPrompts());
-                logger.info("Prompts sent to UI " + toJson(map));
+                session.getBasicRemote().sendText(toJson(map));
+                return;
+            }
+            if ("list_users".equals(kind)) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("kind", "users");
+                map.put("value", credentialsHandler.getUsers());
+                session.getBasicRemote().sendText(toJson(map));
+                return;
+            }
+            if ("add_user".equals(kind)) {
+                JsonNode userNode = msgObj.get("value");
+                UserPassword up = objectMapper.treeToValue(userNode, UserPassword.class);
+                String msg;
+                if (up.name == null || up.password == null) {
+                    msg = "User can't be added, a name and a password must be set.";
+                } else {
+                    credentialsHandler.addUser(up);
+                    msg = "User " + up.name + " added.";
+                }
+                Map<String, String> map = new HashMap<>();
+                map.put("kind", "simple_text");
+                map.put("value", msg);
+                session.getBasicRemote().sendText(toJson(map));
+                return;
+            }
+            if ("remove_user".equals(kind)) {
+                ArrayNode userArgs = (ArrayNode) msgObj.get("value").get("arguments");
+                UserPassword up = new UserPassword();
+                for (JsonNode a : userArgs) {
+                    String name = a.get("name").asText();
+                    String value = a.get("value").asText();
+                    if (name.equals("host")) {
+                        up.host = value;
+                    } else if (name.equals("port")) {
+                        up.port = value;
+                    } else if (name.equals("name")) {
+                        up.name = value;
+                    } else if (name.equals("password")) {
+                        up.password = value;
+                    }
+                }
+                boolean removed = credentialsHandler.removeUser(up);
+                String msg;
+                if (!removed) {
+                    msg = "User " + up.name + " has not been removed. User doesn't exist";
+                } else {
+                    msg = "User " + up.name + " removed.";
+                }
+                Map<String, String> map = new HashMap<>();
+                map.put("kind", "simple_text");
+                map.put("value", msg);
                 session.getBasicRemote().sendText(toJson(map));
                 return;
             }
@@ -248,19 +332,37 @@ public class ChatBotWebSocketEndpoint {
                 return;
             }
             if ("call_tool".equals(kind)) {
-                JsonNode toolNode = msgObj.get("value");
-                SelectedTool tool = objectMapper.treeToValue(toolNode, SelectedTool.class);
-                try {
-                    disabledAcceptance = true;
-                    String reply = toolHandler.executeTool(tool);
-                    Map<String, String> map = new HashMap<>();
-                    map.put("kind", "simple_text");
-                    map.put("value", reply);
-                    session.getBasicRemote().sendText(toJson(map));
-                    return;
-                } finally {
-                    disabledAcceptance = false;
-                }
+                executor.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JsonNode toolNode = msgObj.get("value");
+                            SelectedTool tool = objectMapper.treeToValue(toolNode, SelectedTool.class);
+                            try {
+                                disabledAcceptance = true;
+                                String reply = toolHandler.executeTool(tool);
+                                Map<String, String> map = new HashMap<>();
+                                map.put("kind", "simple_text");
+                                map.put("value", reply);
+                                session.getBasicRemote().sendText(toJson(map));
+                            } finally {
+                                disabledAcceptance = false;
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            Map<String, String> map = new HashMap<>();
+                            map.put("kind", "simple_text");
+                            map.put("value", "Arghhh...An internal error occured " + ex.toString());
+                            try {
+                                session.getBasicRemote().sendText(toJson(map));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                logger.log(Level.SEVERE, "Error: " + e);
+                            }
+                        }
+                    }
+                });
+                return;
             }
             if ("user_question".equals(kind)) {
                 executor.submit(new Runnable() {
@@ -296,6 +398,14 @@ public class ChatBotWebSocketEndpoint {
                 String reply = msgObj.get("value").asText();
                 logger.info("Received tool acceptance message: " + reply);
                 workQueue.offer(reply);
+                return;
+            }
+            if ("select_user_reply".equals(kind)) {
+                ArrayNode userArgs = (ArrayNode) msgObj.get("value").get("arguments");
+                UserPassword up = new UserPassword();
+                String selected = userArgs.get(0).get("value").asText();
+                logger.info("Received selected user: " + selected);
+                workQueue.offer(selected);
                 return;
             }
             throw new Exception("Unknown message " + kind);
