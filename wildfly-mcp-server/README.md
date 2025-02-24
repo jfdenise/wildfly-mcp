@@ -53,6 +53,9 @@ If using SSE, add the following json to the chatbot configuration file:
   "mcpSSEServers": {
     "wildfly": {
             "url": "http://localhost:8081/mcp/sse"
+            "providerUrl": "http://localhost:8180/realms/quarkus",
+            "user": "backend-service",
+            "secret": "secret"
     }
   }
 }
@@ -134,6 +137,16 @@ accessing to the server with the `chatbot-user` (actually any user with the `Mon
 
 If no host is provided, `localhost` is used. If no port is provided, `9990` is used.
 You can configure default host and port using the system properties `-Dorg.wildfly.host.name=<host name>` and `-Dorg.wildfly.port=<port>`
+
+## SSE security token configuration
+
+The Keycloak token validator URL, client and secret can be configured using the following system properties:
+
+| System property    | Description |
+| -------- | ------- |
+quarkus.oidc.auth-server-url | The URL to the keycloak realm, default to `http://localhost:8180/realms/quarkus` |
+quarkus.oidc.client-id | The client id, default to `backend-service` |
+quarkus.oidc.credentials.secret | The client seceret, default to `secret` | 
 
 ## Available Tools
 

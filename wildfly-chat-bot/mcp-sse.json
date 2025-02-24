@@ -1,7 +1,10 @@
 {
   "mcpSSEServers": {
     "wildfly": {
-            "url":"http://localhost:8081/mcp/sse"
+            "url":"http://localhost:8081/mcp/sse",
+            "providerUrl": "http://localhost:8180/realms/quarkus",
+            "user": "backend-service",
+            "secret": "secret"
     }
   },
   "mcpServers": {
