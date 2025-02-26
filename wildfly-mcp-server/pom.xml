@@ -39,17 +39,17 @@
             <dependency>
                 <groupId>io.quarkiverse.mcp</groupId>
                 <artifactId>quarkus-mcp-server-core</artifactId>
-                <version>1.0.0.Beta2</version>
+                <version>999-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.quarkiverse.mcp</groupId>
                 <artifactId>quarkus-mcp-server-stdio</artifactId>
-                <version>1.0.0.Beta2</version>
+                <version>999-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.quarkiverse.mcp</groupId>
                 <artifactId>quarkus-mcp-server-sse</artifactId>
-                <version>1.0.0.Beta2</version>
+                <version>999-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.jboss.remotingjmx</groupId>

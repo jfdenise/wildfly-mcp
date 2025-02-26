@@ -19,6 +19,7 @@ import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
 import io.quarkiverse.mcp.server.ToolResponse;
 import io.quarkus.rest.client.reactive.Url;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.core.Response;
@@ -70,6 +71,7 @@ public class WildFlyMCPServer {
     WildFlyHealthClient wildflyHealthClient;
     
     @Tool(description = "Get the list of the enabled logging categories for the WildFly server running on the provided host and port arguments.")
+    @RolesAllowed("admin")
     ToolResponse getWildFlyLoggingCategories(
             @ToolArg(name = "host", description = "Optional WildFly server host name. By default localhost is used.", required = false) String host,
             @ToolArg(name = "port", description = "Optional WildFly server port. By default 9990 is used.", required = false) String port,
@@ -90,6 +92,7 @@ public class WildFlyMCPServer {
     }
     
     @Tool(description = "Gets the server configuration in JSON format of the WildFly server running on the provided host and port arguments.")
+    @RolesAllowed("admin")
     ToolResponse getWildFlyServerConfiguration(
             @ToolArg(name = "host", description = "Optional WildFly server host name. By default localhost is used.", required = false) String host,
             @ToolArg(name = "port", description = "Optional WildFly server port. By default 9990 is used.", required = false) String port,
@@ -134,6 +137,7 @@ public class WildFlyMCPServer {
     }
 
     @Tool(description = "Invoke a single WildFly CLI operation on the WildFly server running on the provided host and port arguments.")
+    @RolesAllowed("admin")
     ToolResponse invokeWildFlyCLIOperation(
             @ToolArg(name = "host", description = "Optional WildFly server host name. By default localhost is used.", required = false) String host,
             @ToolArg(name = "port", description = "Optional WildFly server port. By default 9990 is used.", required = false) String port,
@@ -154,6 +158,7 @@ public class WildFlyMCPServer {
     }
     
     @Tool(description = "Enable a logging category for the WildFly server running on the provided host and port arguments.")
+    @RolesAllowed("admin")
     ToolResponse enableWildFlyLoggingCategory(
             @ToolArg(name = "host", description = "Optional WildFly server host name. By default localhost is used.", required = false) String host,
             @ToolArg(name = "port", description = "Optional WildFly server port. By default 9990 is used.", required = false) String port,
@@ -176,6 +181,7 @@ public class WildFlyMCPServer {
     }
     
     @Tool(description = "Disable a logging category for the WildFly server running on the provided host and port arguments.")
+    @RolesAllowed("admin")
     ToolResponse disableWildFlyLoggingCategory(
             @ToolArg(name = "host", description = "Optional WildFly server host name. By default localhost is used.", required = false) String host,
             @ToolArg(name = "port", description = "Optional WildFly server port. By default 9990 is used.", required = false) String port,
@@ -198,6 +204,7 @@ public class WildFlyMCPServer {
     }
     
     @Tool(description = "Get the log file content of the WildFly server running on the provided host and port arguments.")
+    @RolesAllowed("admin")
     ToolResponse getWildFlyLogFileContent(
             @ToolArg(name = "host", description = "Optional WildFly server host name. By default localhost is used.", required = false) String host,
             @ToolArg(name = "port", description = "Optional WildFly server port. By default 9990 is used.", required = false) String port,
@@ -219,6 +226,7 @@ public class WildFlyMCPServer {
     }
     
     @Tool(description = "Get the status of the WildFly server running on the provided host and port arguments.")
+    @RolesAllowed("admin")
     ToolResponse getWildFlyStatus(
             @ToolArg(name = "host", description = "Optional WildFly server host name. By default localhost is used.", required = false) String host,
             @ToolArg(name = "port", description = "Optional WildFly server port. By default 9990 is used.", required = false) String port,
@@ -258,6 +266,7 @@ public class WildFlyMCPServer {
     }
     
     @Tool(description = "Get the percentage of memory consumed by the WildFly server running on the provided host and port arguments.")
+    @RolesAllowed("admin")
     ToolResponse getWildFlyConsumedMemory(
             @ToolArg(name = "host", description = "Optional WildFly server host name. By default localhost is used.", required = false) String host,
             @ToolArg(name = "port", description = "Optional WildFly server port. By default 9990 is used.", required = false) String port,
@@ -283,6 +292,7 @@ public class WildFlyMCPServer {
     }
     
     @Tool(description = "Get the percentage of cpu consumed by the WildFly server running on the provided host and port arguments.")
+    @RolesAllowed("admin")
     ToolResponse getWildFlyConsumedCPU(
             @ToolArg(name = "host", description = "Optional WildFly server host name. By default localhost is used.", required = false) String host,
             @ToolArg(name = "port", description = "Optional WildFly server port. By default 9990 is used.", required = false) String port,
@@ -305,6 +315,7 @@ public class WildFlyMCPServer {
     }
     
     @Tool(description = "Get the metrics (in prometheus format) of the WildFly server running on the provided host and port arguments.")
+    @RolesAllowed("admin")
     ToolResponse getWildFlyPrometheusMetrics(
             @ToolArg(name = "host", description = "Optional WildFly server host name. By default localhost is used.", required = false) String host,
             @ToolArg(name = "port", description = "Optional WildFly server port. By default 9990 is used.", required = false) String port) {
