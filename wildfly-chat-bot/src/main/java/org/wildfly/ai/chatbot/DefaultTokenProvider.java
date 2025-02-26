@@ -6,7 +6,6 @@ package org.wildfly.ai.chatbot;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.langchain4j.mcp.client.transport.http.HttpMcpTransport.TokenProvider;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -19,6 +18,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.wildfly.ai.chatbot.http.HttpMcpTransport.TokenProvider;
 
 /**
  *
