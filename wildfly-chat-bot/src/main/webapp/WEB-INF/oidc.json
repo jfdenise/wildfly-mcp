@@ -1,0 +1,9 @@
+{
+  "provider-url": "http://localhost:8180/realms/quarkus",
+  "ssl-required": "external",
+  "allow-any-hostname": true,
+  "disable-trust-manager": true,
+  "client-id": "wildfly-chat-bot",
+  "public-client": true,
+  "confidential-port": 0
+}

@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.websocket.EndpointConfig;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
 import jakarta.websocket.OnMessage;
@@ -48,12 +49,12 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.wildfly.ai.chatbot.MCPConfig.MCPServerSSEConfig;
 import org.wildfly.ai.chatbot.MCPConfig.MCPServerStdioConfig;
 import org.wildfly.ai.chatbot.http.HttpMcpTransport;
+import org.wildfly.security.http.oidc.OidcPrincipal;
 
-@ServerEndpoint(value = "/chatbot")
+@ServerEndpoint(value = "/chatbot",  configurator = PrincipalConfigurator.class)
 public class ChatBotWebSocketEndpoint {
 
     private static final Logger logger = Logger.getLogger(ChatBotWebSocketEndpoint.class.getName());
-
     @Inject
     @Named(value = "ollama")
     ChatLanguageModel ollama;
@@ -78,11 +79,11 @@ public class ChatBotWebSocketEndpoint {
     private Session session;
     private final ExecutorService executor = Executors.newFixedThreadPool(1);
     private final BlockingQueue<String> workQueue = new ArrayBlockingQueue<>(1);
-    private final Map<String, DefaultTokenProvider> tokenProviders = new HashMap<>();
-    private final List<DefaultTokenProvider> initProviders = new ArrayList<>();
+    //private final Map<String, DefaultTokenProvider> tokenProviders = new HashMap<>();
+    //private final List<DefaultTokenProvider> initProviders = new ArrayList<>();
     private final List<DefaultMcpClient.Builder> clientBuilders = new ArrayList<>();
     private ChatLanguageModel activeModel;
-    
+    private final OidcTokenProvider tokenProvider = new OidcTokenProvider(); 
     @PostConstruct
     public void init() {
         try {
@@ -110,12 +111,13 @@ public class ChatBotWebSocketEndpoint {
                 for (Map.Entry<String, MCPServerSSEConfig> entry : mcpConfig.mcpSSEServers.entrySet()) {
                     McpTransport transport;
                     if(entry.getValue().providerUrl != null) {
-                        DefaultTokenProvider tokenProvider = new DefaultTokenProvider();
-                        tokenProvider.name = entry.getKey();
-                        tokenProvider.providerUrl = entry.getValue().providerUrl;
-                        tokenProvider.secret = entry.getValue().secret;
-                        tokenProvider.user = entry.getValue().user;
-                        tokenProviders.put(entry.getKey(), tokenProvider);
+//                        DefaultTokenProvider tokenProvider = new DefaultTokenProvider();
+//                        tokenProvider.name = entry.getKey();
+//                        tokenProvider.providerUrl = entry.getValue().providerUrl;
+//                        tokenProvider.secret = entry.getValue().secret;
+//                        tokenProvider.user = entry.getValue().user;
+                        //tokenProviders.put(entry.getKey(), tokenProvider);
+                        System.out.println("NO MORE USE OF TOKEN PROVIDER!!!!!!!!!!!!!!!!!!!!!!");
                         transport = new HttpMcpTransport.Builder()
                             .timeout(Duration.ZERO)
                             .tokenProvider(tokenProvider)
@@ -134,7 +136,7 @@ public class ChatBotWebSocketEndpoint {
                     clientBuilders.add(builder);
                 }
             }
-            initProviders.addAll(tokenProviders.values());
+            //initProviders.addAll(tokenProviders.values());
 
             promptHandler = new PromptHandler(transports);
             toolHandler = new ToolHandler(clients);
@@ -161,14 +163,17 @@ public class ChatBotWebSocketEndpoint {
     }
 
     @OnOpen
-    public void onOpen(Session session) throws IOException {
+    public void onOpen(Session session, EndpointConfig config) throws IOException {
         this.session = session;
+        OidcPrincipal userPrincipal = (OidcPrincipal) config.getUserProperties().get("UserPrincipal");
+        System.out.println("TOKEN " + userPrincipal.getOidcSecurityContext().getTokenString());
+        tokenProvider.setToken(userPrincipal.getOidcSecurityContext().getTokenString());
         logger.info("New websocket session opened: " + session.getId());
         login();
     }
 
     private void login() throws IOException {
-        if (initProviders.isEmpty()) {
+        //if (initProviders.isEmpty()) {
             //Terminate client init
             for(DefaultMcpClient.Builder builder : clientBuilders) {
                 clients.add(new McpClientInterceptor(builder.build(), this));
@@ -187,13 +192,13 @@ public class ChatBotWebSocketEndpoint {
             args.put("kind", "simple_text");
             args.put("value", "Hello, I am a WildFly chatbot that can interact with your WildFly servers, how can I help?");
             session.getBasicRemote().sendText(toJson(args));
-        } else {
-            DefaultTokenProvider dtp = initProviders.remove(0);
-            Map<String, String> args = new HashMap<>();
-            args.put("kind", "login");
-            args.put("name", dtp.name);
-            session.getBasicRemote().sendText(toJson(args));
-        }
+//        } else {
+//            DefaultTokenProvider dtp = initProviders.remove(0);
+//            Map<String, String> args = new HashMap<>();
+//            args.put("kind", "login");
+//            args.put("name", dtp.name);
+//            session.getBasicRemote().sendText(toJson(args));
+//        }
     }
     
     public static String toJson(Object msg) throws JsonProcessingException {
@@ -335,24 +340,24 @@ public class ChatBotWebSocketEndpoint {
                 workQueue.offer(reply);
                 return;
             }
-            if ("login_reply".equals(kind)) {
-                JsonNode login = msgObj.get("value");
-                String tokenProvider = login.get("name").asText();
-                String userName  = login.get("userName").asText();
-                String password = login.get("password").asText();
-                try {
-                    tokenProviders.get(tokenProvider).setCredentials(userName, password);
-                } catch (MCPAuthenticationException ex) {
-                    // add back the provider to the list and attempt login again
-                    initProviders.add(0, tokenProviders.get(tokenProvider));
-                    Map<String, String> map = new HashMap<>();
-                    map.put("kind", "simple_text");
-                    map.put("value", ex.getMessage());
-                    session.getBasicRemote().sendText(toJson(map));
-                }
-                login();
-                return;
-            }
+//            if ("login_reply".equals(kind)) {
+//                JsonNode login = msgObj.get("value");
+//                String tokenProvider = login.get("name").asText();
+//                String userName  = login.get("userName").asText();
+//                String password = login.get("password").asText();
+//                try {
+//                    tokenProviders.get(tokenProvider).setCredentials(userName, password);
+//                } catch (MCPAuthenticationException ex) {
+//                    // add back the provider to the list and attempt login again
+//                    initProviders.add(0, tokenProviders.get(tokenProvider));
+//                    Map<String, String> map = new HashMap<>();
+//                    map.put("kind", "simple_text");
+//                    map.put("value", ex.getMessage());
+//                    session.getBasicRemote().sendText(toJson(map));
+//                }
+//                login();
+//                return;
+//            }
             throw new Exception("Unknown message " + kind);
         } catch (Exception ex) {
             ex.printStackTrace();

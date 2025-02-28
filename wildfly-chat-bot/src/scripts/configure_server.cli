@@ -1,4 +1,5 @@
 /subsystem=logging/logger=org.wildfly.ai.chatbot:add(level=TRACE)
+/subsystem=logging/logger=org.wildfly.security:add(level=TRACE)
 /subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=TRACE)
 
 /subsystem=ai/ollama-chat-model=ollama:write-attribute(name=model-name,value=${org.wildfly.ai.ollama.chat.model.name,env.OLLAMA_CHAT_MODEL_NAME:qwen2.5:3b})
