@@ -1,0 +1,28 @@
+# Undertow
+
+Example of add an application-security-domain named foo to undertow. There is 2 ways that can't be mixed:
+1) Example Add the security domain foo with an elytron security-domain named bar
+/subsystem=undertow/application-security-domain=foo:add(security-domain=bar)
+2) Example Add the security domain foo with an elytron http-authentication-factory named bar
+/subsystem=undertow/application-security-domain=foo:add(http-authentication-factory=bar)
+
+# Logger
+
+TODO
+
+# system property
+
+## syntax of operations to update or create a system property
+
+The syntax of an operation to interact with a system-property resource is: `/system-property=<property name>:<operation>(<operation_arguments>)`
+The possible values for <operation> are: `add`, `remove` or `write-attribute`.
+If `add` is used, the <operation_arguments> is `value=<value of the system property>`.
+If `remove` is used, the <operation_arguments> is empty.
+If `write-attribute` is used, the <operation_arguments> is `name=value, value=<new value of the system property>`.
+
+## operation to list all the system property
+The operation to list all the system property is: `:read-children-resources(child-type=system-property)`
+An empty result returned by this operation means that no system properties are set.
+
+# Expressions resolution
+

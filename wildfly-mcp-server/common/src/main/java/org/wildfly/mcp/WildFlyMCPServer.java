@@ -168,8 +168,8 @@ public class WildFlyMCPServer {
         Server server = new Server(host, port);
         try {
             User user = new User();
-            CommandContext ctx = CommandContextFactory.getInstance().newCommandContext();
-            ModelNode mn = ctx.buildRequest(operation);
+                CommandContext ctx = CommandContextFactory.getInstance().newCommandContext();
+                ModelNode mn = ctx.buildRequest(operation);
             // TODO, implement possible rules if needed to disallow some operations.
             String value = wildflyClient.call(server, user, mn.toJSONString(false), false);
             return buildResponse(value);

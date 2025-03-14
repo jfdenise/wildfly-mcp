@@ -13,12 +13,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.mcp.client.transport.McpTransport;
 import dev.langchain4j.mcp.client.transport.stdio.StdioMcpTransport;
+import dev.langchain4j.memory.ChatMemory;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.input.PromptTemplate;
+import dev.langchain4j.rag.DefaultRetrievalAugmentor;
+import dev.langchain4j.rag.RetrievalAugmentor;
+import dev.langchain4j.rag.content.injector.DefaultContentInjector;
+import dev.langchain4j.rag.query.router.DefaultQueryRouter;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.tool.ToolProvider;
 import java.io.IOException;
@@ -85,11 +93,25 @@ public class ChatBotWebSocketEndpoint {
     @Inject
     @ConfigProperty(name = "wildfly.chatbot.welcome.message")
     private String welcomeMessage;
+    @Inject
+    @Named(value = "embedding-store-retriever")
+    ContentRetriever rag;
+        private static final String PROMPT_TEMPLATE = "You are a WildFly expert who understands well how to secure WildFly server using the elytron subsystem"
+            + "Objective: answer the user question delimited by  ---\n"
+            + "\n"
+            + "---\n"
+            + "{{userMessage}}\n"
+            + "---"
+            + "\n Here is a few data to help you:\n"
+            + "{{contents}}";
+                private static final String PROMPT_TEMPLATE2 = "{{userMessage}}\nExamples of CLI commands that can help you if a CLI operation is to be invoked {{contents}}. If you don't find an example, do not generate a CLI operation.";
     private boolean disabledAcceptance;
     private PromptHandler promptHandler;
     private ToolHandler toolHandler;
     private Bot bot;
+    private Bot botWithSecurity;
     private ReportGenerator reportGenerator;
+    private TopicAnalyzer topicAnalyzer;
     private List<McpClient> clients = new ArrayList<>();
     private final List<McpTransport> transports = new ArrayList<>();
     private Session session;
@@ -246,9 +268,18 @@ public class ChatBotWebSocketEndpoint {
             ToolProvider toolProvider = McpToolProvider.builder()
                     .mcpClients(clients)
                     .build();
+            RetrievalAugmentor augmentor = DefaultRetrievalAugmentor.builder()
+                .contentRetriever(rag)
+                .contentInjector(DefaultContentInjector.builder()
+                        .promptTemplate(PromptTemplate.from(PROMPT_TEMPLATE2))
+//                        .metadataKeysToInclude(asList("file_name", "url", "title", "subtitle"))
+                        .build())
+                .queryRouter(new DefaultQueryRouter(rag))
+                .build();
             bot = AiServices.builder(Bot.class)
                     .chatLanguageModel(activeModel)
                     .toolProvider(toolProvider)
+                    .retrievalAugmentor(augmentor)
                     .systemMessageProvider(chatMemoryId -> {
                         return promptHandler.getSystemPrompt() + (systemPrompt.isPresent() ? systemPrompt.get() : "");
                     })
@@ -257,6 +288,20 @@ public class ChatBotWebSocketEndpoint {
                     .chatLanguageModel(activeModel)
                     .systemMessageProvider(chatMemoryId -> {
                         return promptHandler.getGeneratorSystemPrompt();
+                    }).build();
+            botWithSecurity = AiServices.builder(Bot.class)
+                    .chatLanguageModel(activeModel)
+                    .toolProvider(toolProvider)
+                    .retrievalAugmentor(augmentor)
+                    .systemMessageProvider(chatMemoryId -> {
+                        return promptHandler.getSystemPrompt() + (systemPrompt.isPresent() ? systemPrompt.get() : "");
+                    })
+                    .build();
+            topicAnalyzer = AiServices.builder(TopicAnalyzer.class)
+                    .chatLanguageModel(activeModel)
+                    //.retrievalAugmentor(augmentor)
+                    .systemMessageProvider(chatMemoryId -> {
+                        return "You are a WildFly security expert, you will be asked if a particular question is related to the security of WildFly. You answer mut be a single word YES or NO.";
                     })
                     .build();
             Map<String, String> args = new HashMap<>();
@@ -407,6 +452,9 @@ public class ChatBotWebSocketEndpoint {
                                     disabledAcceptance = false;
                                 }
                             } else {
+                                String related = topicAnalyzer.isRelated(msgObj.get("value").asText());
+                                System.out.println("IS RELATED " + related);
+                                Thread.sleep(2000);
                                 reply = bot.chat(msgObj.get("value").asText());
                                 if (reply == null || reply.isEmpty()) {
                                     reply = "I have not been able to answer your question.";

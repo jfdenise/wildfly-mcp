@@ -29,5 +29,6 @@ wildfly-chat-bot/target/
 /wildfly-mcp-server/sse/target/
 /wildfly-mcp-server/stdio/target/
 /wildfly-mcp-server/common/target/
+/doc-ingestor/target/
 report_messages.json
 report_summary.md
