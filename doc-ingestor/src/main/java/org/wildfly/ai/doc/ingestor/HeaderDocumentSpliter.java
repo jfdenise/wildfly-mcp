@@ -24,36 +24,45 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
         List<TextSegment> segments = new ArrayList<>();
         StringBuilder current = null;
         boolean levelOne = true;
-        String parent = "";
+        String parentName = "";
+        // Parent content is a one liner, replicated in each sub section.
+        String parentContent = "";
         for (String line : lines) {
             if (line.startsWith("#")) {
                 if (current != null) {
+                    boolean includeText = true;
                     Metadata md = new Metadata();
+                    String content = current.toString().trim();
                     if (!levelOne) {
-                        md.put("parent", parent);
+                        md.put("parent", parentName);
+                    } else {
+                        includeText = !parentName.equals(content);
+                        parentContent = content;
                     }
-                    TextSegment segment = TextSegment.from(current.toString(), md);
-                    segments.add(segment);
+                    if(includeText) {
+                        TextSegment segment = TextSegment.from(content, md);
+                        segments.add(segment);
+                    }
                 }
                 current = new StringBuilder();
                 int index = line.lastIndexOf("#");
-                if (line.startsWith("##")) {
+                if (line.startsWith("## ")) {
                     levelOne = false;
-                    // Always add the parent title to sub sections
-                    line = parent + ". " + line.substring(index + 1);
+                    // Always add the parent content to sub sections
+                    line = parentContent + " " + line.substring(index + 2);
                 } else {
-                    parent = line.substring(index + 1);
+                    parentName = line.substring(index + 2);
                     levelOne = true;
-                    line = parent;
+                    line = parentName;
                 }
                 
             }
-            current.append(line).append("\n");
+            current.append(line.trim()).append("\n");
         }
         if (current != null) {
             Metadata md = new Metadata();
             if (!levelOne) {
-                md.put("parent", parent);
+                md.put("parent", parentName);
             }
             TextSegment segment = TextSegment.from(current.toString(), md);
             segments.add(segment);
