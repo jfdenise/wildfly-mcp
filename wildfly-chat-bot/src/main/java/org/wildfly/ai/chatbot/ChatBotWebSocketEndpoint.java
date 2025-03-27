@@ -96,15 +96,7 @@ public class ChatBotWebSocketEndpoint {
     @Inject
     @Named(value = "embedding-store-retriever")
     ContentRetriever rag;
-        private static final String PROMPT_TEMPLATE = "You are a WildFly expert who understands well how to secure WildFly server using the elytron subsystem"
-            + "Objective: answer the user question delimited by  ---\n"
-            + "\n"
-            + "---\n"
-            + "{{userMessage}}\n"
-            + "---"
-            + "\n Here is a few data to help you:\n"
-            + "{{contents}}";
-                private static final String PROMPT_TEMPLATE2 = "{{userMessage}}\nExamples of CLI commands that can help you if a CLI operation is to be invoked {{contents}}. If you don't find an example, do not generate a CLI operation.";
+    private static final String RAG_PROMPT_TEMPLATE = "{{userMessage}}\nExamples of CLI commands that can help you if a CLI operation is to be invoked with the tool invokeWildFlyCLIOperation. {{contents}}. If you don't find an example, do not generate a CLI operation.";
     private boolean disabledAcceptance;
     private PromptHandler promptHandler;
     private ToolHandler toolHandler;
@@ -271,7 +263,7 @@ public class ChatBotWebSocketEndpoint {
             RetrievalAugmentor augmentor = DefaultRetrievalAugmentor.builder()
                 .contentRetriever(rag)
                 .contentInjector(DefaultContentInjector.builder()
-                        .promptTemplate(PromptTemplate.from(PROMPT_TEMPLATE2))
+                        .promptTemplate(PromptTemplate.from(RAG_PROMPT_TEMPLATE))
 //                        .metadataKeysToInclude(asList("file_name", "url", "title", "subtitle"))
                         .build())
                 .queryRouter(new DefaultQueryRouter(rag))

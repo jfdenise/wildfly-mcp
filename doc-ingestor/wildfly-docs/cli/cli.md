@@ -14,15 +14,24 @@ TODO
 
 ## syntax of operations to update or create a system property
 
-The syntax of an operation to interact with a system-property resource is: `/system-property=<property name>:<operation>(<operation_arguments>)`
+The syntax of an operation to create or update a system-property resource is: `/system-property=<property name>:<operation>(<operation_arguments>)`
 The possible values for <operation> are: `add`, `remove` or `write-attribute`.
 If `add` is used, the <operation_arguments> is `value=<value of the system property>`.
 If `remove` is used, the <operation_arguments> is empty.
 If `write-attribute` is used, the <operation_arguments> is `name=value, value=<new value of the system property>`.
 
+## syntax of the operation to get the value of a system property
+
+The syntax of an operation to get the value of a system-property resource is: `/system-property=<property name>:read-attribute(name=value)`
+
+
 ## operation to list all the system property
+
 The operation to list all the system property is: `:read-children-resources(child-type=system-property)`
 An empty result returned by this operation means that no system properties are set.
 
-# Expressions resolution
+# get or resolve the value of the expression
 
+An expression starts with `${` and end with `}`.
+The syntax of an operation to resolve an expression is: `:resolve-expression(expression=<expression_value>})`
+An `<expression_value>` can be an environment variable or a system property. Examples of expressions are `${JBOSS_HOME}` and `${jboss.node.name}`.
