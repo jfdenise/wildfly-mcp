@@ -11,6 +11,7 @@ import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.mcp.client.ResourceRef;
 import dev.langchain4j.mcp.client.ResourceResponse;
 import dev.langchain4j.mcp.client.ResourceTemplateRef;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,15 @@ public class McpClientInterceptor implements McpClient {
 
     @Override
     public List<ToolSpecification> listTools() {
-        return delegate.listTools();
+        List<ToolSpecification> specs = delegate.listTools();
+        List<ToolSpecification> ret = new ArrayList<>();
+        for (ToolSpecification spec : specs) {
+            if (spec.name().equals("invokeWildFlyCLIOperation")) {
+                ret.add(spec);
+                break;
+            }
+        }
+        return ret;
     }
 
     @Override

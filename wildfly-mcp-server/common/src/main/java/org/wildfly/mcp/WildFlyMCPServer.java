@@ -78,13 +78,15 @@ public class WildFlyMCPServer {
     @RolesAllowed("admin")
     ToolResponse getWildFlyServerConfiguration(
             @ToolArg(name = "host", required = false) String host,
-            @ToolArg(name = "port", required = false) String port) {
+            @ToolArg(name = "port", required = false) String port,
+            @ToolArg(name = "includeRuntime", description = "Make the returned configuration to include the resolved expressions", required = false) Boolean includeRuntime) {
         Server server = new Server(host, port);
         try {
             User user = new User();
             CommandContext ctx = CommandContextFactory.getInstance().newCommandContext();
             // This call, if done with the Monitor role, will be filtered. No sensitive information present.
-            ModelNode mn = ctx.buildRequest(":read-resource(recursive=true)");
+            includeRuntime = includeRuntime == null ? Boolean.FALSE : includeRuntime;
+            ModelNode mn = ctx.buildRequest(":read-resource(recursive=true, include-runtime=" + includeRuntime.toString() + ")");
             String value = wildflyClient.call(server, user, mn.toJSONString(false), false);
             ModelNode node = ModelNode.fromJSONString(value);
             ModelNode result = node.get("result");

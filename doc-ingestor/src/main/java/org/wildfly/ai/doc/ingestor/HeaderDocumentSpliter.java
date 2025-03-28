@@ -28,18 +28,26 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
         // Parent content is a one liner, replicated in each sub section.
         String parentContent = "";
         for (String line : lines) {
+            if (line.startsWith("//")) {
+                continue;
+            }
             if (line.startsWith("#")) {
                 if (current != null) {
-                    boolean includeText = true;
                     Metadata md = new Metadata();
                     String content = current.toString().trim();
                     if (!levelOne) {
                         md.put("parent", parentName);
                     } else {
-                        includeText = !parentName.equals(content);
                         parentContent = content;
                     }
-                    if(includeText) {
+                    if (!levelOne) {
+                        int words = content.split("\\s+").length;
+                        if (words >= 256) {
+                            System.err.println(content);
+                            throw new RuntimeException("Content length is " + words + ". Max allowed is 256.\n");
+                        } else {
+                            System.out.println("segment lenth " + words);
+                        }
                         TextSegment segment = TextSegment.from(content, md);
                         segments.add(segment);
                     }
@@ -49,13 +57,13 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
                 if (line.startsWith("## ")) {
                     levelOne = false;
                     // Always add the parent content to sub sections
-                    line = parentContent + " " + line.substring(index + 2);
+                    line = parentContent + "\n" + line.substring(index + 2);
                 } else {
                     parentName = line.substring(index + 2);
                     levelOne = true;
                     line = parentName;
                 }
-                
+
             }
             current.append(line.trim()).append("\n");
         }

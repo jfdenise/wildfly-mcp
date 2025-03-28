@@ -13,22 +13,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import dev.langchain4j.rag.content.retriever.ContentRetriever;
+import dev.langchain4j.data.embedding.Embedding;
+import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.mcp.client.transport.McpTransport;
 import dev.langchain4j.mcp.client.transport.stdio.StdioMcpTransport;
-import dev.langchain4j.memory.ChatMemory;
-import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.input.PromptTemplate;
-import dev.langchain4j.rag.DefaultRetrievalAugmentor;
-import dev.langchain4j.rag.RetrievalAugmentor;
-import dev.langchain4j.rag.content.injector.DefaultContentInjector;
-import dev.langchain4j.rag.query.router.DefaultQueryRouter;
+import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.tool.ToolProvider;
+import dev.langchain4j.store.embedding.EmbeddingMatch;
+import dev.langchain4j.store.embedding.EmbeddingStore;
+import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
+import io.smallrye.common.annotation.Identifier;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -94,16 +93,17 @@ public class ChatBotWebSocketEndpoint {
     @ConfigProperty(name = "wildfly.chatbot.welcome.message")
     private String welcomeMessage;
     @Inject
-    @Named(value = "embedding-store-retriever")
-    ContentRetriever rag;
-    private static final String RAG_PROMPT_TEMPLATE = "{{userMessage}}\nExamples of CLI commands that can help you if a CLI operation is to be invoked with the tool invokeWildFlyCLIOperation. {{contents}}. If you don't find an example, do not generate a CLI operation.";
+    @Named(value = "in-memory")
+    EmbeddingStore embeddingStore;
+    @Inject
+    @Named(value = "all-minilm-l6-v2")
+    EmbeddingModel embeddingModel;
+    private static final String RAG_PROMPT_TEMPLATE = "{{userMessage}}\nYou must only use the invokeWildFlyCLIOperation tool. Examples of CLI commands that can help you if a CLI operation is to be invoked with the tool invokeWildFlyCLIOperation. {{contents}}. If you don't find an example, do not generate a CLI operation.";
     private boolean disabledAcceptance;
     private PromptHandler promptHandler;
     private ToolHandler toolHandler;
     private Bot bot;
-    private Bot botWithSecurity;
     private ReportGenerator reportGenerator;
-    private TopicAnalyzer topicAnalyzer;
     private List<McpClient> clients = new ArrayList<>();
     private final List<McpTransport> transports = new ArrayList<>();
     private Session session;
@@ -116,7 +116,8 @@ public class ChatBotWebSocketEndpoint {
     private String initExceptionMessage;
     private String initExceptionContext;
     private final Recorder recorder = new Recorder();
-
+    private List<String> dictionary = new ArrayList<>();
+    private List<String> lexique = new ArrayList<>();
     public Recorder getRecorder() {
         return recorder;
     }
@@ -124,7 +125,11 @@ public class ChatBotWebSocketEndpoint {
     @PostConstruct
     public void init() {
         try {
+            Path rootDir = Paths.get(System.getProperty("jboss.home.dir")).resolve("standalone/configuration");
+            dictionary = Files.readAllLines(rootDir.resolve("words_alpha.txt"));
+            lexique = Files.readAllLines(rootDir.resolve("cli_lexique.md"));
             logger.info("Initialize");
+            logger.info("Dictionnary size " + dictionary.size() + ", lexique size " + lexique.size());
             MCPConfig mcpConfig = MCPConfig.parseConfig(mcpConfigFile);
             clients = new ArrayList<>();
             if (mcpConfig.mcpServers != null) {
@@ -217,6 +222,38 @@ public class ChatBotWebSocketEndpoint {
         }
     }
 
+    private String generalizeQuestion(String question) {
+        String[] words = question.split("\\s+");
+        StringBuilder filteredQuestion = new StringBuilder();
+        for (String word : words) {
+            word = word.toLowerCase();
+            word = word.trim();
+            if (word.contains(".war")) {
+                word = "deployment";
+            }
+            if (word.contains(".xml")) {
+                word = "file";
+            }
+            word = word.replaceAll("[^a-zA-Z]", "");
+            word = word.trim();
+            if (!lexique.contains(word) && !dictionary.contains(word)) {
+                // to be generailzed
+                if (question.contains("deployment")) {
+                    word = "deployment";
+                } else {
+                    continue;
+                }
+            }
+
+            filteredQuestion.append(word + " ");
+        }
+        String generalized = filteredQuestion.toString();
+        if(!question.equals(generalized)) {
+            System.out.println("QUESTION: " + question);
+            System.out.println("GENERALIZED: " + generalized);
+        }
+        return generalized;
+    }
     private void handleException(Exception ex) {
         initExceptionMessage = ex.getMessage();
     }
@@ -260,18 +297,9 @@ public class ChatBotWebSocketEndpoint {
             ToolProvider toolProvider = McpToolProvider.builder()
                     .mcpClients(clients)
                     .build();
-            RetrievalAugmentor augmentor = DefaultRetrievalAugmentor.builder()
-                .contentRetriever(rag)
-                .contentInjector(DefaultContentInjector.builder()
-                        .promptTemplate(PromptTemplate.from(RAG_PROMPT_TEMPLATE))
-//                        .metadataKeysToInclude(asList("file_name", "url", "title", "subtitle"))
-                        .build())
-                .queryRouter(new DefaultQueryRouter(rag))
-                .build();
             bot = AiServices.builder(Bot.class)
                     .chatLanguageModel(activeModel)
                     .toolProvider(toolProvider)
-                    .retrievalAugmentor(augmentor)
                     .systemMessageProvider(chatMemoryId -> {
                         return promptHandler.getSystemPrompt() + (systemPrompt.isPresent() ? systemPrompt.get() : "");
                     })
@@ -281,21 +309,6 @@ public class ChatBotWebSocketEndpoint {
                     .systemMessageProvider(chatMemoryId -> {
                         return promptHandler.getGeneratorSystemPrompt();
                     }).build();
-            botWithSecurity = AiServices.builder(Bot.class)
-                    .chatLanguageModel(activeModel)
-                    .toolProvider(toolProvider)
-                    .retrievalAugmentor(augmentor)
-                    .systemMessageProvider(chatMemoryId -> {
-                        return promptHandler.getSystemPrompt() + (systemPrompt.isPresent() ? systemPrompt.get() : "");
-                    })
-                    .build();
-            topicAnalyzer = AiServices.builder(TopicAnalyzer.class)
-                    .chatLanguageModel(activeModel)
-                    //.retrievalAugmentor(augmentor)
-                    .systemMessageProvider(chatMemoryId -> {
-                        return "You are a WildFly security expert, you will be asked if a particular question is related to the security of WildFly. You answer mut be a single word YES or NO.";
-                    })
-                    .build();
             Map<String, String> args = new HashMap<>();
             args.put("kind", "simple_text");
             args.put("value", welcomeMessage);
@@ -444,10 +457,26 @@ public class ChatBotWebSocketEndpoint {
                                     disabledAcceptance = false;
                                 }
                             } else {
-                                String related = topicAnalyzer.isRelated(msgObj.get("value").asText());
-                                System.out.println("IS RELATED " + related);
-                                Thread.sleep(2000);
-                                reply = bot.chat(msgObj.get("value").asText());
+                                String question = msgObj.get("value").asText();
+                                String generalized = generalizeQuestion(question);
+                                Embedding queryEmbedding = embeddingModel.embed(generalized).content();
+                                List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 4);
+                                List<String> selected = new ArrayList<>();
+                                for (EmbeddingMatch<TextSegment> c : relevant) {
+                                    if (c.score() >= 0.7) {
+                                        System.out.println("MATCH: score " + c.score() + "\n" + c.embedded().text());
+                                        selected.add(c.embedded().text());
+                                    }
+                                }
+                                StringBuilder augmentedContext =new StringBuilder();
+                                if (!relevant.isEmpty()) {
+                                    augmentedContext.append("You must only use the invokeWildFlyCLIOperation tool. If a CLI operation is to be invoked with the tool invokeWildFlyCLIOperation use the following information:\n");
+                                }
+                                for(String c : selected) {
+                                    augmentedContext.append(c+"\n");
+                                }
+                                question = question + augmentedContext;
+                                reply = bot.chat(question);
                                 if (reply == null || reply.isEmpty()) {
                                     reply = "I have not been able to answer your question.";
                                 }

@@ -1,15 +1,3 @@
-# Undertow
-
-Example of add an application-security-domain named foo to undertow. There is 2 ways that can't be mixed:
-1) Example Add the security domain foo with an elytron security-domain named bar
-/subsystem=undertow/application-security-domain=foo:add(security-domain=bar)
-2) Example Add the security domain foo with an elytron http-authentication-factory named bar
-/subsystem=undertow/application-security-domain=foo:add(http-authentication-factory=bar)
-
-# Logger
-
-TODO
-
 # system property
 
 ## syntax of operations to update or create a system property
@@ -24,31 +12,40 @@ If `write-attribute` is used, the <operation_arguments> is `name=value, value=<n
 
 The syntax of an operation to get the value of a system-property resource is: `/system-property=<property name>:read-attribute(name=value)`
 
-
 ## operation to list all the system property
 
 The operation to list all the system property is: `:read-children-resources(child-type=system-property)`
 An empty result returned by this operation means that no system properties are set.
 
-# get or resolve the value of the expression
+# expression
 
-An expression starts with `${` and end with `}`.
+## get or resolve the value of the expression
+
 The syntax of an operation to resolve an expression is: `:resolve-expression(expression=<expression_value>})`
 An `<expression_value>` can be an environment variable or a system property. Examples of expressions are `${JBOSS_HOME}` and `${jboss.node.name}`.
 
-# IP address
+# interface
 
-## operation to list all the IP interface resources
+The interface references the IP address. 
 
-The operation to list all the IP interface is: `:read-children-resources(child-type=interface, include-runtime=true)`
+## operation to list all the interface
+
+The operation to list all the interface is: `:read-children-resources(child-type=interface, include-runtime=true)`
 An empty result returned by this operation means that no IP interface are set.
 
-## syntax of the operation to get a named IP interface resource
+## syntax of the operation to get an interface
 
 The syntax of an operation to get the resource of the IP interface is: `/interface=<interface_name>:read-resource(include-runtime=true)`
-The `<interface_name>` can be `management`, `public` or your own interface name.
 
-## IP address interesting attributes
+## operation to get the public IP interface
+
+operation to get the public interface is: `/interface=public:read-resource(include-runtime=true)`
+
+## operation to get the management IP interface
+
+operation to get the management interface is: `/interface=management:read-resource(include-runtime=true)`
+
+## interface interesting attributes
 
 * `resolved-addres`: contains the actual IP address.
 * `inet-address` : contains the expression used to compute the `resolved-address` attribute.
@@ -70,11 +67,11 @@ The operation to get the management http interface resource is: `/core-service=m
 
 IP ports associated to an IP interface
 
-## operation to get all the socket binding resources
+## operation to get all the socket binding
 
 The operation to get all the socket binding resources is: `/socket-binding-group=standard-sockets:read-resource(recursive=true)`
 
-## syntax of the operation to get a socket binding resource
+## syntax of the operation to get a socket binding
 
 The operation to get a socket binding resources is: `/socket-binding-group=standard-sockets/socket-binding=<socket binding name>:read-resource`
 
@@ -86,18 +83,19 @@ by calling the operation `/socket-binding-group=standard-sockets:read-attribute(
 
 # deployment
 
-## operation to get all the deployment resources
 
-The operation to get all the deployment resources is: `:read-children-resources(child-type=deployment, include-runtime=true)`
+## operation to get all the deployments
 
-## syntax of the operation to get a deployment resource
+// getting the list of deployments is very general kind of question that can lead to a vague question of
+// what are the deployments. With a small definition of what a deployment is, it provides better match.
+Deployments are all the user applications.
 
-The operation to get a deployment resource is: `/deployment=<deployment name>:read-resource(include-runtime=true)`
+The operation to get all the deployments is: `:read-children-resources(child-type=deployment, include-runtime=true)`
 
-## syntax of the operation to get the status of a deployment 
+## syntax of the operation to get a deployment
 
-The operation to get the status of a deployment resource is: `/deployment=<deployment name>:read-resource(include-runtime=true)`
-The value of the attribute `status` reflects the status of the deployment. `OK` means that the deployment is in a good state.
+The operation to get a deployment is: `/deployment=<deployment name>:read-resource(include-runtime=true)`
+The returned deployment contains all the attributes of the deployment, in particular its status. 
 
 ## syntax of the operation to get the paths of the file contained in a deployment
 
@@ -107,9 +105,9 @@ The operation to get the paths of the file contained in a deployment is: `/deplo
 
 The operation to get the content of a file contained in a deployment is: `/deployment=<deployment name>:read-content(path=<file path>)`
  
-#  extension
+# extension
 
-extension contains the JBoss Modules module name that implements a subsystem. 
+extension contains the JBoss Modules module name. 
 The name of an extension is composed of a list of words separated by a '.', for example `org.wildfly.extension.elytron`.
 
 ## syntax of the operation to get a extension
@@ -123,3 +121,76 @@ The operation to get all the extension is: `:read-children-resources(child-type=
 ## extension interesting attributes
 
 * `module`: The JBoss Modules module name.
+
+# path
+
+The name of a path is composed of a list of words separated by a '.', for example `jboss.server.config.dir`.
+
+## syntax of the operation to get a path
+
+The operation to get a path is: `/path=<path name>:read-resource(recursive=true)`
+
+## operation to get all the path
+
+The operation to get all the path is: `:read-children-resources(child-type=path, recursive=true)`
+
+# subsystem
+
+a subsystem resource is a customizable feature of the server. A subsystem has a name
+Well known subsystem name are: 
+* batch-jberet 
+* bean-validation 
+* core-management 
+* datasources 
+* deployment-scanner 
+* discovery 
+* distributable-ejb 
+* distributable-web 
+* ee 
+* ee-security 
+* ejb3 
+* elytron 
+* elytron-oidc-client 
+* health 
+* iiop-openjdk
+* infinispan 
+* io 
+* jaxrs 
+* jca 
+* jdr 
+* jgroups
+* jmx 
+* jpa 
+* jsf 
+* logging 
+* mail 
+* messaging-activemq
+* metrics 
+* microprofile-config-smallrye 
+* microprofile-fault-tolerance-smallrye 
+* microprofile-health-smallrye 
+* microprofile-jwt-smallrye 
+* microprofile-openapi-smallrye 
+* microprofile-telemetry 
+* modcluster
+* naming 
+* opentelemetry
+* pojo 
+* remoting 
+* request-controller 
+* resource-adapters 
+* sar 
+* security-manager 
+* transactions 
+* undertow 
+* webservices 
+* weld
+
+## syntax of the operation to get a subsystem
+
+The operation to get a subsystem is: `/path=<subsystem name>:read-resource()`
+
+## operation to get all the subsystems
+
+The operation to get all the subsystem is: `:read-children-resources(child-type=subsystem)`
+

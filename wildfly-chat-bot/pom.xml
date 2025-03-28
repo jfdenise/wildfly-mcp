@@ -27,6 +27,7 @@
         <version.wildfly.maven.plugin>5.1.2.Final</version.wildfly.maven.plugin>
         <version.wildfly.server>35.0.1.Final</version.wildfly.server>
         <version.dev.langchain4j>1.0.0-beta2</version.dev.langchain4j>
+        <version.io.smallrye.smallrye-common>2.4.0</version.io.smallrye.smallrye-common>
     </properties>
 
     <licenses>
@@ -38,6 +39,12 @@
     </licenses>
 
     <dependencies>
+      <dependency>
+        <groupId>io.smallrye.common</groupId>
+        <artifactId>smallrye-common-annotation</artifactId>
+        <version>${version.io.smallrye.smallrye-common}</version>
+        <scope>provided</scope>
+      </dependency>
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
@@ -96,6 +103,10 @@
                         <spaces>
                             <space>incubating</space>
                         </spaces>
+                        <add-ons>
+                          <add-on>in-memory-embedding-model-all-minilm-l6-v2</add-on>
+                          <add-on>in-memory-embedding-store</add-on>
+                        </add-ons>
                     </discoverProvisioningInfo>
                     <name>ROOT.war</name>
                     <bootableJar>true</bootableJar>

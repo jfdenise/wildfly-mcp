@@ -47,7 +47,10 @@ public class ToolHandler {
                     arguments.add(arg);
                 }
                 ToolDescription td = new ToolDescription(s.name(), s.description(), arguments);
-                tools.add(td);
+                // Emulate the CLI only mode.
+                if (td.name.equals("invokeWildFlyCLIOperation")) {
+                    tools.add(td);
+                }
             }
         }
         return tools;
