@@ -468,17 +468,24 @@ public class ChatBotWebSocketEndpoint {
                                         selected.add(c.embedded().text());
                                     }
                                 }
+                                if(selected.isEmpty()) {
+                                    reply = "Your question doesn't translate into WildFly CLI operation invocations, you should re-phrase it. Thank-you.";
+                                } else {
                                 StringBuilder augmentedContext =new StringBuilder();
-                                if (!relevant.isEmpty()) {
-                                    augmentedContext.append("You must only use the invokeWildFlyCLIOperation tool. If a CLI operation is to be invoked with the tool invokeWildFlyCLIOperation use the following information:\n");
+                                if (!selected.isEmpty()) {
+                                    augmentedContext.append("%%%");
                                 }
                                 for(String c : selected) {
-                                    augmentedContext.append(c+"\n");
+                                    augmentedContext.append(c);
                                 }
-                                question = question + augmentedContext;
+                                if (!selected.isEmpty()) {
+                                    augmentedContext.append("%%%");
+                                }
+                                question = "---" + question + "---"+augmentedContext;
                                 reply = bot.chat(question);
                                 if (reply == null || reply.isEmpty()) {
                                     reply = "I have not been able to answer your question.";
+                                }
                                 }
                             }
                             recorder.interactionDone(reply);

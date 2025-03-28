@@ -93,11 +93,13 @@ public class CliOperationsIngestor {
                         throw new RuntimeException(header + " is not overed by questions");
                     }
                 }
+                int numQuestions = 0;
                 for (String line : questions) {
                     line = line.trim();
                     if (line.startsWith("#") || line.isEmpty()) {
                         continue;
                     }
+                    numQuestions+=1;
                     String[] words = line.split("\\s+");
                     StringBuilder filteredQuestion = new StringBuilder();
                     for (String word : words) {
@@ -141,6 +143,7 @@ public class CliOperationsIngestor {
                         System.out.println("QUESTION: " + line + "\n" + filteredQuestion + "\n" + scores);
                     }
                 }
+                System.out.println("NUM OF QUESTIONS " + numQuestions);
             } else {
                 Embedding queryEmbedding = embeddingModel.embed(question).content();
                 List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 4);

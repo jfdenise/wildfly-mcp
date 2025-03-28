@@ -47,15 +47,15 @@ Can you get the management interface?
 
 What are the main attributes of the public interface?
 
-# management HTTP interface
+# core management
 
-## operation to get the management http interface resource
+## operation to get the core management HTTP interface
 
-Could you get the management interface?
+Could you get the core management interface?
 
-## management HTTP interface interesting attributes
+## core management HTTP interface interesting attributes
 
-What are the main attributes of the management interface?
+What are the main attributes of the core management interface?
 
 # socket binding
 

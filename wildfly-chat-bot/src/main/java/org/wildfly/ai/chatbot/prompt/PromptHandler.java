@@ -17,10 +17,12 @@ import org.wildfly.ai.chatbot.prompt.PromptDescription.PromptArg;
 public class PromptHandler {
     
     private static final String SYSTEM_PROMPT = """
-                                              You are a smart AI agent that can answer any kind of questions. In addition, 
-                                              you have tools to interact with running WildFly servers that run by default on localhost and port 9990. The user
-                                              will ask you to perform operations. Make sure to analyze the tools returned values and help the user.
-            """;
+                                                You are a WildFly expert who understands well how to administrate the WildFly server running on port 9990 by default and its components.You have a tool to invoke CLI operations.
+                                                Your objective is to answer the user question delimited by  ---
+                                                You must build CLI operations using only the directives delimited by %%%
+                                                Produce a reply based on the CLI operation returned value JSON content. if you don't manage to compute a CLI operation answer 
+                                                that you don't have enough information in the question to build a CLI operation.
+                                              """;
     private static final String GENERATOR_SYSTEM_PROMPT = """
                                               You are a technical documentation writer. The user will send you a message in JSON format
                                               that contains an exchange between a user and an assistant. Create a markdown report with no tile.

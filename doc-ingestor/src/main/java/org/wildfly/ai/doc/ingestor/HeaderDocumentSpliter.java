@@ -28,6 +28,10 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
         // Parent content is a one liner, replicated in each sub section.
         String parentContent = "";
         for (String line : lines) {
+            line = line.trim();
+            if (line.isEmpty()) {
+                continue;
+            }
             if (line.startsWith("//")) {
                 continue;
             }
@@ -56,8 +60,8 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
                 int index = line.lastIndexOf("#");
                 if (line.startsWith("## ")) {
                     levelOne = false;
-                    // Always add the parent content to sub sections
-                    line = parentContent + "\n" + line.substring(index + 2);
+                    // Always add the parent content to sub sections if not a single line
+                    line = (parentContent.lines().count() > 1 ? parentContent+"\n" : "");
                 } else {
                     parentName = line.substring(index + 2);
                     levelOne = true;

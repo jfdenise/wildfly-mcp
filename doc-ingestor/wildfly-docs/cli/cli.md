@@ -50,15 +50,13 @@ operation to get the management interface is: `/interface=management:read-resour
 * `resolved-addres`: contains the actual IP address.
 * `inet-address` : contains the expression used to compute the `resolved-address` attribute.
 
-# management HTTP interface
+# core management
 
-Also known as the `management interface`.
+## operation to get the core management HTTP interface
 
-## operation to get the management http interface resource
+The operation to get the core management HTTP interface is: `/core-service=management/management-interface=http-interface:read-resource`
 
-The operation to get the management http interface resource is: `/core-service=management/management-interface=http-interface:read-resource`
-
-## management HTTP interface interesting attributes
+## core management HTTP interface interesting attributes
 
 * `http-authentication-factory`: elytron http-authentication-factory name used to secure the access to the management interface.
 * `socket-binding` : The name of the socket binding name used for the management interface's socket.
@@ -137,58 +135,12 @@ The operation to get all the path is: `:read-children-resources(child-type=path,
 # subsystem
 
 a subsystem resource is a customizable feature of the server. A subsystem has a name
-Well known subsystem name are: 
-* batch-jberet 
-* bean-validation 
-* core-management 
-* datasources 
-* deployment-scanner 
-* discovery 
-* distributable-ejb 
-* distributable-web 
-* ee 
-* ee-security 
-* ejb3 
-* elytron 
-* elytron-oidc-client 
-* health 
-* iiop-openjdk
-* infinispan 
-* io 
-* jaxrs 
-* jca 
-* jdr 
-* jgroups
-* jmx 
-* jpa 
-* jsf 
-* logging 
-* mail 
-* messaging-activemq
-* metrics 
-* microprofile-config-smallrye 
-* microprofile-fault-tolerance-smallrye 
-* microprofile-health-smallrye 
-* microprofile-jwt-smallrye 
-* microprofile-openapi-smallrye 
-* microprofile-telemetry 
-* modcluster
-* naming 
-* opentelemetry
-* pojo 
-* remoting 
-* request-controller 
-* resource-adapters 
-* sar 
-* security-manager 
-* transactions 
-* undertow 
-* webservices 
-* weld
+
 
 ## syntax of the operation to get a subsystem
 
-The operation to get a subsystem is: `/path=<subsystem name>:read-resource()`
+A subsystem contains a set of attributes.
+The operation to get a subsystem is: `/subsystem=<subsystem name>:read-resource()`
 
 ## operation to get all the subsystems
 
