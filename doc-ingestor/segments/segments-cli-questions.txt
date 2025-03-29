@@ -1,0 +1,168 @@
+
+-------------------
+parent=system property
+title=syntax of the operation to add or create a system property
+syntax of the operation to add or create a system property
+Can you add the property foo with value bar?
+-------------------
+
+-------------------
+parent=system property
+title=syntax of the operation to remove or delete a system property
+syntax of the operation to remove or delete a system property
+Can you remove the property foo?
+-------------------
+
+-------------------
+parent=system property
+title=syntax of the operation to update a system property
+syntax of the operation to update a system property
+Can you update the property foo value with newValue?
+-------------------
+
+-------------------
+parent=system property
+title=syntax of the operation to get the value of a system property
+syntax of the operation to get the value of a system property
+Can you get the value of the system property foo?
+What is the value of the foo system property?
+What are all the system properties?
+what is the name of the system property that has foo value?
+what is the property name that has foo value?
+-------------------
+
+-------------------
+parent=expression
+title=get or resolve the value of the expression
+get or resolve the value of the expression
+Can you resolve the ${my.expression} expression?
+Can you resolve the ${JBOSS_HOME} expression?
+-------------------
+
+-------------------
+parent=interface
+title=syntax of the operation to get an IP interface
+syntax of the operation to get an IP interface
+Could you get the foo interface?
+Can you get the foo interface?
+Can you get all the interfaces?
+Can you list all interfaces?
+-------------------
+
+-------------------
+parent=interface
+title=operation to get the public IP interface
+operation to get the public IP interface
+What are the main attributes of the public interface?
+Can you get the public interface?
+Could you get the public interface?
+-------------------
+
+-------------------
+parent=interface
+title=operation to get the management IP interface
+operation to get the management IP interface
+Can you get the management interface?
+-------------------
+
+-------------------
+parent=core management
+title=operation to get the core management HTTP interface
+operation to get the core management HTTP interface
+Could you get the core management interface?
+-------------------
+
+-------------------
+parent=core management
+title=core management HTTP interface interesting attributes
+core management HTTP interface interesting attributes
+What are the main attributes of the core management interface?
+-------------------
+
+-------------------
+parent=socket binding
+title=syntax of the operation to get a socket binding
+syntax of the operation to get a socket binding
+What is the interface of the http socket binding?
+What are the active socket bindings?
+What are all the socket bindings?
+What are the main attributes of the http socket binding?
+What is the http port the server is bound to?
+-------------------
+
+-------------------
+parent=deployment
+title=syntax of the operation to get a deployment
+syntax of the operation to get a deployment
+Could you get the servlet-security.war deployment?
+Could you get the servlet-security deployment?
+Could you get all the deployments?
+Retrieve the list of deployments and give me their status.
+What is the status of the servlet-security.war deployment?
+What is the servlet-security.war deployment's status?
+What is the servlet-security.war deployment state?
+Can you retrieve all the deployments and for each of them show me the content of their web.xml?
+-------------------
+
+-------------------
+parent=deployment
+title=syntax of the operation to get the files contained in a deployment
+syntax of the operation to get the files contained in a deployment
+What are the files in servlet-security.war deployment?
+What are the files of servlet-security.war deployment?
+What are the files contained in servlet-security.war deployment?
+What are the files contained in the servlet-security.war deployment?
+Can you retrieve all the deployments and for each of them show me the content of their web.xml?
+What is the content of the file web.xml in servlet-security.war?
+Can you retrieve all the deployments and for each of them show me the content of their web.xml?
+-------------------
+
+-------------------
+parent=extension
+title=syntax of the operation to get a extension
+syntax of the operation to get a extension
+Could you retrieve the extension org.jboss.as.clustering.infinispan?
+What are all the extensions?
+How many extensions do I have?
+What are the main attributes of the extension org.jboss.as.clustering.infinispan?
+-------------------
+
+-------------------
+parent=path
+title=syntax of the operation to get a path
+syntax of the operation to get a path
+can you get the path jboss.server.config.dir
+What are all the paths?
+-------------------
+
+-------------------
+parent=subsystem
+title=syntax of the operation to get a subsystem
+syntax of the operation to get a subsystem
+Can you get the subsystem jaxrs?
+Can you get all the subsystems?
+What are the main attributes of the jaxrs subsystem
+-------------------
+
+-------------------
+parent=`bean-validation` subsystem
+title=operation to get the `bean-validation` subsystem
+operation to get the `bean-validation` subsystem
+Can you get the bean-validation subsystem
+-------------------
+
+-------------------
+parent=datasources subsystem
+title=syntax of the operation to get all the JDBC driver
+syntax of the operation to get all the JDBC driver
+Can you get all the jdbc drivers?
+Can you get all the datasource drivers?
+-------------------
+
+-------------------
+parent=datasources subsystem
+title=syntax of the operation to get a JDBC driver
+syntax of the operation to get a JDBC driver
+Can you get the h2 jdbc driver?
+
+-------------------

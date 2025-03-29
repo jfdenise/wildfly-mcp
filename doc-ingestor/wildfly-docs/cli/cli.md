@@ -1,20 +1,22 @@
 # system property
 
-## syntax of operations to update or create a system property
+## syntax of the operation to add or create a system property
 
-operation: `/system-property=<property name>:<operation>(<operation_arguments>)`
-The possible values for `<operation>` are: `add`, `remove` or `write-attribute`.
-If `add` is used, the `<operation_arguments>` is `value=<value of the system property>`.
-If `remove` is used, the `<operation_arguments>` is empty.
-If `write-attribute` is used, the `<operation_arguments>` is `name=value, value=<new value of the system property>`.
+operation: `/system-property=<property name>:add(value=<value of the system property>)`
+
+## syntax of the operation to remove or delete a system property
+
+operation: `/system-property=<property name>:remove()`
+
+## syntax of the operation to update a system property
+
+operation: `/system-property=<property name>:write-attribute(name=value, value=<value of the system property>)`
 
 ## syntax of the operation to get the value of a system property
 
 operation: `/system-property=<property name>:read-attribute(name=value)`
 
-## operation to list all the system property
-
-operation: `:read-children-resources(child-type=system-property)`
+To get the list of all the system property use '*' for `<property name>`.
 An empty result returned by this operation means that no system properties are set.
 
 # expression
@@ -28,14 +30,11 @@ An `<expression_value>` can be an environment variable or a system property. Exa
 
 The interface references the IP address. 
 
-## operation to list all the interface
-
-operation: `:read-children-resources(child-type=interface, include-runtime=true)`
-An empty result returned by this operation means that no IP interface are set.
-
 ## syntax of the operation to get an IP interface
 
 operation: `/interface=<interface_name>:read-resource(include-runtime=true)`
+
+To get the list of all the interfaces use '*' for `<interface_name>`.
 
 ## operation to get the public IP interface
 
@@ -44,11 +43,6 @@ operation: `/interface=public:read-resource(include-runtime=true)`
 ## operation to get the management IP interface
 
 operation: `/interface=management:read-resource(include-runtime=true)`
-
-## interface interesting attributes
-
-* `resolved-address`: contains the actual IP address.
-* `inet-address` : contains the expression used to compute the `resolved-address` attribute.
 
 # core management
 
@@ -63,61 +57,45 @@ The operation: `/core-service=management/management-interface=http-interface:rea
 
 # socket binding
 
-IP ports associated to an IP interface
-
-## operation to get all the socket binding
-
-operation: `/socket-binding-group=standard-sockets:read-resource(recursive=true)`
+A socket-binding contains the IP socket information: the port on the interface the server is bound to.
+If the `interface` attribute of the socket binding resource is not defined, the `interface` attribute value has to be retrieved
+by calling the operation `/socket-binding-group=standard-sockets:read-attribute(name=default-interface)`
+Some well known socket-bindings are: http, https, management-http and management-https.
 
 ## syntax of the operation to get a socket binding
 
 operation: `/socket-binding-group=standard-sockets/socket-binding=<socket binding name>:read-resource`
-
-## socket binding interesting attributes
-
-* `port`: The IP port
-* `interface`: The interface resource name. If the `interface` attribute of the socket binding resource is not defined, the `interface` attribute value has to be retrieved
-by calling the operation `/socket-binding-group=standard-sockets:read-attribute(name=default-interface)`
+To get the list of all the interfaces use '*' for `<socket binding name>`.
 
 # deployment
 
-## operation to get all the deployments
-
-// getting the list of deployments is very general kind of question that can lead to a vague question of
-// what are the deployments. With a small definition of what a deployment is, it provides better match.
-Deployments are all the user applications.
-
-operation: `:read-children-resources(child-type=deployment, include-runtime=true)`
+A deployment is a user application deployed in the server.
+Example for <deployment name> is `myapp.war`.
 
 ## syntax of the operation to get a deployment
 
 operation: `/deployment=<deployment name>:read-resource(include-runtime=true)`
-The returned deployment contains all the attributes of the deployment, in particular its status. 
 
-## syntax of the operation to get the paths of the file contained in a deployment
+The returned deployment contains all the attributes of the deployment, in particular its status.
+To get the list of all the deployment use '*' for `<deployment name>`.
+
+## syntax of the operation to get the files contained in a deployment
 
 operation: `/deployment=<deployment name>:browse-content()`
+Examples of returned paths: `WEB-INF/``web.xml`, `WEB-INF/``jboss-web.xml`, `WEB-INF/``classes/persistence.xml`.
 
-## syntax of the operation to get the content of a file contained in a deployment
-
+syntax of the operation to get the content of a file contained in the deployment
 operation: `/deployment=<deployment name>:read-content(path=<file path>)`
- 
+
 # extension
 
-extension contains the JBoss Modules module name. 
+extension references the JBoss Modules module name. 
 The name of an extension is composed of a list of words separated by a '.', for example `org.wildfly.extension.elytron`.
 
 ## syntax of the operation to get a extension
 
 operation: `/extension=<extension name>:read-resource(recursive=true, include-runtime=true)`
-
-## operation to get all the extension
-
-operation: `:read-children-resources(child-type=extension, recursive=true, include-runtime=true)`
-
-## extension interesting attributes
-
-* `module`: The JBoss Modules module name.
+To get the list of all the extension use '*' for `<extension name>`.
 
 # path
 
@@ -126,10 +104,7 @@ The name of a path is composed of a list of words separated by a '.', for exampl
 ## syntax of the operation to get a path
 
 operation: `/path=<path name>:read-resource(recursive=true)`
-
-## operation to get all the path
-
-operation: `:read-children-resources(child-type=path, recursive=true)`
+To get the list of all the path use '*' for `<path name>`.
 
 # subsystem
 
@@ -139,14 +114,7 @@ a subsystem contains a set of attributes.
 ## syntax of the operation to get a subsystem
 
 operation: `/subsystem=<subsystem name>:read-resource()`
-
-## operation to get all the subsystems
-
-operation: `:read-children-resources(child-type=subsystem)`
-
-## subsystem interesting attributes
-
-* `capabilities`: The capabilities that the subsystem exposes to the other subsystems.
+To get the list of all the subsystem use '*' for `<subsystem name>`.
 
 # `bean-validation` subsystem
 

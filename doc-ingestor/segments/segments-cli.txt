@@ -1,0 +1,140 @@
+
+-------------------
+TextSegment { text = "syntax of the operation to add or create a system property
+operation: `/system-property=<property name>:add(value=<value of the system property>)`" metadata = {parent=system property, title=syntax of the operation to add or create a system property} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to remove or delete a system property
+operation: `/system-property=<property name>:remove()`" metadata = {parent=system property, title=syntax of the operation to remove or delete a system property} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to update a system property
+operation: `/system-property=<property name>:write-attribute(name=value, value=<value of the system property>)`" metadata = {parent=system property, title=syntax of the operation to update a system property} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the value of a system property
+operation: `/system-property=<property name>:read-attribute(name=value)`
+To get the list of all the system property use '*' for `<property name>`.
+An empty result returned by this operation means that no system properties are set." metadata = {parent=system property, title=syntax of the operation to get the value of a system property} }
+-------------------
+
+-------------------
+TextSegment { text = "get or resolve the value of the expression
+operation: `:resolve-expression(expression=<expression_value>})`
+An `<expression_value>` can be an environment variable or a system property. Examples of expressions are `${JBOSS_HOME}` and `${jboss.node.name}`." metadata = {parent=expression, title=get or resolve the value of the expression} }
+-------------------
+
+-------------------
+TextSegment { text = "interface
+The interface references the IP address.
+syntax of the operation to get an IP interface
+operation: `/interface=<interface_name>:read-resource(include-runtime=true)`
+To get the list of all the interfaces use '*' for `<interface_name>`." metadata = {parent=interface, title=syntax of the operation to get an IP interface} }
+-------------------
+
+-------------------
+TextSegment { text = "interface
+The interface references the IP address.
+operation to get the public IP interface
+operation: `/interface=public:read-resource(include-runtime=true)`" metadata = {parent=interface, title=operation to get the public IP interface} }
+-------------------
+
+-------------------
+TextSegment { text = "interface
+The interface references the IP address.
+operation to get the management IP interface
+operation: `/interface=management:read-resource(include-runtime=true)`" metadata = {parent=interface, title=operation to get the management IP interface} }
+-------------------
+
+-------------------
+TextSegment { text = "operation to get the core management HTTP interface
+The operation: `/core-service=management/management-interface=http-interface:read-resource`" metadata = {parent=core management, title=operation to get the core management HTTP interface} }
+-------------------
+
+-------------------
+TextSegment { text = "core management HTTP interface interesting attributes
+* `http-authentication-factory`: elytron `http-authentication-factory` name used to secure the access to the management interface.
+* `socket-binding` : The name of the socket binding name used for the management interface socket." metadata = {parent=core management, title=core management HTTP interface interesting attributes} }
+-------------------
+
+-------------------
+TextSegment { text = "socket binding
+A socket-binding contains the IP socket information: the port on the interface the server is bound to.
+If the `interface` attribute of the socket binding resource is not defined, the `interface` attribute value has to be retrieved
+by calling the operation `/socket-binding-group=standard-sockets:read-attribute(name=default-interface)`
+Some well known socket-bindings are: http, https, management-http and management-https.
+syntax of the operation to get a socket binding
+operation: `/socket-binding-group=standard-sockets/socket-binding=<socket binding name>:read-resource`
+To get the list of all the interfaces use '*' for `<socket binding name>`." metadata = {parent=socket binding, title=syntax of the operation to get a socket binding} }
+-------------------
+
+-------------------
+TextSegment { text = "deployment
+A deployment is a user application deployed in the server.
+Example for <deployment name> is `myapp.war`.
+syntax of the operation to get a deployment
+operation: `/deployment=<deployment name>:read-resource(include-runtime=true)`
+The returned deployment contains all the attributes of the deployment, in particular its status.
+To get the list of all the deployment use '*' for `<deployment name>`." metadata = {parent=deployment, title=syntax of the operation to get a deployment} }
+-------------------
+
+-------------------
+TextSegment { text = "deployment
+A deployment is a user application deployed in the server.
+Example for <deployment name> is `myapp.war`.
+syntax of the operation to get the files contained in a deployment
+operation: `/deployment=<deployment name>:browse-content()`
+Examples of returned paths: `WEB-INF/``web.xml`, `WEB-INF/``jboss-web.xml`, `WEB-INF/``classes/persistence.xml`.
+syntax of the operation to get the content of a file contained in the deployment
+operation: `/deployment=<deployment name>:read-content(path=<file path>)`" metadata = {parent=deployment, title=syntax of the operation to get the files contained in a deployment} }
+-------------------
+
+-------------------
+TextSegment { text = "extension
+extension references the JBoss Modules module name.
+The name of an extension is composed of a list of words separated by a '.', for example `org.wildfly.extension.elytron`.
+syntax of the operation to get a extension
+operation: `/extension=<extension name>:read-resource(recursive=true, include-runtime=true)`
+To get the list of all the extension use '*' for `<extension name>`." metadata = {parent=extension, title=syntax of the operation to get a extension} }
+-------------------
+
+-------------------
+TextSegment { text = "path
+The name of a path is composed of a list of words separated by a '.', for example `jboss.server.config.dir`.
+syntax of the operation to get a path
+operation: `/path=<path name>:read-resource(recursive=true)`
+To get the list of all the path use '*' for `<path name>`." metadata = {parent=path, title=syntax of the operation to get a path} }
+-------------------
+
+-------------------
+TextSegment { text = "subsystem
+a subsystem resource is a customizable feature of the server. A subsystem has a name
+a subsystem contains a set of attributes.
+syntax of the operation to get a subsystem
+operation: `/subsystem=<subsystem name>:read-resource()`
+To get the list of all the subsystem use '*' for `<subsystem name>`." metadata = {parent=subsystem, title=syntax of the operation to get a subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "operation to get the `bean-validation` subsystem
+operation: `/subsystem=bean-validation:read-resource()`" metadata = {parent=`bean-validation` subsystem, title=operation to get the `bean-validation` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "datasources subsystem
+Contains all the installed JDBC driver and all the defined datasources. A datasource references an installed JDBC driver.
+syntax of the operation to get all the JDBC driver
+operation: `/subsystem=datasources:read-children-resources(child-type=jdbc-driver`" metadata = {parent=datasources subsystem, title=syntax of the operation to get all the JDBC driver} }
+-------------------
+
+-------------------
+TextSegment { text = "datasources subsystem
+Contains all the installed JDBC driver and all the defined datasources. A datasource references an installed JDBC driver.
+syntax of the operation to get a JDBC driver
+Well known JDBC drivers are: h2, postgresql, mariadb, mysql, oracle, mssqlserver.
+operation: `/subsystem=datasources/jdbc-driver=<jdbc driver name>:read-resource`
+" metadata = {parent=datasources subsystem, title=syntax of the operation to get a JDBC driver} }
+-------------------

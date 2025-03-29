@@ -1,19 +1,24 @@
 # system property
 
-## syntax of operations to update or create a system property
+## syntax of the operation to add or create a system property
 
 Can you add the property foo with value bar?
+
+## syntax of the operation to remove or delete a system property
+
+Can you remove the property foo?
+
+## syntax of the operation to update a system property
+
 Can you update the property foo value with newValue?
 
 ## syntax of the operation to get the value of a system property
 
 Can you get the value of the system property foo?
 What is the value of the foo system property?
-
-## operation to list all the system property
-
 What are all the system properties?
-what is the name of the property that has foo as value?
+what is the name of the system property that has foo value?
+what is the property name that has foo value?
 
 # expression
 
@@ -24,31 +29,23 @@ Can you resolve the ${JBOSS_HOME} expression?
 
 # interface
 
-## operation to list all the interface
+## syntax of the operation to get an IP interface
 
+// Can and Could don't give same results. ? character also makes it to vary.
+Could you get the foo interface?
+Can you get the foo interface?
 Can you get all the interfaces?
 Can you list all interfaces?
 
-## syntax of the operation to get an IP interface
-
-Could you get the management interface?
-Could you get the public interface?
-// Can and Could don't give same results. ? character also makes it to vary.
-Can you get the public interface?
-can you get the public interface ?
-Could you get the foo interface?
-
 ## operation to get the public IP interface
 
+What are the main attributes of the public interface?
 Can you get the public interface?
+Could you get the public interface?
 
 ## operation to get the management IP interface
 
 Can you get the management interface?
-
-## interface interesting attributes
-
-What are the main attributes of the public interface?
 
 # core management
 
@@ -62,43 +59,34 @@ What are the main attributes of the core management interface?
 
 # socket binding
 
-## operation to get all the socket binding
-
-What are the active socket bindings?
-What are all the socket bindings?
-
 ## syntax of the operation to get a socket binding
 
 What is the interface of the http socket binding?
-
-## socket binding interesting attributes
-
+What are the active socket bindings?
+What are all the socket bindings?
 What are the main attributes of the http socket binding?
+What is the http port the server is bound to?
 
 # deployment
-
-## operation to get all the deployments
-
-Could you get all the deployments?
 
 ## syntax of the operation to get a deployment
 
 Could you get the servlet-security.war deployment?
 Could you get the servlet-security deployment?
-
-## syntax of the operation to get the status of a deployment 
-
+Could you get all the deployments?
 Retrieve the list of deployments and give me their status.
 What is the status of the servlet-security.war deployment?
 What is the servlet-security.war deployment's status?
 What is the servlet-security.war deployment state?
+Can you retrieve all the deployments and for each of them show me the content of their web.xml?
 
-## syntax of the operation to get the paths of the file contained in a deployment
+## syntax of the operation to get the files contained in a deployment
 
 What are the files in servlet-security.war deployment?
-
-## syntax of the operation to get the content of a file contained in a deployment
-
+What are the files of servlet-security.war deployment?
+What are the files contained in servlet-security.war deployment?
+What are the files contained in the servlet-security.war deployment?
+Can you retrieve all the deployments and for each of them show me the content of their web.xml?
 What is the content of the file web.xml in servlet-security.war?
 Can you retrieve all the deployments and for each of them show me the content of their web.xml?
 
@@ -107,15 +95,8 @@ Can you retrieve all the deployments and for each of them show me the content of
 ## syntax of the operation to get a extension
 
 Could you retrieve the extension org.jboss.as.clustering.infinispan?
-
-## operation to get all the extension
-
 What are all the extensions?
 How many extensions do I have?
-
-
-## extension interesting attributes
-
 What are the main attributes of the extension org.jboss.as.clustering.infinispan?
 
 # path
@@ -123,9 +104,6 @@ What are the main attributes of the extension org.jboss.as.clustering.infinispan
 ## syntax of the operation to get a path
 
 can you get the path jboss.server.config.dir
-
-## operation to get all the path
-
 What are all the paths?
 
 # subsystem
@@ -133,14 +111,8 @@ What are all the paths?
 ## syntax of the operation to get a subsystem
 
 Can you get the subsystem jaxrs?
-
-## operation to get all the subsystems
-
 Can you get all the subsystems?
-
-## subsystem interesting attributes
-
-What are the main attributes of a subsystem
+What are the main attributes of the jaxrs subsystem
 
 # `bean-validation` subsystem
 

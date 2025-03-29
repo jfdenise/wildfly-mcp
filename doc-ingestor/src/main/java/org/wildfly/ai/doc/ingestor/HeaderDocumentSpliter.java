@@ -27,6 +27,7 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
         String parentName = "";
         // Parent content is a one liner, replicated in each sub section.
         String parentContent = "";
+        Metadata currentMetadata = new Metadata();
         for (String line : lines) {
             line = line.trim();
             if (line.isEmpty()) {
@@ -36,11 +37,12 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
                 continue;
             }
             if (line.startsWith("#")) {
+                int index = line.lastIndexOf("#");
+                String title = line.substring(index + 2);
                 if (current != null) {
-                    Metadata md = new Metadata();
                     String content = current.toString().trim();
                     if (!levelOne) {
-                        md.put("parent", parentName);
+                        currentMetadata.put("parent", parentName);
                     } else {
                         parentContent = content;
                     }
@@ -52,32 +54,32 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
                         } else {
                             System.out.println("segment lenth " + words);
                         }
-                        TextSegment segment = TextSegment.from(content, md);
+                        TextSegment segment = TextSegment.from(content, currentMetadata);
                         segments.add(segment);
+                        currentMetadata = new Metadata();
                     }
                 }
                 current = new StringBuilder();
-                int index = line.lastIndexOf("#");
+
                 if (line.startsWith("##")) {
                     levelOne = false;
                     // Always add the parent content to sub sections if not a single line
-                    line = (parentContent.lines().count() > 1 ? parentContent+"\n" : "") + line.substring(index + 1);
+                    line = (parentContent.lines().count() > 1 ? parentContent + "\n" : "") + title;
                 } else {
                     parentName = line.substring(index + 2);
                     levelOne = true;
                     line = parentName;
                 }
-
+                currentMetadata.put("title", title);
             }
             current.append(line.trim()).append("\n");
         }
         if (current != null) {
-            Metadata md = new Metadata();
             if (!levelOne) {
-                md.put("parent", parentName);
+                currentMetadata.put("parent", parentName);
+                TextSegment segment = TextSegment.from(current.toString(), currentMetadata);
+                segments.add(segment);
             }
-            TextSegment segment = TextSegment.from(current.toString(), md);
-            segments.add(segment);
         }
         return segments;
     }

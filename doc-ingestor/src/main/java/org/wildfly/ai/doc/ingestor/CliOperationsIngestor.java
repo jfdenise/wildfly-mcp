@@ -16,15 +16,12 @@ import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 public class CliOperationsIngestor {
 
@@ -34,21 +31,23 @@ public class CliOperationsIngestor {
     public static void main(String[] args) throws Exception {
         EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
         List<String> englishDictionary = Files.readAllLines(Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/words_alpha.txt"));
-        Path file = Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/embeddings.json");
+        Path docEmbeddings = Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/embeddings.json");
         Path lexiqueFile = Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/cli_lexique.txt");
         Path cliDoc = Paths.get("wildfly-docs/cli/cli.md");
         List<String> doc = Files.readAllLines(cliDoc);
         Set<String> lexique = buildLexique(doc, englishDictionary);
-
+        Path questionsSegments = Paths.get("segments/segments-cli-questions.txt");
         String question = System.getProperty("question");
-
+        List<String> questions = Files.readAllLines(Paths.get("questions/cli-questions.md"));
         if (question == null) {
+            // First vectorize the doc
             InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
             DocumentSplitter splitter = new HeaderDocumentSpliter();
+
             List<Document> documents = FileSystemDocumentLoader.loadDocumentsRecursively("wildfly-docs/cli");
             for (Document dd : documents) {
                 List<TextSegment> segments = splitter.split(dd);
-                Path p = Paths.get("segments-cli.txt");
+                Path p = Paths.get("segments/segments-cli.txt");
                 Files.deleteIfExists(p);
                 Files.createFile(p);
                 for (TextSegment s : segments) {
@@ -60,9 +59,25 @@ public class CliOperationsIngestor {
                 System.out.println("SEGMENTS " + segments.size());
             }
 
-            ((InMemoryEmbeddingStore) embeddingStore).serializeToFile(file);
-            System.out.println("Embeddings stored into " + file.toAbsolutePath());
+            ((InMemoryEmbeddingStore) embeddingStore).serializeToFile(docEmbeddings);
+            System.out.println("Embeddings stored into " + docEmbeddings.toAbsolutePath());
 
+            //Store the question segments used fo testing
+            List<Document> cliQuestionsDocuments = FileSystemDocumentLoader.loadDocumentsRecursively("questions");
+            for (Document dd : cliQuestionsDocuments) {
+                List<TextSegment> segments = splitter.split(dd);
+
+                Files.deleteIfExists(questionsSegments);
+                Files.createFile(questionsSegments);
+                for (TextSegment s : segments) {
+                    String ss = "\n-------------------\n"
+                            + "parent=" + s.metadata().getString("parent") + "\n"
+                            + "title=" + s.metadata().getString("title") + "\n"
+                            + s.text() + "\n-------------------\n";
+                    Files.write(questionsSegments, ss.getBytes(), StandardOpenOption.APPEND);
+                }
+                System.out.println("QUESTIONS SEGMENTS " + segments.size());
+            }
             Files.deleteIfExists(lexiqueFile);
             Files.createFile(lexiqueFile);
             for (String l : lexique) {
@@ -70,13 +85,14 @@ public class CliOperationsIngestor {
             }
             System.out.println("Lexique written to " + lexiqueFile.toAbsolutePath());
         } else {
-            InMemoryEmbeddingStore embeddingStore = InMemoryEmbeddingStore.fromFile(file);
-
+            List<String> questionsNotTopRanked = new ArrayList<>();
+            List<String> questionsTopRanked = new ArrayList<>();
+            //List<String> questionsVeryBadlyRanked = new ArrayList<>();
+            List<String> questionsNotRanked = new ArrayList<>();
+            InMemoryEmbeddingStore embeddingStore = InMemoryEmbeddingStore.fromFile(docEmbeddings);
+            List<String> qSegments = Files.readAllLines(questionsSegments);
             if ("cli-questions.md".equals(question)) {
-                List<String> questions = Files.readAllLines(Paths.get("cli-questions.md"));
-
                 // For now reuse the input doc as lexique
-                List<String> lexiqueDoc = Files.readAllLines(Paths.get("wildfly-docs/cli/cli.md"));
                 Set<String> questionHeaders = new HashSet<>();
                 Set<String> docHeaders = new HashSet<>();
 
@@ -90,18 +106,9 @@ public class CliOperationsIngestor {
                         docHeaders.add(line.trim());
                     }
                 }
-                for (String line : lexiqueDoc) {
-                    if (!line.startsWith("#")) {
-                        String[] words = line.split("\\s+");
-                        for (String word : words) {
-                            lexique.add(word.toLowerCase());
-                        }
-                    }
-
-                }
                 for (String header : docHeaders) {
                     if (!questionHeaders.contains(header)) {
-                        throw new RuntimeException(header + " is not overed by questions");
+                        throw new RuntimeException(header + " is not covered by questions");
                     }
                 }
                 int numQuestions = 0;
@@ -127,9 +134,77 @@ public class CliOperationsIngestor {
                         System.out.println("QUESTION: " + line + "\n" + filteredQuestion + "\n" + scores);
                         System.err.println(messageBuilder);
                         throw new Exception("Question " + filteredQuestion + " Has low scoring " + scores);
+                    } else {
+                        //Check that the best result on has the same title than the question.
+                        EmbeddingMatch<TextSegment> topScore = relevant.get(0);
+                        String matchTitle = topScore.embedded().metadata().getString("title");
+                        String questionTitle = getQuestionMetadata("title", qSegments, line);
+                        //String questionParent = getQuestionMetadata("parent", qSegments, line);
+                        int index = 0;
+                        double score = 0.0;
+                        if (!matchTitle.equals(questionTitle)) {
+                            for (int i = 0; i < relevant.size(); i++) {
+                                EmbeddingMatch<TextSegment> match = relevant.get(i);
+                                if (match.score() >= 0.7) {
+                                    if (match.embedded().metadata().getString("title").equals(questionTitle)) {
+                                        index = i + 1;
+                                        score = match.score();
+                                    }
+                                }
+                            }
+                            if (score != 0.0) {
+                                questionsNotTopRanked.add(line + "[rank " + index + ", score " + score + "]");
+                            } else {
+                                // questions for which the expected doc is not in any score
+                                questionsNotRanked.add(line);
+                            }
+                        } else {
+                            questionsTopRanked.add(line);
+                        }
+//                        boolean found = false;
+//                        for (EmbeddingMatch<TextSegment> match : relevant) {
+//                            if (match.score() >= 0.7) {
+//                                String matchTitle2 = topScore.embedded().metadata().getString("title");
+//                                if (matchTitle2.equals(questionTitle)) {
+//                                    found = true;
+//                                    break;
+//                                }
+//                            }
+//                        }
+//                        if (!found) {
+//                            boolean found2 = false;
+//                            for (EmbeddingMatch<TextSegment> match : relevant) {
+//                                if (match.score() >= 0.7) {
+//                                    String matchParent = match.embedded().metadata().getString("parent");
+//                                    if (matchParent.equals(questionParent)) {
+//                                        found2 = true;
+//                                        break;
+//                                    }
+//                                }
+//                            }
+//
+//                            if (!found2) {
+//                                System.err.println(messageBuilder);
+//                                questionsVeryBadlyRanked.add(line);
+////                                throw new Exception("Question " + line + " has not the expected match." + "\n" + 
+////                                      "Expect title: " + questionTitle);
+//                            }
+//                        }
                     }
                 }
                 System.out.println("NUM OF QUESTIONS " + numQuestions);
+                System.out.println("NUM TOP RANKED QUESTIONS " + questionsTopRanked.size());
+                for (String str : questionsTopRanked) {
+                    System.out.println(str);
+                }
+                System.out.println("NUM NOT TOP RANKED QUESTIONS " + questionsNotTopRanked.size());
+                for (String str : questionsNotTopRanked) {
+                    System.out.println(str);
+                }
+                System.out.println("NUM NOT RANKED QUESTIONS " + questionsNotRanked.size());
+                for (String str : questionsNotRanked) {
+                    System.out.println(str);
+                }
             } else {
                 String generalizedQuestion = generalizeQuestion(question, lexique, englishDictionary);
                 Embedding queryEmbedding = embeddingModel.embed(generalizedQuestion).content();
@@ -148,6 +223,19 @@ public class CliOperationsIngestor {
             }
         }
 
+    }
+
+    private static String getQuestionMetadata(String key, List<String> segments, String question) throws Exception {
+        String lastTitle = null;
+        for (String s : segments) {
+            if (s.startsWith(key + "=")) {
+                lastTitle = s.substring(key.length() + 1);
+            }
+            if (s.equals(question)) {
+                return lastTitle;
+            }
+        }
+        throw new Exception("Question " + question + " has no " + key);
     }
 
     private static Set<String> buildLexique(List<String> lines, List<String> englishDictionary) {
@@ -183,7 +271,7 @@ public class CliOperationsIngestor {
                         }
                     } else {
                         // special characters other than a-z, 0-9
-                        if ( (c < 48 || (c > 57 && c < 97)) || ((c < 97 && c > 57) || c > 122)) {
+                        if ((c < 48 || (c > 57 && c < 97)) || ((c < 97 && c > 57) || c > 122)) {
                             if (blockEntered) {
                                 currentWord.append(c);
                             }
@@ -207,31 +295,29 @@ public class CliOperationsIngestor {
         for (String word : words) {
             word = word.toLowerCase();
             word = word.trim();
-            if (word.contains(".war")) {
-                word = "deployment";
-            }
-            if (word.contains(".xml")) {
-                word = "file";
-            }
-            word = word.trim();
-            char c = word.charAt(word.length()-1);
+            char c = word.charAt(word.length() - 1);
             // remove 
             boolean lastCharRemoved = false;
-            if ( (c < 48 || (c > 57 && c < 97)) || ((c < 97 && c > 57) || c > 122)) {
-                word = word.substring(0, word.length() -1);
+            if ((c < 48 || (c > 57 && c < 97)) || ((c < 97 && c > 57) || c > 122)) {
+                word = word.substring(0, word.length() - 1);
                 lastCharRemoved = true;
             }
-            if(word.isEmpty()) {
+            if (word.isEmpty()) {
                 continue;
             }
-            System.out.println("WORD " + word);
             if (!lexique.contains(word) && !dictionary.contains(word)) {
                 // to be generailzed
-                System.out.println("NOT CONTAINED! " + word);
-                if (question.contains("deployment")) {
-                    word = "deployment";
+                if (word.endsWith(".war") || question.contains("deployment")) {
+                    word = "myapp.war";
                 } else {
-                    continue;
+                    if (word.endsWith(".xml")) {
+                        word = "file";
+                    } else {
+                         if (question.contains("property")) {
+                            word = "foo";
+                        } 
+                        continue;
+                    }
                 }
             }
             // Actually do not keep punctiation
@@ -242,7 +328,7 @@ public class CliOperationsIngestor {
             filteredQuestion.append(word + " ");
         }
         String generalized = filteredQuestion.toString();
-        if(!question.equals(generalized)) {
+        if (!question.equals(generalized)) {
             System.out.println("QUESTION: " + question);
             System.out.println("GENERALIZED: " + generalized);
         }

@@ -233,31 +233,29 @@ public class ChatBotWebSocketEndpoint {
         for (String word : words) {
             word = word.toLowerCase();
             word = word.trim();
-            if (word.contains(".war")) {
-                word = "deployment";
-            }
-            if (word.contains(".xml")) {
-                word = "file";
-            }
-            word = word.trim();
-            char c = word.charAt(word.length()-1);
+            char c = word.charAt(word.length() - 1);
             // remove 
             boolean lastCharRemoved = false;
-            if ( (c < 48 || (c > 57 && c < 97)) || ((c < 97 && c > 57) || c > 122)) {
-                word = word.substring(0, word.length() -1);
+            if ((c < 48 || (c > 57 && c < 97)) || ((c < 97 && c > 57) || c > 122)) {
+                word = word.substring(0, word.length() - 1);
                 lastCharRemoved = true;
             }
-            if(word.isEmpty()) {
+            if (word.isEmpty()) {
                 continue;
             }
-            System.out.println("WORD " + word);
             if (!lexique.contains(word) && !dictionary.contains(word)) {
                 // to be generailzed
-                System.out.println("NOT CONTAINED! " + word);
-                if (question.contains("deployment")) {
-                    word = "deployment";
+                if (word.endsWith(".war") || question.contains("deployment")) {
+                    word = "myapp.war";
                 } else {
-                    continue;
+                    if (word.endsWith(".xml")) {
+                        word = "file";
+                    } else {
+                         if (question.contains("property")) {
+                            word = "foo";
+                        } 
+                        continue;
+                    }
                 }
             }
             // Actually do not keep punctiation
@@ -268,7 +266,7 @@ public class ChatBotWebSocketEndpoint {
             filteredQuestion.append(word + " ");
         }
         String generalized = filteredQuestion.toString();
-        if(!question.equals(generalized)) {
+        if (!question.equals(generalized)) {
             System.out.println("QUESTION: " + question);
             System.out.println("GENERALIZED: " + generalized);
         }

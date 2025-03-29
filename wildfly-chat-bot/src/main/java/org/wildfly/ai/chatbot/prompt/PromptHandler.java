@@ -18,8 +18,8 @@ public class PromptHandler {
     
     private static final String SYSTEM_PROMPT = """
                                                 You are a WildFly expert who understands well how to administrate the WildFly server running on port 9990 by default and its components.You have a tool to invoke CLI operations.
-                                                Your objective is to answer the user question delimited by  ---
-                                                You must build CLI operations using only the directives delimited by %%%
+                                                Your objective is to answer the user question delimited by  --- by invoking one or more WildFly CLI operation
+                                                You must build the CLI operations using only the directives delimited by %%%
                                                 Produce a reply based on the CLI operation returned value JSON content. if you don't manage to compute a CLI operation answer 
                                                 that you don't have enough information in the question to build a CLI operation.
                                               """;

@@ -11,41 +11,46 @@ ${jboss_home}
 /path=<path name>:read-resource(recursive=true)
 /socket-binding-group=standard-sockets/socket-binding=<socket binding name>:read-resource
 /socket-binding-group=standard-sockets:read-attribute(name=default-interface)
-/socket-binding-group=standard-sockets:read-resource(recursive=true)
 /subsystem=<subsystem name>:read-resource()
 /subsystem=bean-validation:read-resource()
 /subsystem=datasources/jdbc-driver=<jdbc driver name>:read-resource
 /subsystem=datasources:read-children-resources(child-type=jdbc-driver
-/system-property=<property name>:<operation>(<operation_arguments>)
+/system-property=<property name>:add(value=<value of the system property>)
 /system-property=<property name>:read-attribute(name=value)
-:read-children-resources(child-type=deployment, include-runtime=true)
-:read-children-resources(child-type=extension, recursive=true, include-runtime=true)
-:read-children-resources(child-type=interface, include-runtime=true)
-:read-children-resources(child-type=path, recursive=true)
-:read-children-resources(child-type=subsystem)
-:read-children-resources(child-type=system-property)
+/system-property=<property name>:remove()
+/system-property=<property name>:write-attribute(name=value, value=<value of the system property>)
 :resolve-expression(expression=<expression_value>})
+<deployment name>
 <expression_value>
-<operation>
-<operation_arguments>
+<extension name>
+<interface_name>
+<path name>
+<property name>
+<socket binding name>
+<subsystem name>
 bean-validation
+classes/persistence.xml
 datasource
 datasources
 h2
 http
 http-authentication-factory
-inet-address
+https
 ip
 jboss
+jboss-web.xml
 jboss.server.config.dir
 jdbc
+managementhttp
+managementhttps
 mariadb
 mssqlserver
+myapp.war
 mysql
-name=value, value=<new value of the system property>
 org.wildfly.extension.elytron
 postgresql
-resolved-address
 socket-binding
-value=<value of the system property>
-write-attribute
+socketbinding
+socketbindings
+web-inf/
+web.xml
