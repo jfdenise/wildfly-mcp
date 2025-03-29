@@ -45,15 +45,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.wildfly.ai.chatbot.MCPConfig.MCPServerSSEConfig;
 import org.wildfly.ai.chatbot.MCPConfig.MCPServerStdioConfig;
@@ -117,7 +121,7 @@ public class ChatBotWebSocketEndpoint {
     private String initExceptionContext;
     private final Recorder recorder = new Recorder();
     private List<String> dictionary = new ArrayList<>();
-    private List<String> lexique = new ArrayList<>();
+    private Set<String> lexique = new HashSet<>();
     public Recorder getRecorder() {
         return recorder;
     }
@@ -127,7 +131,8 @@ public class ChatBotWebSocketEndpoint {
         try {
             Path rootDir = Paths.get(System.getProperty("jboss.home.dir")).resolve("standalone/configuration");
             dictionary = Files.readAllLines(rootDir.resolve("words_alpha.txt"));
-            lexique = Files.readAllLines(rootDir.resolve("cli_lexique.md"));
+            lexique = Files.readAllLines(rootDir.resolve("cli_lexique.txt")).
+                    stream().collect(Collectors.toSet());
             logger.info("Initialize");
             logger.info("Dictionnary size " + dictionary.size() + ", lexique size " + lexique.size());
             MCPConfig mcpConfig = MCPConfig.parseConfig(mcpConfigFile);
@@ -234,17 +239,32 @@ public class ChatBotWebSocketEndpoint {
             if (word.contains(".xml")) {
                 word = "file";
             }
-            word = word.replaceAll("[^a-zA-Z]", "");
             word = word.trim();
+            char c = word.charAt(word.length()-1);
+            // remove 
+            boolean lastCharRemoved = false;
+            if ( (c < 48 || (c > 57 && c < 97)) || ((c < 97 && c > 57) || c > 122)) {
+                word = word.substring(0, word.length() -1);
+                lastCharRemoved = true;
+            }
+            if(word.isEmpty()) {
+                continue;
+            }
+            System.out.println("WORD " + word);
             if (!lexique.contains(word) && !dictionary.contains(word)) {
                 // to be generailzed
+                System.out.println("NOT CONTAINED! " + word);
                 if (question.contains("deployment")) {
                     word = "deployment";
                 } else {
                     continue;
                 }
             }
-
+            // Actually do not keep punctiation
+            // it can reduce matches.
+            //if(lastCharRemoved) {
+            //    word = word + c;
+            //}
             filteredQuestion.append(word + " ");
         }
         String generalized = filteredQuestion.toString();

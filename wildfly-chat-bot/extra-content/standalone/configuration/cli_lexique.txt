@@ -1,0 +1,51 @@
+${jboss.node.name}
+${jboss_home}
+/core-service=management/management-interface=http-interface:read-resource
+/deployment=<deployment name>:browse-content()
+/deployment=<deployment name>:read-content(path=<file path>)
+/deployment=<deployment name>:read-resource(include-runtime=true)
+/extension=<extension name>:read-resource(recursive=true, include-runtime=true)
+/interface=<interface_name>:read-resource(include-runtime=true)
+/interface=management:read-resource(include-runtime=true)
+/interface=public:read-resource(include-runtime=true)
+/path=<path name>:read-resource(recursive=true)
+/socket-binding-group=standard-sockets/socket-binding=<socket binding name>:read-resource
+/socket-binding-group=standard-sockets:read-attribute(name=default-interface)
+/socket-binding-group=standard-sockets:read-resource(recursive=true)
+/subsystem=<subsystem name>:read-resource()
+/subsystem=bean-validation:read-resource()
+/subsystem=datasources/jdbc-driver=<jdbc driver name>:read-resource
+/subsystem=datasources:read-children-resources(child-type=jdbc-driver
+/system-property=<property name>:<operation>(<operation_arguments>)
+/system-property=<property name>:read-attribute(name=value)
+:read-children-resources(child-type=deployment, include-runtime=true)
+:read-children-resources(child-type=extension, recursive=true, include-runtime=true)
+:read-children-resources(child-type=interface, include-runtime=true)
+:read-children-resources(child-type=path, recursive=true)
+:read-children-resources(child-type=subsystem)
+:read-children-resources(child-type=system-property)
+:resolve-expression(expression=<expression_value>})
+<expression_value>
+<operation>
+<operation_arguments>
+bean-validation
+datasource
+datasources
+h2
+http
+http-authentication-factory
+inet-address
+ip
+jboss
+jboss.server.config.dir
+jdbc
+mariadb
+mssqlserver
+mysql
+name=value, value=<new value of the system property>
+org.wildfly.extension.elytron
+postgresql
+resolved-address
+socket-binding
+value=<value of the system property>
+write-attribute

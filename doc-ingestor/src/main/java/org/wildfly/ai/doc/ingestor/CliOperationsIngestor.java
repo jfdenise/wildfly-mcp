@@ -13,16 +13,18 @@ import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2Embedding
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class CliOperationsIngestor {
 
@@ -31,9 +33,13 @@ public class CliOperationsIngestor {
      */
     public static void main(String[] args) throws Exception {
         EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
+        List<String> englishDictionary = Files.readAllLines(Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/words_alpha.txt"));
         Path file = Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/embeddings.json");
-        Path lexiqueFile = Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/cli_lexique.md");
+        Path lexiqueFile = Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/cli_lexique.txt");
         Path cliDoc = Paths.get("wildfly-docs/cli/cli.md");
+        List<String> doc = Files.readAllLines(cliDoc);
+        Set<String> lexique = buildLexique(doc, englishDictionary);
+
         String question = System.getProperty("question");
 
         if (question == null) {
@@ -56,19 +62,24 @@ public class CliOperationsIngestor {
 
             ((InMemoryEmbeddingStore) embeddingStore).serializeToFile(file);
             System.out.println("Embeddings stored into " + file.toAbsolutePath());
-            Files.copy(cliDoc, lexiqueFile, StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("Copied cli doc as lexique to " + file.toAbsolutePath());
+
+            Files.deleteIfExists(lexiqueFile);
+            Files.createFile(lexiqueFile);
+            for (String l : lexique) {
+                Files.writeString(lexiqueFile, l + "\n", StandardOpenOption.APPEND);
+            }
+            System.out.println("Lexique written to " + lexiqueFile.toAbsolutePath());
         } else {
             InMemoryEmbeddingStore embeddingStore = InMemoryEmbeddingStore.fromFile(file);
+
             if ("cli-questions.md".equals(question)) {
-                List<String> englishDictionary = Files.readAllLines(Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/words_alpha.txt"));
                 List<String> questions = Files.readAllLines(Paths.get("cli-questions.md"));
-                List<String> doc = Files.readAllLines(Paths.get("wildfly-docs/cli/cli.md"));
+
                 // For now reuse the input doc as lexique
                 List<String> lexiqueDoc = Files.readAllLines(Paths.get("wildfly-docs/cli/cli.md"));
                 Set<String> questionHeaders = new HashSet<>();
                 Set<String> docHeaders = new HashSet<>();
-                Set<String> lexique = new HashSet();
+
                 for (String line : questions) {
                     if (line.startsWith("#")) {
                         questionHeaders.add(line.trim());
@@ -83,7 +94,7 @@ public class CliOperationsIngestor {
                     if (!line.startsWith("#")) {
                         String[] words = line.split("\\s+");
                         for (String word : words) {
-                            lexique.add(word);
+                            lexique.add(word.toLowerCase());
                         }
                     }
 
@@ -96,34 +107,11 @@ public class CliOperationsIngestor {
                 int numQuestions = 0;
                 for (String line : questions) {
                     line = line.trim();
-                    if (line.startsWith("#") || line.isEmpty()) {
+                    if (line.startsWith("#") || line.isEmpty() || line.startsWith("//")) {
                         continue;
                     }
-                    numQuestions+=1;
-                    String[] words = line.split("\\s+");
-                    StringBuilder filteredQuestion = new StringBuilder();
-                    for (String word : words) {
-                        word = word.toLowerCase();
-                        word = word.trim();
-                        if (word.contains(".war")) {
-                            word = "deployment";
-                        }
-                        if (word.contains(".xml")) {
-                            word = "file";
-                        }
-                        word = word.replaceAll("[^a-zA-Z]", "");
-                        word = word.trim();
-                        if (!lexique.contains(word) && !englishDictionary.contains(word)) {
-                            // to be generailzed
-                            if (line.contains("deployment")) {
-                                word = "deployment";
-                            } else {
-                                continue;
-                            }
-                        }
-
-                        filteredQuestion.append(word + " ");
-                    }
+                    numQuestions += 1;
+                    String filteredQuestion = generalizeQuestion(line, lexique, englishDictionary);
                     Embedding queryEmbedding = embeddingModel.embed(filteredQuestion.toString()).content();
                     List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 4);
                     StringBuilder messageBuilder = new StringBuilder();
@@ -139,13 +127,12 @@ public class CliOperationsIngestor {
                         System.out.println("QUESTION: " + line + "\n" + filteredQuestion + "\n" + scores);
                         System.err.println(messageBuilder);
                         throw new Exception("Question " + filteredQuestion + " Has low scoring " + scores);
-                    } else {
-                        System.out.println("QUESTION: " + line + "\n" + filteredQuestion + "\n" + scores);
                     }
                 }
                 System.out.println("NUM OF QUESTIONS " + numQuestions);
             } else {
-                Embedding queryEmbedding = embeddingModel.embed(question).content();
+                String generalizedQuestion = generalizeQuestion(question, lexique, englishDictionary);
+                Embedding queryEmbedding = embeddingModel.embed(generalizedQuestion).content();
                 List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 4);
                 StringBuilder messageBuilder = new StringBuilder();
                 List<Double> scores = new ArrayList<>();
@@ -156,9 +143,109 @@ public class CliOperationsIngestor {
                     messageBuilder.append("\n" + match.score() + " ------------\n");
                     messageBuilder.append(match.embedded().text());
                 }
+                System.out.println("GENERALIZED " + generalizedQuestion);
                 System.out.append(messageBuilder);
             }
         }
 
+    }
+
+    private static Set<String> buildLexique(List<String> lines, List<String> englishDictionary) {
+        Set<String> lexique = new TreeSet<>();
+        for (String l : lines) {
+            if (l.startsWith("//") || l.isEmpty()) {
+                continue;
+            }
+            l = l.toLowerCase();
+            char[] chars = l.toCharArray();
+            boolean blockEntered = false;
+            StringBuilder currentWord = new StringBuilder();
+            for (char c : chars) {
+                if (c == '`') {
+                    if (blockEntered) {
+                        if (!englishDictionary.contains(currentWord.toString()) && !currentWord.toString().isEmpty()) {
+                            lexique.add(currentWord.toString());
+                        }
+                        currentWord = new StringBuilder();
+                        blockEntered = false;
+                    } else {
+                        blockEntered = true;
+                    }
+                } else {
+                    if (c == ' ' || c == '\n') {
+                        if (!blockEntered) {
+                            if (!englishDictionary.contains(currentWord.toString()) && !currentWord.toString().isEmpty()) {
+                                lexique.add(currentWord.toString());
+                            }
+                            currentWord = new StringBuilder();
+                        } else {
+                            currentWord.append(c);
+                        }
+                    } else {
+                        // special characters other than a-z, 0-9
+                        if ( (c < 48 || (c > 57 && c < 97)) || ((c < 97 && c > 57) || c > 122)) {
+                            if (blockEntered) {
+                                currentWord.append(c);
+                            }
+                        } else {
+                            currentWord.append(c);
+                        }
+                    }
+                }
+            }
+            if (!englishDictionary.contains(currentWord.toString()) && !currentWord.toString().isEmpty()) {
+                lexique.add(currentWord.toString());
+            }
+        }
+        return lexique;
+    }
+
+    // TODO must apply logic from lexique generation
+    private static String generalizeQuestion(String question, Set<String> lexique, List<String> dictionary) {
+        String[] words = question.split("\\s+");
+        StringBuilder filteredQuestion = new StringBuilder();
+        for (String word : words) {
+            word = word.toLowerCase();
+            word = word.trim();
+            if (word.contains(".war")) {
+                word = "deployment";
+            }
+            if (word.contains(".xml")) {
+                word = "file";
+            }
+            word = word.trim();
+            char c = word.charAt(word.length()-1);
+            // remove 
+            boolean lastCharRemoved = false;
+            if ( (c < 48 || (c > 57 && c < 97)) || ((c < 97 && c > 57) || c > 122)) {
+                word = word.substring(0, word.length() -1);
+                lastCharRemoved = true;
+            }
+            if(word.isEmpty()) {
+                continue;
+            }
+            System.out.println("WORD " + word);
+            if (!lexique.contains(word) && !dictionary.contains(word)) {
+                // to be generailzed
+                System.out.println("NOT CONTAINED! " + word);
+                if (question.contains("deployment")) {
+                    word = "deployment";
+                } else {
+                    continue;
+                }
+            }
+            // Actually do not keep punctiation
+            // it can reduce matches.
+            //if(lastCharRemoved) {
+            //    word = word + c;
+            //}
+            filteredQuestion.append(word + " ");
+        }
+        String generalized = filteredQuestion.toString();
+        if(!question.equals(generalized)) {
+            System.out.println("QUESTION: " + question);
+            System.out.println("GENERALIZED: " + generalized);
+        }
+        return generalized;
     }
 }

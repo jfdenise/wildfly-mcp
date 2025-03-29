@@ -29,10 +29,13 @@ Can you resolve the ${JBOSS_HOME} expression?
 Can you get all the interfaces?
 Can you list all interfaces?
 
-## syntax of the operation to get an interface
+## syntax of the operation to get an IP interface
 
 Could you get the management interface?
 Could you get the public interface?
+// Can and Could don't give same results. ? character also makes it to vary.
+Can you get the public interface?
+can you get the public interface ?
 Could you get the foo interface?
 
 ## operation to get the public IP interface
@@ -134,3 +137,25 @@ Can you get the subsystem jaxrs?
 ## operation to get all the subsystems
 
 Can you get all the subsystems?
+
+## subsystem interesting attributes
+
+What are the main attributes of a subsystem
+
+# `bean-validation` subsystem
+
+## operation to get the `bean-validation` subsystem
+
+Can you get the bean-validation subsystem
+
+# datasources subsystem
+
+## syntax of the operation to get all the JDBC driver
+
+Can you get all the jdbc drivers?
+
+Can you get all the datasource drivers? 
+
+## syntax of the operation to get a JDBC driver
+
+Can you get the h2 jdbc driver?

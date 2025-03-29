@@ -58,10 +58,10 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
                 }
                 current = new StringBuilder();
                 int index = line.lastIndexOf("#");
-                if (line.startsWith("## ")) {
+                if (line.startsWith("##")) {
                     levelOne = false;
                     // Always add the parent content to sub sections if not a single line
-                    line = (parentContent.lines().count() > 1 ? parentContent+"\n" : "");
+                    line = (parentContent.lines().count() > 1 ? parentContent+"\n" : "") + line.substring(index + 1);
                 } else {
                     parentName = line.substring(index + 2);
                     levelOne = true;
