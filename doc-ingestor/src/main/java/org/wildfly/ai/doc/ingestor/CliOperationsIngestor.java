@@ -4,6 +4,8 @@
  */
 package org.wildfly.ai.doc.ingestor;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
@@ -13,15 +15,19 @@ import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2Embedding
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CliOperationsIngestor {
 
@@ -40,6 +46,38 @@ public class CliOperationsIngestor {
         String question = System.getProperty("question");
         List<String> questions = Files.readAllLines(Paths.get("questions/cli-questions.md"));
         if (question == null) {
+            // First generate the doc and question templates
+            Path descriptionsDir = Paths.get("json-descriptions");
+            Set<Path> descriptions = Stream.of(descriptionsDir.toFile().listFiles())
+                    .filter(file -> !file.isDirectory() && file.getName().endsWith(".json"))
+                    .map(File::toPath)
+                    .collect(Collectors.toSet());
+            
+            for (Path desc : descriptions) {
+                String name = desc.getFileName().toString().substring(0, desc.getFileName().toString().length() - 5);
+                StringBuilder docbuilder = new StringBuilder();
+                StringBuilder questionsbuilder = new StringBuilder();
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode descObj = objectMapper.readTree(Files.readString(desc));
+                JsonNode attributes = descObj.get("result").get("attributes");
+                Iterator<String> fieldNames = attributes.fieldNames();
+                while(fieldNames.hasNext()) {
+                    String fieldName = fieldNames.next();
+                    JsonNode field = attributes.get(fieldName);
+                    String description = field.get("description").asText();
+                    String title = "## syntax of the operation to get the " + name + " " + fieldName + "\n";
+                    docbuilder.append(title);
+                    questionsbuilder.append(title);
+                    questionsbuilder.append("// TODO\n\n");
+                    docbuilder.append(description).append("\n");
+                    docbuilder.append("get the `" + name +"` `"+fieldName+"` attribute.\n");
+                    docbuilder.append("operation: `/subsystem=datasources/data-source=<data-source name>:read-attribute(name="+fieldName + ")`\n\n");
+                }
+                Path doctemplate = Paths.get("templates/docs/" + name + "-template.md");
+                Files.write(doctemplate, docbuilder.toString().getBytes(), StandardOpenOption.CREATE);
+                Path questionstemplate = Paths.get("templates/questions/" + name + "-questions-template.md");
+                Files.write(questionstemplate, questionsbuilder.toString().getBytes(), StandardOpenOption.CREATE);
+            }
             // First vectorize the doc
             InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
             DocumentSplitter splitter = new HeaderDocumentSpliter();

@@ -20,25 +20,35 @@ ${jboss_home}
 /socket-binding-group=standard-sockets:read-attribute(name=default-interface)
 /subsystem=<subsystem name>:read-resource()
 /subsystem=bean-validation:read-resource()
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=allocation-retry)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=allocation-retry-wait-millis)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=driver-name)
+/subsystem=datasources/data-source=<data-source name>:read-resource
 /subsystem=datasources/jdbc-driver=<jdbc driver name>:read-resource
-/subsystem=datasources:read-children-resources(child-type=jdbc-driver
 /system-property=<property name>:add(value=<value of the system property>)
 /system-property=<property name>:read-attribute(name=value)
 /system-property=<property name>:remove()
 /system-property=<property name>:write-attribute(name=value, value=<value of the system property>)
 :resolve-expression(expression=<expression_value>})
+<data-source name>
 <deployment name>
 <expression_value>
 <extension name>
 <interface_name>
+<jdbc driver name>
 <path name>
 <property name>
 <socket binding name>
 <subsystem name>
+allocation-retry
+allocation-retry-wait-millis
 bean-validation
 classes/persistence.xml
+data-source
+data-sources
 datasource
 datasources
+driver-name
 h2
 http
 http-authentication-factory
@@ -51,6 +61,7 @@ jdbc
 managementhttp
 managementhttps
 mariadb
+millis
 mssqlserver
 myapp.war
 mysql
@@ -66,3 +77,4 @@ suspend-state
 web-inf/
 web.xml
 wildfly
+xa-data-source

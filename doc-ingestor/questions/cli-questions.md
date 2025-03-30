@@ -178,12 +178,44 @@ Can you get the bean-validation subsystem
 
 # datasources subsystem
 
-## syntax of the operation to get all the JDBC driver
-
-Can you get all the jdbc drivers?
-
-Can you get all the datasource drivers? 
-
 ## syntax of the operation to get a JDBC driver
 
+Can you get all the jdbc drivers?
+Can you get all the datasources drivers? 
 Can you get the h2 jdbc driver?
+Can you get all the datasources subsystem drivers?
+
+## syntax of the operation to get a data-source
+
+Can you get all the datasources?
+Can you get all the datasource?
+Can you get the example datasource?
+Can you get all the data-sources?
+Can you get all the data-source?
+Can you get the example data-source?
+Can you get all the datasources subsystem data-source?
+
+## syntax of the operation to get the data-source allocation retry
+
+Can you get the allocation retry of the example datasource?
+Can you get the allocation-retry of the example datasource?
+Can you get the allocation retry of the example data-source?
+Can you get the allocation-retry of the example data-source?
+
+How many times that allocating a connection should be tried before throwing an exception?
+
+## syntax of the operation to get the data-source allocation retry wait millis
+
+Can you get the allocation retry wait millis of the example datasource?
+Can you get the allocation-retry-wait-millis of the example datasource?
+Can you get the allocation retry wait millis of the example data-source?
+Can you get the allocation-retry-wait-millis of the example data-source?
+
+What is the amount of time the example data-source has to wait before to retry the allocation?
+
+## syntax of the operation to get the data-source driver name
+
+Can you get the driver of the example datasource?
+Can you get the driver of the example data-source?
+Can you get the jdbc driver of the example data-source?
+Can you get the jdbc driver of the example datasource?

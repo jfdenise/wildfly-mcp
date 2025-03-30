@@ -184,16 +184,53 @@ operation: `/subsystem=bean-validation:read-resource()`" metadata = {parent=`bea
 
 -------------------
 TextSegment { text = "datasources subsystem
-Contains all the installed JDBC driver and all the defined datasources. A datasource references an installed JDBC driver.
-syntax of the operation to get all the JDBC driver
-operation: `/subsystem=datasources:read-children-resources(child-type=jdbc-driver`" metadata = {parent=datasources subsystem, title=syntax of the operation to get all the JDBC driver} }
+Contains all the installed JDBC driver and all the defined `data-source` and `xa-data-source`.
+syntax of the operation to get a JDBC driver
+Well known JDBC drivers are: h2, postgresql, mariadb, mysql, oracle, mssqlserver.
+operation: `/subsystem=datasources/jdbc-driver=<jdbc driver name>:read-resource`
+To get the list of all the driver use '*' for `<jdbc driver name>`." metadata = {parent=datasources subsystem, title=syntax of the operation to get a JDBC driver} }
 -------------------
 
 -------------------
 TextSegment { text = "datasources subsystem
-Contains all the installed JDBC driver and all the defined datasources. A datasource references an installed JDBC driver.
-syntax of the operation to get a JDBC driver
-Well known JDBC drivers are: h2, postgresql, mariadb, mysql, oracle, mssqlserver.
-operation: `/subsystem=datasources/jdbc-driver=<jdbc driver name>:read-resource`
-" metadata = {parent=datasources subsystem, title=syntax of the operation to get a JDBC driver} }
+Contains all the installed JDBC driver and all the defined `data-source` and `xa-data-source`.
+syntax of the operation to get a data-source
+operation: `/subsystem=datasources/data-source=<data-source name>:read-resource`
+To get the list of all the `data-sources` use '*' for `<data-source name>`." metadata = {parent=datasources subsystem, title=syntax of the operation to get a data-source} }
+-------------------
+
+-------------------
+TextSegment { text = "datasources subsystem
+Contains all the installed JDBC driver and all the defined `data-source` and `xa-data-source`.
+syntax of the operation to get the data-source allocation retry
+The allocation retry element indicates the number of times that allocating a connection should be tried before throwing an exception.
+get the `data-source` `allocation-retry` attribute.
+operation: `/subsystem=datasources/data-source=<data-source name>:read-attribute(name=allocation-retry)`" metadata = {parent=datasources subsystem, title=syntax of the operation to get the data-source allocation retry} }
+-------------------
+
+-------------------
+TextSegment { text = "datasources subsystem
+Contains all the installed JDBC driver and all the defined `data-source` and `xa-data-source`.
+syntax of the operation to get the data-source allocation retry wait millis
+The allocation retry wait millis element specifies the amount of time, in milliseconds, to wait between retrying to allocate a connection,
+get the `data-source` `allocation-retry-wait-millis` attribute.
+operation: `/subsystem=datasources/data-source=<data-source name>:read-attribute(name=allocation-retry-wait-millis)`" metadata = {parent=datasources subsystem, title=syntax of the operation to get the data-source allocation retry wait millis} }
+-------------------
+
+-------------------
+TextSegment { text = "datasources subsystem
+Contains all the installed JDBC driver and all the defined `data-source` and `xa-data-source`.
+syntax of the operation to get the data-source allocation retry
+The allocation retry element indicates the number of times that allocating a connection should be tried before throwing an exception.
+get the `data-source` `allocation-retry` attribute.
+operation: `/subsystem=datasources/data-source=<data-source name>:read-attribute(name=allocation-retry)`" metadata = {parent=datasources subsystem, title=syntax of the operation to get the data-source allocation retry} }
+-------------------
+
+-------------------
+TextSegment { text = "datasources subsystem
+Contains all the installed JDBC driver and all the defined `data-source` and `xa-data-source`.
+syntax of the operation to get the data-source driver name
+get the `data-source` `driver-name` attribute.
+operation: `/subsystem=datasources/data-source=<data-source name>:read-attribute(name=driver-name)`
+" metadata = {parent=datasources subsystem, title=syntax of the operation to get the data-source driver name} }
 -------------------

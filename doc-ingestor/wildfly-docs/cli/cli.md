@@ -167,15 +167,37 @@ operation: `/subsystem=bean-validation:read-resource()`
 
 # datasources subsystem
 
-Contains all the installed JDBC driver and all the defined datasources. A datasource references an installed JDBC driver.
-
-## syntax of the operation to get all the JDBC driver
-
-operation: `/subsystem=datasources:read-children-resources(child-type=jdbc-driver`
+Contains all the installed JDBC driver and all the defined `data-source` and `xa-data-source`. 
 
 ## syntax of the operation to get a JDBC driver
 
 Well known JDBC drivers are: h2, postgresql, mariadb, mysql, oracle, mssqlserver.
 operation: `/subsystem=datasources/jdbc-driver=<jdbc driver name>:read-resource`
+To get the list of all the driver use '*' for `<jdbc driver name>`.
 
+## syntax of the operation to get a data-source
+
+operation: `/subsystem=datasources/data-source=<data-source name>:read-resource`
+To get the list of all the `data-sources` use '*' for `<data-source name>`.
+
+## syntax of the operation to get the data-source allocation retry
+The allocation retry element indicates the number of times that allocating a connection should be tried before throwing an exception.
+get the `data-source` `allocation-retry` attribute.
+operation: `/subsystem=datasources/data-source=<data-source name>:read-attribute(name=allocation-retry)`
+
+## syntax of the operation to get the data-source allocation retry wait millis
+The allocation retry wait millis element specifies the amount of time, in milliseconds, to wait between retrying to allocate a connection,
+get the `data-source` `allocation-retry-wait-millis` attribute.
+operation: `/subsystem=datasources/data-source=<data-source name>:read-attribute(name=allocation-retry-wait-millis)`
+
+## syntax of the operation to get the data-source allocation retry
+The allocation retry element indicates the number of times that allocating a connection should be tried before throwing an exception.
+get the `data-source` `allocation-retry` attribute.
+operation: `/subsystem=datasources/data-source=<data-source name>:read-attribute(name=allocation-retry)`
+
+## syntax of the operation to get the data-source driver name
+// Commented, doesn't add anything and reduce global cohesion
+// Defines the JDBC driver the datasource should use. It is a symbolic name matching the name of installed driver. In case the driver is deployed as a jar, the name is the name of the deployment unit
+get the `data-source` `driver-name` attribute.
+operation: `/subsystem=datasources/data-source=<data-source name>:read-attribute(name=driver-name)`
 
