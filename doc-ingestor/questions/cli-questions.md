@@ -19,6 +19,8 @@ What is the server name?
 Can you get the server name?
 Can you get the name?
 What is the name?
+Can you retrieve the server name?
+Can you retrieve the WildFly server name?
 
 ## get the product name
 

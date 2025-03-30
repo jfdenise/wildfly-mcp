@@ -143,26 +143,41 @@ public class CliOperationsIngestor {
                             }
                         }
                         if (score != 0.0) {
-                            questionsNotTopRanked.add(line + "[rank " + index + ", score " + score + "]\n" + messageBuilder);
+                            String l = line + "[rank " + index + ", score " + score + "]";
+
+                            if (Boolean.getBoolean("debug")) {
+                                l = "\n###########\n" + l + "\n" + messageBuilder;
+                            }
+                            questionsNotTopRanked.add(l);
                         } else {
                             // questions for which the expected doc is not in any score
-                            questionsNotRanked.add(line + messageBuilder);
+                            if (Boolean.getBoolean("debug")) {
+                                line = "\n###########\n" + line + "\n" + messageBuilder;
+                            }
+                            questionsNotRanked.add(line);
                         }
                     } else {
                         questionsTopRanked.add(line);
                     }
                 }
-                System.out.println("NUM OF QUESTIONS " + numQuestions);
-                System.out.println("NUM TOP RANKED QUESTIONS " + questionsTopRanked.size());
-                System.out.println("NUM NOT TOP RANKED QUESTIONS " + questionsNotTopRanked.size());
-                for (String str : questionsNotTopRanked) {
-                    System.out.println(str);
+                if (!questionsNotTopRanked.isEmpty()) {
+                    System.out.println("-------------NOT TOP RANKED QUESTIONS-------------");
+                    for (String str : questionsNotTopRanked) {
+                        System.out.println(str);
+                    }
                 }
-                System.out.println("NUM NOT RANKED QUESTIONS " + questionsNotRanked.size());
-                for (String str : questionsNotRanked) {
-                    System.out.println(str);
+                if (!questionsNotRanked.isEmpty()) {
+                    System.out.println("-------------NOT RANKED QUESTIONS-------------");
+                    for (String str : questionsNotRanked) {
+                        System.out.println(str);
+                    }
                 }
-                if (questionsNotRanked.size() > 0) {
+                System.out.println("--------------------------");
+                System.out.println("NUM TOP RANKED QUESTIONS     :" + questionsTopRanked.size());
+                System.out.println("NUM NOT TOP RANKED QUESTIONS :" + questionsNotTopRanked.size());
+                System.out.println("NUM NOT RANKED QUESTIONS     :" + questionsNotRanked.size());
+                System.out.println("TOTAL NUM OF QUESTIONS       :" + numQuestions);
+                if (!questionsNotRanked.isEmpty()) {
                     throw new Exception("Some questions are not ranked!");
                 }
             } else {
@@ -288,8 +303,10 @@ public class CliOperationsIngestor {
         }
         String generalized = filteredQuestion.toString();
         if (!question.equals(generalized)) {
-            System.out.println("QUESTION: " + question);
-            System.out.println("GENERALIZED: " + generalized);
+            if (Boolean.getBoolean("debug")) {
+                System.out.println("QUESTION: " + question);
+                System.out.println("GENERALIZED: " + generalized);
+            }
         }
         return generalized;
     }

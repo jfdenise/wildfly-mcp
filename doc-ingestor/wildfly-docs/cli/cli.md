@@ -4,35 +4,41 @@ A server has a `name`, a `product-name`, a `version`, a `running-mode`, a `serve
 
 ## get the server
 
-The server resource contains all the pieces of information related to the server.
-The server resource contains all the attributes and children.
+get all the information on the server.
+information on the server is composed of attributes and children.
 
 operation: `/:read-resource(include-runtime=true)`
 
 ## get the name
 
+get the server `name` attribute.
 operation: `/:read-attribute(name=name)`
 
 ## get the product name
 
+get the server `product-name` attribute.
 operation: `/:read-attribute(name=product-name)`
 
 ## get the version
 
+get the server `version` attribute.
 operation: `/:read-attribute(name=version)`
 
 ## get the running mode
 
-In which mode the server is running. Reflects how the server has been started.
+In which mode the server is running.
+get the server `running-mode` attribute.
 operation: `/:read-attribute(name=running-mode)`
 
 ## get the server state
 
 What is the state of the server.
+get the server `server-state` attribute.
 operation: `/:read-attribute(name=server-state)`
 
 ## get the suspend state
 
+get the server `suspend-state` attribute.
 operation: `/:read-attribute(name=suspend-state)`
 
 # system property

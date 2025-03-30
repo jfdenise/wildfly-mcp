@@ -3,8 +3,8 @@
 TextSegment { text = "WildFly server
 A server has a `name`, a `product-name`, a `version`, a `running-mode`, a `server-state` and a `suspend-state`.
 get the server
-The server resource contains all the pieces of information related to the server.
-The server resource contains all the attributes and children.
+get all the information on the server.
+information on the server is composed of attributes and children.
 operation: `/:read-resource(include-runtime=true)`" metadata = {parent=WildFly server, title=get the server} }
 -------------------
 
@@ -12,6 +12,7 @@ operation: `/:read-resource(include-runtime=true)`" metadata = {parent=WildFly s
 TextSegment { text = "WildFly server
 A server has a `name`, a `product-name`, a `version`, a `running-mode`, a `server-state` and a `suspend-state`.
 get the name
+get the server `name` attribute.
 operation: `/:read-attribute(name=name)`" metadata = {parent=WildFly server, title=get the name} }
 -------------------
 
@@ -19,6 +20,7 @@ operation: `/:read-attribute(name=name)`" metadata = {parent=WildFly server, tit
 TextSegment { text = "WildFly server
 A server has a `name`, a `product-name`, a `version`, a `running-mode`, a `server-state` and a `suspend-state`.
 get the product name
+get the server `product-name` attribute.
 operation: `/:read-attribute(name=product-name)`" metadata = {parent=WildFly server, title=get the product name} }
 -------------------
 
@@ -26,6 +28,7 @@ operation: `/:read-attribute(name=product-name)`" metadata = {parent=WildFly ser
 TextSegment { text = "WildFly server
 A server has a `name`, a `product-name`, a `version`, a `running-mode`, a `server-state` and a `suspend-state`.
 get the version
+get the server `version` attribute.
 operation: `/:read-attribute(name=version)`" metadata = {parent=WildFly server, title=get the version} }
 -------------------
 
@@ -33,7 +36,8 @@ operation: `/:read-attribute(name=version)`" metadata = {parent=WildFly server, 
 TextSegment { text = "WildFly server
 A server has a `name`, a `product-name`, a `version`, a `running-mode`, a `server-state` and a `suspend-state`.
 get the running mode
-In which mode the server is running. Reflects how the server has been started.
+In which mode the server is running.
+get the server `running-mode` attribute.
 operation: `/:read-attribute(name=running-mode)`" metadata = {parent=WildFly server, title=get the running mode} }
 -------------------
 
@@ -42,6 +46,7 @@ TextSegment { text = "WildFly server
 A server has a `name`, a `product-name`, a `version`, a `running-mode`, a `server-state` and a `suspend-state`.
 get the server state
 What is the state of the server.
+get the server `server-state` attribute.
 operation: `/:read-attribute(name=server-state)`" metadata = {parent=WildFly server, title=get the server state} }
 -------------------
 
@@ -49,6 +54,7 @@ operation: `/:read-attribute(name=server-state)`" metadata = {parent=WildFly ser
 TextSegment { text = "WildFly server
 A server has a `name`, a `product-name`, a `version`, a `running-mode`, a `server-state` and a `suspend-state`.
 get the suspend state
+get the server `suspend-state` attribute.
 operation: `/:read-attribute(name=suspend-state)`" metadata = {parent=WildFly server, title=get the suspend state} }
 -------------------
 
