@@ -1,3 +1,40 @@
+# WildFly server
+
+A server has a `name`, a `product-name`, a `version`, a `running-mode`, a `server-state` and a `suspend-state`.
+
+## get the server
+
+The server resource contains all the pieces of information related to the server.
+The server resource contains all the attributes and children.
+
+operation: `/:read-resource(include-runtime=true)`
+
+## get the name
+
+operation: `/:read-attribute(name=name)`
+
+## get the product name
+
+operation: `/:read-attribute(name=product-name)`
+
+## get the version
+
+operation: `/:read-attribute(name=version)`
+
+## get the running mode
+
+In which mode the server is running. Reflects how the server has been started.
+operation: `/:read-attribute(name=running-mode)`
+
+## get the server state
+
+What is the state of the server.
+operation: `/:read-attribute(name=server-state)`
+
+## get the suspend state
+
+operation: `/:read-attribute(name=suspend-state)`
+
 # system property
 
 ## syntax of the operation to add or create a system property
@@ -108,7 +145,7 @@ To get the list of all the path use '*' for `<path name>`.
 
 # subsystem
 
-a subsystem resource is a customizable feature of the server. A subsystem has a name
+A subsystem has a name
 a subsystem contains a set of attributes.
 
 ## syntax of the operation to get a subsystem

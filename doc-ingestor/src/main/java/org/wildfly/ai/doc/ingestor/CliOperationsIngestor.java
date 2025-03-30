@@ -122,81 +122,38 @@ public class CliOperationsIngestor {
                     Embedding queryEmbedding = embeddingModel.embed(filteredQuestion.toString()).content();
                     List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 4);
                     StringBuilder messageBuilder = new StringBuilder();
-                    List<Double> scores = new ArrayList<>();
                     for (EmbeddingMatch<TextSegment> match : relevant) {
-                        if (match.score() >= 0.7) {
-                            scores.add(match.score());
-                        }
                         messageBuilder.append("\n" + match.score() + " ------------\n");
                         messageBuilder.append(match.embedded().text());
                     }
-                    if (scores.size() < 1) {
-                        System.out.println("QUESTION: " + line + "\n" + filteredQuestion + "\n" + scores);
-                        System.err.println(messageBuilder);
-                        throw new Exception("Question " + filteredQuestion + " Has low scoring " + scores);
-                    } else {
-                        //Check that the best result on has the same title than the question.
-                        EmbeddingMatch<TextSegment> topScore = relevant.get(0);
-                        String matchTitle = topScore.embedded().metadata().getString("title");
-                        String questionTitle = getQuestionMetadata("title", qSegments, line);
-                        //String questionParent = getQuestionMetadata("parent", qSegments, line);
-                        int index = 0;
-                        double score = 0.0;
-                        if (!matchTitle.equals(questionTitle)) {
-                            for (int i = 0; i < relevant.size(); i++) {
-                                EmbeddingMatch<TextSegment> match = relevant.get(i);
-                                if (match.score() >= 0.7) {
-                                    if (match.embedded().metadata().getString("title").equals(questionTitle)) {
-                                        index = i + 1;
-                                        score = match.score();
-                                    }
+                    //Check that the best result on has the same title than the question.
+                    EmbeddingMatch<TextSegment> topScore = relevant.get(0);
+                    String matchTitle = topScore.embedded().metadata().getString("title");
+                    String questionTitle = getQuestionMetadata("title", qSegments, line);
+                    int index = 0;
+                    double score = 0.0;
+                    if (!matchTitle.equals(questionTitle)) {
+                        for (int i = 0; i < relevant.size(); i++) {
+                            EmbeddingMatch<TextSegment> match = relevant.get(i);
+                            if (match.score() >= 0.7) {
+                                if (match.embedded().metadata().getString("title").equals(questionTitle)) {
+                                    index = i + 1;
+                                    score = match.score();
                                 }
                             }
-                            if (score != 0.0) {
-                                questionsNotTopRanked.add(line + "[rank " + index + ", score " + score + "]");
-                            } else {
-                                // questions for which the expected doc is not in any score
-                                questionsNotRanked.add(line);
-                            }
-                        } else {
-                            questionsTopRanked.add(line);
                         }
-//                        boolean found = false;
-//                        for (EmbeddingMatch<TextSegment> match : relevant) {
-//                            if (match.score() >= 0.7) {
-//                                String matchTitle2 = topScore.embedded().metadata().getString("title");
-//                                if (matchTitle2.equals(questionTitle)) {
-//                                    found = true;
-//                                    break;
-//                                }
-//                            }
-//                        }
-//                        if (!found) {
-//                            boolean found2 = false;
-//                            for (EmbeddingMatch<TextSegment> match : relevant) {
-//                                if (match.score() >= 0.7) {
-//                                    String matchParent = match.embedded().metadata().getString("parent");
-//                                    if (matchParent.equals(questionParent)) {
-//                                        found2 = true;
-//                                        break;
-//                                    }
-//                                }
-//                            }
-//
-//                            if (!found2) {
-//                                System.err.println(messageBuilder);
-//                                questionsVeryBadlyRanked.add(line);
-////                                throw new Exception("Question " + line + " has not the expected match." + "\n" + 
-////                                      "Expect title: " + questionTitle);
-//                            }
-//                        }
+                        if (score != 0.0) {
+                            questionsNotTopRanked.add(line + "[rank " + index + ", score " + score + "]\n" + messageBuilder);
+                        } else {
+                            // questions for which the expected doc is not in any score
+                            questionsNotRanked.add(line + messageBuilder);
+                        }
+                    } else {
+                        questionsTopRanked.add(line);
                     }
                 }
                 System.out.println("NUM OF QUESTIONS " + numQuestions);
                 System.out.println("NUM TOP RANKED QUESTIONS " + questionsTopRanked.size());
-                for (String str : questionsTopRanked) {
-                    System.out.println(str);
-                }
                 System.out.println("NUM NOT TOP RANKED QUESTIONS " + questionsNotTopRanked.size());
                 for (String str : questionsNotTopRanked) {
                     System.out.println(str);
@@ -204,6 +161,9 @@ public class CliOperationsIngestor {
                 System.out.println("NUM NOT RANKED QUESTIONS " + questionsNotRanked.size());
                 for (String str : questionsNotRanked) {
                     System.out.println(str);
+                }
+                if (questionsNotRanked.size() > 0) {
+                    throw new Exception("Some questions are not ranked!");
                 }
             } else {
                 String generalizedQuestion = generalizeQuestion(question, lexique, englishDictionary);
@@ -218,7 +178,6 @@ public class CliOperationsIngestor {
                     messageBuilder.append("\n" + match.score() + " ------------\n");
                     messageBuilder.append(match.embedded().text());
                 }
-                System.out.println("GENERALIZED " + generalizedQuestion);
                 System.out.append(messageBuilder);
             }
         }
@@ -313,9 +272,9 @@ public class CliOperationsIngestor {
                     if (word.endsWith(".xml")) {
                         word = "file";
                     } else {
-                         if (question.contains("property")) {
+                        if (question.contains("property")) {
                             word = "foo";
-                        } 
+                        }
                         continue;
                     }
                 }

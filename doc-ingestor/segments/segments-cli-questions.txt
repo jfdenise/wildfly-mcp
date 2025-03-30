@@ -1,5 +1,77 @@
 
 -------------------
+parent=WildFly server
+title=get the server
+get the server
+What are the attributes of the server?
+Can you get the information of the server?
+Can you get all the attributes of the server?
+What are the attributes of the WildFly server?
+Can you get the information of the WildFly server?
+Can you get all the attributes of the WildFly server?
+Can you get the server infos?
+Can you get the WildFly server infos?
+-------------------
+
+-------------------
+parent=WildFly server
+title=get the name
+get the name
+What is the name of the server?
+What is the name of the WildFly server?
+What is the server name?
+Can you get the server name?
+Can you get the name?
+What is the name?
+-------------------
+
+-------------------
+parent=WildFly server
+title=get the product name
+get the product name
+Can you get the product-name?
+What is the product name of the server?
+-------------------
+
+-------------------
+parent=WildFly server
+title=get the version
+get the version
+Can you get the version of WildFly server?
+What is the server version?
+Can you get the server version?
+Could you get the version of the server?
+Can you retrieve the server version?
+-------------------
+
+-------------------
+parent=WildFly server
+title=get the running mode
+get the running mode
+In which mode is the server running?
+What is the running mode?
+-------------------
+
+-------------------
+parent=WildFly server
+title=get the server state
+get the server state
+Can you get the server-state?
+can you get the server state?
+Can you get WildFly server-state?
+can you get WildFly server state?
+can you get WildFly state?
+-------------------
+
+-------------------
+parent=WildFly server
+title=get the suspend state
+get the suspend state
+Can you get the suspend-state?
+can you get the suspend state?
+-------------------
+
+-------------------
 parent=system property
 title=syntax of the operation to add or create a system property
 syntax of the operation to add or create a system property

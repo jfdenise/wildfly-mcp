@@ -1,5 +1,12 @@
 ${jboss.node.name}
 ${jboss_home}
+/:read-attribute(name=name)
+/:read-attribute(name=product-name)
+/:read-attribute(name=running-mode)
+/:read-attribute(name=server-state)
+/:read-attribute(name=suspend-state)
+/:read-attribute(name=version)
+/:read-resource(include-runtime=true)
 /core-service=management/management-interface=http-interface:read-resource
 /deployment=<deployment name>:browse-content()
 /deployment=<deployment name>:read-content(path=<file path>)
@@ -49,8 +56,13 @@ myapp.war
 mysql
 org.wildfly.extension.elytron
 postgresql
+product-name
+running-mode
+server-state
 socket-binding
 socketbinding
 socketbindings
+suspend-state
 web-inf/
 web.xml
+wildfly
