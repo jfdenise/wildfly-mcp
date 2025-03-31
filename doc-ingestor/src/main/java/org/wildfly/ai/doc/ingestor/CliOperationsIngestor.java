@@ -6,6 +6,7 @@ package org.wildfly.ai.doc.ingestor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
@@ -17,7 +18,6 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 import dev.langchain4j.model.mistralai.MistralAiChatModel;
-import static dev.langchain4j.model.mistralai.MistralAiChatModelName.MISTRAL_SMALL_LATEST;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,13 +33,80 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CliOperationsIngestor {
-    
+
     private static String alternative(String name) {
         return name.replaceAll("-", " ");
-    } 
+    }
+
     private static String reduce(String name) {
         return name.replaceAll("-", "");
-    } 
+    }
+
+    private static void generateResourceDoc(StringBuilder docbuilder,
+            StringBuilder questionsbuilder,
+            JsonNode resourceNode,
+            boolean isCustomNamed,
+            String resourceName,
+            String resourceType,
+            String currentPath) {
+        if (!isCustomNamed) {
+            Iterator<String> knownResources = resourceNode.fieldNames();
+            while (knownResources.hasNext()) {
+                String knownResource = knownResources.next();
+                JsonNode resource = resourceNode.get(knownResource);
+                generateResourceDoc(docbuilder, questionsbuilder, resource, true, resourceName + " " + knownResource, null, currentPath + knownResource);
+            }
+        } else {
+            if (resourceType != null && !resourceType.equals("subsystem")) {
+                docbuilder.append("## syntax of the operation to get a " + resourceName).append("\n");
+                docbuilder.append("operation: `" + currentPath + ":read-resource()`\n");
+                docbuilder.append("To get the list of all the `" + resourceName + "` use '*' for `<" + resourceType + " name>`.\n\n");
+                questionsbuilder.append("## syntax of the operation to get a " + resourceName).append("\n");
+                questionsbuilder.append("Can you get all the " + resourceName + "?\n");
+                questionsbuilder.append("Can you get all the " + resourceName + "s?\n");
+                questionsbuilder.append("Can you get the " + resourceName + " foo?\n");
+                questionsbuilder.append("Can you get the foo " + resourceName + "?\n\n");
+            }
+            if (resourceNode.has("attributes")) {
+                JsonNode attributes = resourceNode.get("attributes");
+                Iterator<String> fieldNames = attributes.fieldNames();
+                while (fieldNames.hasNext()) {
+                    String fieldName = fieldNames.next();
+                    JsonNode field = attributes.get(fieldName);
+                    String description = field.get("description").asText();
+                    String title = "## syntax of the operation to get the " + resourceName + " " + fieldName + "\n";
+                    docbuilder.append(title);
+                    questionsbuilder.append(title);
+                    questionsbuilder.append("Can you get the " + fieldName + " of the example " + resourceName + "?\n");
+                    String alternative = alternative(fieldName);
+                    if (!alternative.equals(fieldName)) {
+                        questionsbuilder.append("Can you get the " + alternative(fieldName) + " of the example " + reduce(resourceName) + "?\n");
+                    }
+                    docbuilder.append(description).append("\n");
+                    docbuilder.append("get the `" + resourceName + "` `" + fieldName + "` attribute.\n");
+                    String operation = "`" + currentPath + ":read-attribute(name=" + fieldName + ")`\n\n";
+                    docbuilder.append(operation);
+                }
+            }
+            if (resourceNode.has("children")) {
+                JsonNode children = resourceNode.get("children");
+                Iterator<String> childrenNames = children.fieldNames();
+                while (childrenNames.hasNext()) {
+                    String childrenName = childrenNames.next();
+                    boolean isChildCustomeNamed = children.get(childrenName).get("model-description").has("*");
+                    JsonNode node = isChildCustomeNamed ? children.get(childrenName).get("model-description").get("*")
+                            : children.get(childrenName).get("model-description");
+                    generateResourceDoc(docbuilder, questionsbuilder,
+                            node,
+                            isChildCustomeNamed,
+                            resourceName + " " + childrenName,
+                            childrenName,
+                            currentPath + "/" + childrenName + "=" + (isChildCustomeNamed ? "<" + childrenName + " name>" : ""));
+                }
+            }
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -49,81 +116,60 @@ public class CliOperationsIngestor {
         Path docEmbeddings = Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/embeddings.json");
         Path lexiqueFile = Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/cli_lexique.txt");
         Path cliDoc = Paths.get("wildfly-docs/cli/cli.md");
-        List<String> doc = Files.readAllLines(cliDoc);
-        Set<String> lexique = buildLexique(doc, englishDictionary);
+        Path generatedCliDoc = Paths.get("wildfly-docs/cli/cli-generated.md");
         Path questionsSegments = Paths.get("segments/segments-cli-questions.txt");
-        String question = System.getProperty("question");
-        List<String> questions = Files.readAllLines(Paths.get("questions/cli-questions.md"));
-        if(Boolean.getBoolean("generate-doc")) {
+        Path questionsDoc = Paths.get("questions/cli-questions.md");
+        Path generatedQuestionsDoc = Paths.get("questions/cli-questions-generated.md");
+
+        if (Boolean.getBoolean("generate-doc")) {
             // First generate the doc and question templates
             Path descriptionsDir = Paths.get("json-descriptions");
-            Set<Path> descriptions = Stream.of(descriptionsDir.toFile().listFiles())
-                    .filter(file -> !file.isDirectory() && file.getName().endsWith(".json"))
-                    .map(File::toPath)
-                    .collect(Collectors.toSet());
+            Path wildflyModel = descriptionsDir.resolve("wildfly-subsystems-model.json");
+
             ChatLanguageModel model = MistralAiChatModel.builder()
                     .apiKey(System.getenv("MISTRAL_API_KEY")) // Please use your own Mistral AI API key
                     .modelName("mistral-small-latest")
                     .logRequests(true)
                     .logResponses(true)
                     .build();
-
-            for (Path desc : descriptions) {
-                String name = desc.getFileName().toString().substring(0, desc.getFileName().toString().length() - 5);
-                StringBuilder docbuilder = new StringBuilder();
-                StringBuilder questionsbuilder = new StringBuilder();
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode descObj = objectMapper.readTree(Files.readString(desc));
-                JsonNode attributes = descObj.get("result").get("attributes");
-                Iterator<String> fieldNames = attributes.fieldNames();
-                while(fieldNames.hasNext()) {
-                    String fieldName = fieldNames.next();
-                    JsonNode field = attributes.get(fieldName);
-                    String description = field.get("description").asText();
-                    String title = "## syntax of the operation to get the " + name + " " + fieldName + "\n";
-                    docbuilder.append(title);
-                    questionsbuilder.append(title);
-                    questionsbuilder.append("Can you get the " + fieldName + " of the example " + name + "?\n");
-                    String alternative = alternative(fieldName);
-                    if(!alternative.equals(fieldName)) {
-                        questionsbuilder.append("Can you get the " + alternative(fieldName) + " of the example " + reduce(name) + "?\n");
-                    }
-                    String generatedQuestion = model.chat("Your reply must only contain a generated question for the following text: " + description);
-                    System.out.println("TEXT: " + description);
-                    System.out.println("MISTRAL GENERATED: " + generatedQuestion);
-                    questionsbuilder.append(generatedQuestion +"\n\n");
-                    Thread.sleep(1000);
-                    docbuilder.append(description).append("\n");
-                    docbuilder.append("get the `" + name +"` `"+fieldName+"` attribute.\n");
-                    docbuilder.append("operation: `/subsystem=datasources/data-source=<data-source name>:read-attribute(name="+fieldName + ")`\n\n");
-                }
-                Path doctemplate = Paths.get("templates/docs/" + name + "-template.md");
-                Files.delete(doctemplate);
-                Files.write(doctemplate, docbuilder.toString().getBytes(), StandardOpenOption.CREATE);
-                Path questionstemplate = Paths.get("templates/questions/" + name + "-questions-template.md");
-                Files.delete(questionstemplate);
-                Files.write(questionstemplate, questionsbuilder.toString().getBytes(), StandardOpenOption.CREATE);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode descObj = objectMapper.readTree(Files.readString(wildflyModel));
+            ArrayNode children = (ArrayNode) descObj.get("result");
+            StringBuilder docbuilder = new StringBuilder();
+            StringBuilder questionsbuilder = new StringBuilder();
+            for (JsonNode n : children) {
+                ArrayNode address = (ArrayNode) n.get("address");
+                String subsystemName = address.get(0).get("subsystem").asText();
+                String path = "/subsystem=" + subsystemName;
+                generateResourceDoc(docbuilder, questionsbuilder, n.get("result"), true, subsystemName, "subsystem", path);
             }
+            Files.deleteIfExists(generatedCliDoc);
+            Files.write(generatedCliDoc, docbuilder.toString().getBytes(), StandardOpenOption.CREATE);
+            Files.deleteIfExists(generatedQuestionsDoc);
+            Files.write(generatedQuestionsDoc, questionsbuilder.toString().getBytes(), StandardOpenOption.CREATE);
             return;
         }
+        System.out.println("Reading doc...");
+        List<String> doc = new ArrayList<>();
+        doc.addAll(Files.readAllLines(cliDoc));
+        doc.addAll(Files.readAllLines(generatedCliDoc));
+        String question = System.getProperty("question");
         if (question == null) {
             // First vectorize the doc
             InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
             DocumentSplitter splitter = new HeaderDocumentSpliter();
 
             List<Document> documents = FileSystemDocumentLoader.loadDocumentsRecursively("wildfly-docs/cli");
+            Path p = Paths.get("segments/segments-cli.txt");
+            Files.deleteIfExists(p);
+            Files.createFile(p);
             for (Document dd : documents) {
                 List<TextSegment> segments = splitter.split(dd);
-                Path p = Paths.get("segments/segments-cli.txt");
-                Files.deleteIfExists(p);
-                Files.createFile(p);
                 for (TextSegment s : segments) {
                     embeddingStore.add(embeddingModel.embed(s).content(), s);
                     String ss = "\n-------------------\n" + s + "\n-------------------\n";
                     Files.write(p, ss.getBytes(), StandardOpenOption.APPEND);
                 }
-
-                System.out.println("SEGMENTS " + segments.size());
             }
 
             ((InMemoryEmbeddingStore) embeddingStore).serializeToFile(docEmbeddings);
@@ -131,11 +177,10 @@ public class CliOperationsIngestor {
 
             //Store the question segments used fo testing
             List<Document> cliQuestionsDocuments = FileSystemDocumentLoader.loadDocumentsRecursively("questions");
+            Files.deleteIfExists(questionsSegments);
+            Files.createFile(questionsSegments);
             for (Document dd : cliQuestionsDocuments) {
                 List<TextSegment> segments = splitter.split(dd);
-
-                Files.deleteIfExists(questionsSegments);
-                Files.createFile(questionsSegments);
                 for (TextSegment s : segments) {
                     String ss = "\n-------------------\n"
                             + "parent=" + s.metadata().getString("parent") + "\n"
@@ -143,26 +188,34 @@ public class CliOperationsIngestor {
                             + s.text() + "\n-------------------\n";
                     Files.write(questionsSegments, ss.getBytes(), StandardOpenOption.APPEND);
                 }
-                System.out.println("QUESTIONS SEGMENTS " + segments.size());
             }
             Files.deleteIfExists(lexiqueFile);
             Files.createFile(lexiqueFile);
+            System.out.println("Build lexique....");
+            Set<String> lexique = buildLexique(doc, englishDictionary);
             for (String l : lexique) {
                 Files.writeString(lexiqueFile, l + "\n", StandardOpenOption.APPEND);
             }
             System.out.println("Lexique written to " + lexiqueFile.toAbsolutePath());
         } else {
+            Set<String> lexique = Files.readAllLines(lexiqueFile).stream().collect(Collectors.toSet());
             List<String> questionsNotTopRanked = new ArrayList<>();
             List<String> questionsTopRanked = new ArrayList<>();
             //List<String> questionsVeryBadlyRanked = new ArrayList<>();
             List<String> questionsNotRanked = new ArrayList<>();
+            System.out.println("Loading embeddings...");
             InMemoryEmbeddingStore embeddingStore = InMemoryEmbeddingStore.fromFile(docEmbeddings);
+            System.out.println("Loading questions segments...");
             List<String> qSegments = Files.readAllLines(questionsSegments);
-            if ("cli-questions.md".equals(question)) {
+            if ("questions".equals(question)) {
+                List<String> questions = new ArrayList<>();
+                System.out.println("Reading questions...");
+                questions.addAll(Files.readAllLines(questionsDoc));
+                questions.addAll(Files.readAllLines(generatedQuestionsDoc));
                 // For now reuse the input doc as lexique
                 Set<String> questionHeaders = new HashSet<>();
                 Set<String> docHeaders = new HashSet<>();
-
+                
                 for (String line : questions) {
                     if (line.startsWith("#")) {
                         questionHeaders.add(line.trim());
@@ -179,7 +232,18 @@ public class CliOperationsIngestor {
                     }
                 }
                 int numQuestions = 0;
+                System.out.println("Num of doc lines " + doc.size());
+                System.out.println("Num of question lines " + questions.size());
+                System.out.println("Checking segments...");
+                int num = 0;
+                int total = 0;
                 for (String line : questions) {
+                    num+=1;
+                    if (num == 100) {
+                        total+=num;
+                        System.out.println("Checked " + total);
+                        num = 0;
+                    }
                     line = line.trim();
                     if (line.startsWith("#") || line.isEmpty() || line.startsWith("//")) {
                         continue;
@@ -281,8 +345,10 @@ public class CliOperationsIngestor {
 
     private static Set<String> buildLexique(List<String> lines, List<String> englishDictionary) {
         Set<String> lexique = new TreeSet<>();
+        System.out.println("Documentation lines "+ lines.size());
         for (String l : lines) {
-            if (l.startsWith("//") || l.isEmpty()) {
+            // Remove comments and operations
+            if (l.startsWith("//") || l.isEmpty() || l.startsWith("`/")) {
                 continue;
             }
             l = l.toLowerCase();

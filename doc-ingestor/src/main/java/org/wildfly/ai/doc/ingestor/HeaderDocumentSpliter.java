@@ -20,6 +20,7 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
 
     @Override
     public List<TextSegment> split(Document dcmnt) {
+        System.out.println(dcmnt.metadata());
         String[] lines = dcmnt.text().split("\\n");
         List<TextSegment> segments = new ArrayList<>();
         StringBuilder current = null;
@@ -27,6 +28,7 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
         String parentName = "";
         // Parent content is a one liner, replicated in each sub section.
         String parentContent = "";
+        int segmentsTotalSize = 0;
         Metadata currentMetadata = new Metadata();
         for (String line : lines) {
             line = line.trim();
@@ -52,7 +54,7 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
                             System.err.println(content);
                             throw new RuntimeException("Content length is " + words + ". Max allowed is 256.\n");
                         } else {
-                            System.out.println("segment lenth " + words);
+                            segmentsTotalSize += words;
                         }
                         TextSegment segment = TextSegment.from(content, currentMetadata);
                         segments.add(segment);
@@ -76,11 +78,21 @@ public class HeaderDocumentSpliter implements DocumentSplitter {
         }
         if (current != null) {
             if (!levelOne) {
+                String content = current.toString().trim();
+                int words = content.split("\\s+").length;
+                if (words >= 256) {
+                    System.err.println(content);
+                    throw new RuntimeException("Content length is " + words + ". Max allowed is 256.\n");
+                } else {
+                    segmentsTotalSize += words;
+                }
                 currentMetadata.put("parent", parentName);
-                TextSegment segment = TextSegment.from(current.toString(), currentMetadata);
+                TextSegment segment = TextSegment.from(content, currentMetadata);
                 segments.add(segment);
             }
         }
+        System.out.println("Num segments       :" + segments.size());
+        System.out.println("Segment size average :" + segmentsTotalSize / segments.size());
         return segments;
     }
 
