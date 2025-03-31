@@ -22,7 +22,69 @@ ${jboss_home}
 /subsystem=bean-validation:read-resource()
 /subsystem=datasources/data-source=<data-source name>:read-attribute(name=allocation-retry)
 /subsystem=datasources/data-source=<data-source name>:read-attribute(name=allocation-retry-wait-millis)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=allow-multiple-users)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=authentication-context)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=background-validation)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=background-validation-millis)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=blocking-timeout-wait-millis)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=capacity-decrementer-class)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=capacity-decrementer-properties)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=capacity-incrementer-class)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=capacity-incrementer-properties)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=check-valid-connection-sql)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=connectable)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=connection-listener-class)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=connection-listener-property)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=connection-url)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=credential-reference)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=datasource-class)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=driver-class)
 /subsystem=datasources/data-source=<data-source name>:read-attribute(name=driver-name)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=elytron-enabled)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=enabled)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=enlistment-trace)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=exception-sorter-class-name)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=exception-sorter-module)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=exception-sorter-properties)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=flush-strategy)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=idle-timeout-minutes)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=initial-pool-size)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=jndi-name)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=jta)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=max-pool-size)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=mcp)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=min-pool-size)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=new-connection-sql)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=password)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=pool-fair)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=pool-prefill)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=pool-use-strict-min)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=prepared-statements-cache-size)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=query-timeout)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=reauth-plugin-class-name)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=reauth-plugin-properties)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=security-domain)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=set-tx-query-timeout)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=share-prepared-statements)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=spy)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=stale-connection-checker-class-name)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=stale-connection-checker-module)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=stale-connection-checker-properties)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=statistics-enabled)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=track-statements)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=tracking)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=transaction-isolation)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=url-delimiter)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=url-selector-strategy-class-name)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=use-ccm)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=use-fast-fail)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=use-java-context)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=use-try-lock)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=user-name)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=valid-connection-checker-class-name)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=valid-connection-checker-module)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=valid-connection-checker-properties)
+/subsystem=datasources/data-source=<data-source name>:read-attribute(name=validate-on-match)
 /subsystem=datasources/data-source=<data-source name>:read-resource
 /subsystem=datasources/jdbc-driver=<jdbc driver name>:read-resource
 /system-property=<property name>:add(value=<value of the system property>)
@@ -42,39 +104,193 @@ ${jboss_home}
 <subsystem name>
 allocation-retry
 allocation-retry-wait-millis
+allocationretry
+allocationretrywaitmillis
+allow-multiple-users
+allowmultipleusers
+authentication-context
+authenticationcontext
+background-validation
+background-validation-millis
+backgroundvalidation
+backgroundvalidationmillis
 bean-validation
+blocking-timeout-wait-millis
+blockingtimeoutmillis
+blockingtimeoutwaitmillis
+capacity-decrementer-class
+capacity-decrementer-properties
+capacity-incrementer-class
+capacity-incrementer-properties
+capacitydecrementerclass
+capacitydecrementerproperties
+capacityincrementerclass
+capacityincrementerproperties
+check-valid-connection-sql
+checkvalidconnectionsql
 classes/persistence.xml
+cmr
+connection-listener-class
+connection-listener-property
+connection-url
+connectionlistenerclass
+connectionlistenerproperty
+connectionurl
+credential-reference
+credentialreference
+customlevel
 data-source
 data-sources
 datasource
+datasource-class
+datasourceclass
 datasources
+driver-class
 driver-name
+driverclass
+drivername
+elytron-enabled
+elytronenabled
+enlistment-trace
+enlistmenttrace
+exception-sorter-class-name
+exception-sorter-module
+exception-sorter-properties
+exceptionsorterclassname
+exceptionsortermodule
+exceptionsorterproperties
+fex
+flush-strategy
+flushstrategy
+getconnectionuser
 h2
 http
 http-authentication-factory
 https
+idle-timeout-minutes
+idleremover
+idletimeoutminutes
+initial-pool-size
+initialpoolsize
 ip
+ironjacamar
+isexceptionfatalsqlexception
+isstaleconnectionsqlexception
+isvalidconnectionconnection
+javasqlconnection
+javaxsecurityauthsubject
 jboss
 jboss-web.xml
 jboss.server.config.dir
 jdbc
+jndi
+jndi-name
+jndiname
+jta
+lru
+managedconnectionpool
 managementhttp
 managementhttps
 mariadb
+max-pool-size
+maxpoolsize
+mcp
 millis
+min-pool-size
+minpoolsize
 mssqlserver
 myapp.war
 mysql
+new-connection-sql
+newconnectionsql
+nowarn
 org.wildfly.extension.elytron
+orgjbossjcaadaptersjdbcexceptionsorter
+orgjbossjcaadaptersjdbcspilistenerconnectionlistener
+orgjbossjcaadaptersjdbcstaleconnectionchecker
+orgjbossjcaadaptersjdbcstaleconnectionexception
+orgjbossjcaadaptersjdbcurlselectorstrategy
+orgjbossjcaadaptersjdbcvalidconnectionchecker
+orgjbossjcacoreconnectionmanagerpoolmcpsemaphorearraylistmanagedconnectionpool
+picketbox
+plugin
+pool-fair
+pool-prefill
+pool-use-strict-min
+poolfair
+poolprefill
+poolusestrictmin
 postgresql
+prefilled
+prepared-statements-cache-size
+preparedstatementscachesize
 product-name
+query-timeout
+querytimeout
+reauth-plugin-class-name
+reauth-plugin-properties
+reauthpluginclassname
+reauthpluginproperties
 running-mode
+security-domain
+securitydomain
 server-state
+set-tx-query-timeout
+settxquerytimeout
+share-prepared-statements
+sharepreparedstatements
 socket-binding
 socketbinding
 socketbindings
+specidied
+speciefies
+sql
+stale-connection-checker-class-name
+stale-connection-checker-module
+stale-connection-checker-properties
+staleconnectioncheckerclassname
+staleconnectioncheckermodule
+staleconnectioncheckerproperties
+statistics-enabled
+statisticsenabled
 suspend-state
+track-statements
+trackstatements
+transaction-isolation
+transactionisolation
+transactionisolationcustomlevel
+transactionnone
+transactionreadcommitted
+transactionreaduncommitted
+transactionrepeatableread
+transactionserializable
+url
+url-delimiter
+url-selector-strategy-class-name
+urldelimiter
+urls
+urlselectorstrategyclassname
+use-ccm
+use-fast-fail
+use-java-context
+use-try-lock
+useccm
+usefastfail
+usejavacontext
+user-name
+username
+usetrylock
+valid-connection-checker-class-name
+valid-connection-checker-module
+valid-connection-checker-properties
+validate-on-match
+validateonmatch
+validconnectioncheckerclassname
+validconnectioncheckermodule
+validconnectioncheckerproperties
 web-inf/
 web.xml
 wildfly
+wildflyironjacamar
+xa
 xa-data-source

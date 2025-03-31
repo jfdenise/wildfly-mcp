@@ -1,195 +1,318 @@
 ## syntax of the operation to get the data-source allocation-retry
-// TODO
+Can you get the allocation-retry of the example data-source?
+Can you get the allocation retry of the example datasource?
+How many times should the system attempt to allocate a connection before it throws an exception?
 
 ## syntax of the operation to get the data-source allocation-retry-wait-millis
-// TODO
+Can you get the allocation-retry-wait-millis of the example data-source?
+Can you get the allocation retry wait millis of the example datasource?
+How is this wait time configured in your system?
 
 ## syntax of the operation to get the data-source allow-multiple-users
-// TODO
+Can you get the allow-multiple-users of the example data-source?
+Can you get the allow multiple users of the example datasource?
+How many users are expected to concurrently access the datasource using the `getConnection(user, password)` method?
 
 ## syntax of the operation to get the data-source authentication-context
-// TODO
+Can you get the authentication-context of the example data-source?
+Can you get the authentication context of the example datasource?
+What is the role of the `javax.security.auth.Subject` in the Elytron authentication context?
 
 ## syntax of the operation to get the data-source background-validation
-// TODO
+Can you get the background-validation of the example data-source?
+Can you get the background validation of the example datasource?
+What are the potential impacts of changing the validation thread setting on a disabled datasource?
 
 ## syntax of the operation to get the data-source background-validation-millis
-// TODO
+Can you get the background-validation-millis of the example data-source?
+Can you get the background validation millis of the example datasource?
+What is the default value for the background-validation-millis element?
 
 ## syntax of the operation to get the data-source blocking-timeout-wait-millis
-// TODO
+Can you get the blocking-timeout-wait-millis of the example data-source?
+Can you get the blocking timeout wait millis of the example datasource?
+What is the default value for the blocking-timeout-millis element?
 
 ## syntax of the operation to get the data-source capacity-decrementer-class
-// TODO
+Can you get the capacity-decrementer-class of the example data-source?
+Can you get the capacity decrementer class of the example datasource?
+What methods does this class use to determine when to decrement connections in the pool?
 
 ## syntax of the operation to get the data-source capacity-decrementer-properties
-// TODO
+Can you get the capacity-decrementer-properties of the example data-source?
+Can you get the capacity decrementer properties of the example datasource?
+What specific properties should be considered for injection in a class that manages the policy for decrementing connections in a connection pool?
 
 ## syntax of the operation to get the data-source capacity-incrementer-class
-// TODO
+Can you get the capacity-incrementer-class of the example data-source?
+Can you get the capacity incrementer class of the example datasource?
+What methods does this class use to determine when to increment connections in the pool?
 
 ## syntax of the operation to get the data-source capacity-incrementer-properties
-// TODO
+Can you get the capacity-incrementer-properties of the example data-source?
+Can you get the capacity incrementer properties of the example datasource?
+What specific properties should be included in the class that defines the policy for incrementing connections in the pool?
 
 ## syntax of the operation to get the data-source check-valid-connection-sql
-// TODO
+Can you get the check-valid-connection-sql of the example data-source?
+Can you get the check valid connection sql of the example datasource?
+How would you structure an SQL query to verify the integrity and availability of a connection retrieved from a connection pool?
 
 ## syntax of the operation to get the data-source connectable
-// TODO
+Can you get the connectable of the example data-source?
+What steps are required to enable the use of CMR in a system?
 
 ## syntax of the operation to get the data-source connection-listener-class
-// TODO
+Can you get the connection-listener-class of the example data-source?
+Can you get the connection listener class of the example datasource?
+What is the name of the class that extends `org.jboss.jca.adapters.jdbc.spi.listener.ConnectionListener` and allows for actions to be performed before a connection is returned to the application or to the pool?
 
 ## syntax of the operation to get the data-source connection-listener-property
-// TODO
+Can you get the connection-listener-property of the example data-source?
+Can you get the connection listener property of the example datasource?
+What specific properties need to be injected into the class specified in the `connection-listener-class`?
 
 ## syntax of the operation to get the data-source connection-url
-// TODO
+Can you get the connection-url of the example data-source?
+Can you get the connection url of the example datasource?
+What is the format for specifying the JDBC driver connection URL?
 
 ## syntax of the operation to get the data-source credential-reference
-// TODO
+Can you get the credential-reference of the example data-source?
+Can you get the credential reference of the example datasource?
+Which specific data source requires the credential from the credential store for authentication?
 
 ## syntax of the operation to get the data-source datasource-class
-// TODO
+Can you get the datasource-class of the example data-source?
+Can you get the datasource class of the example datasource?
+What is the fully qualified name of the JDBC datasource class you are referring to?
 
 ## syntax of the operation to get the data-source driver-class
-// TODO
+Can you get the driver-class of the example data-source?
+Can you get the driver class of the example datasource?
+What is the fully qualified name of the JDBC driver class you are using?
 
 ## syntax of the operation to get the data-source driver-name
-// TODO
+Can you get the driver-name of the example data-source?
+Can you get the driver name of the example datasource?
+What is the symbolic name of the installed JDBC driver that the datasource should use?
 
 ## syntax of the operation to get the data-source elytron-enabled
-// TODO
+Can you get the elytron-enabled of the example data-source?
+Can you get the elytron enabled of the example datasource?
+Which specific scenarios would benefit from specifying a custom authentication-context instead of using the current context?
 
 ## syntax of the operation to get the data-source enabled
-// TODO
+Can you get the enabled of the example data-source?
+Will this attribute be removed in the upcoming versions?
 
 ## syntax of the operation to get the data-source enlistment-trace
-// TODO
+Can you get the enlistment-trace of the example data-source?
+Can you get the enlistment trace of the example datasource?
+Do you want to enable enlistment tracing in WildFly/IronJacamar?
 
 ## syntax of the operation to get the data-source exception-sorter-class-name
-// TODO
+Can you get the exception-sorter-class-name of the example data-source?
+Can you get the exception sorter class name of the example datasource?
+What specific criteria does the `isExceptionFatal(SQLException)` method use to determine if an exception is fatal?
 
 ## syntax of the operation to get the data-source exception-sorter-module
-// TODO
+Can you get the exception-sorter-module of the example data-source?
+Can you get the exception sorter module of the example datasource?
+What is the module that provides the implementation for `org.jboss.jca.adapters.jdbc.ExceptionSorter`?
 
 ## syntax of the operation to get the data-source exception-sorter-properties
-// TODO
+Can you get the exception-sorter-properties of the example data-source?
+Can you get the exception sorter properties of the example datasource?
+What specific properties does the exception sorter have?
 
 ## syntax of the operation to get the data-source flush-strategy
-// TODO
+Can you get the flush-strategy of the example data-source?
+Can you get the flush strategy of the example datasource?
+What specific mechanisms are in place to ensure the pool flushes correctly upon encountering an error?
 
 ## syntax of the operation to get the data-source idle-timeout-minutes
-// TODO
+Can you get the idle-timeout-minutes of the example data-source?
+Can you get the idle timeout minutes of the example datasource?
+How does the IdleRemover scan time affect the actual maximum idle time for a connection?
 
 ## syntax of the operation to get the data-source initial-pool-size
-// TODO
+Can you get the initial-pool-size of the example data-source?
+Can you get the initial pool size of the example datasource?
+What is the default value for the initial-pool-size element?
 
 ## syntax of the operation to get the data-source jndi-name
-// TODO
+Can you get the jndi-name of the example data-source?
+Can you get the jndi name of the example datasource?
+What is the JNDI name for the datasource?
 
 ## syntax of the operation to get the data-source jta
-// TODO
+Can you get the jta of the example data-source?
+How do you plan to configure the Jakarta Transactions integration?
 
 ## syntax of the operation to get the data-source max-pool-size
-// TODO
+Can you get the max-pool-size of the example data-source?
+Can you get the max pool size of the example datasource?
+What is the default value for the max-pool-size element if it is not explicitly defined?
 
 ## syntax of the operation to get the data-source mcp
-// TODO
+Can you get the mcp of the example data-source?
+What are the key features and functionalities of the `SemaphoreArrayListManagedConnectionPool` class in the `org.jboss.jca.core.connectionmanager.pool.mcp` package?
 
 ## syntax of the operation to get the data-source min-pool-size
-// TODO
+Can you get the min-pool-size of the example data-source?
+Can you get the min pool size of the example datasource?
+What is the purpose of setting a minimum pool size in a connection pool?
 
 ## syntax of the operation to get the data-source new-connection-sql
-// TODO
+Can you get the new-connection-sql of the example data-source?
+Can you get the new connection sql of the example datasource?
+What is the purpose of executing an SQL statement when a connection is added to the connection pool?
 
 ## syntax of the operation to get the data-source password
-// TODO
+Can you get the password of the example data-source?
+What is the default password if none is specified?
 
 ## syntax of the operation to get the data-source pool-fair
-// TODO
+Can you get the pool-fair of the example data-source?
+Can you get the pool fair of the example datasource?
+Who determines what constitutes "fair" use of the pool?
 
 ## syntax of the operation to get the data-source pool-prefill
-// TODO
+Can you get the pool-prefill of the example data-source?
+Can you get the pool prefill of the example datasource?
+Should the pool need to be prefilled before the server restart?
 
 ## syntax of the operation to get the data-source pool-use-strict-min
-// TODO
+Can you get the pool-use-strict-min of the example data-source?
+Can you get the pool use strict min of the example datasource?
+What is the significance of considering the min-pool-size strictly?
 
 ## syntax of the operation to get the data-source prepared-statements-cache-size
-// TODO
+Can you get the prepared-statements-cache-size of the example data-source?
+Can you get the prepared statements cache size of the example datasource?
+How does the LRU cache manage the eviction of prepared statements when the number of prepared statements per connection exceeds the cache's capacity?
 
 ## syntax of the operation to get the data-source query-timeout
-// TODO
+Can you get the query-timeout of the example data-source?
+Can you get the query timeout of the example datasource?
+What is the default timeout duration if none is specified?
 
 ## syntax of the operation to get the data-source reauth-plugin-class-name
-// TODO
+Can you get the reauth-plugin-class-name of the example data-source?
+Can you get the reauth plugin class name of the example datasource?
+What is the fully qualified class name of the reauthentication plugin implementation?
 
 ## syntax of the operation to get the data-source reauth-plugin-properties
-// TODO
+Can you get the reauth-plugin-properties of the example data-source?
+Can you get the reauth plugin properties of the example datasource?
+What specific properties does the reauthentication plugin require?
 
 ## syntax of the operation to get the data-source security-domain
-// TODO
+Can you get the security-domain of the example data-source?
+Can you get the security domain of the example datasource?
+What are the specific configurations required to set up the PicketBox security domain for distinguishing connections in a pool?
 
 ## syntax of the operation to get the data-source set-tx-query-timeout
-// TODO
+Can you get the set-tx-query-timeout of the example data-source?
+Can you get the set tx query timeout of the example datasource?
+Should the query timeout be dynamically adjusted based on the remaining time until the transaction timeout?
 
 ## syntax of the operation to get the data-source share-prepared-statements
-// TODO
+Can you get the share-prepared-statements of the example data-source?
+Can you get the share prepared statements of the example datasource?
+Have you considered the potential performance implications of reusing prepared statements without explicitly closing them?
 
 ## syntax of the operation to get the data-source spy
-// TODO
+Can you get the spy of the example data-source?
+What specific SQL statements do you want to spy on?
 
 ## syntax of the operation to get the data-source stale-connection-checker-class-name
-// TODO
+Can you get the stale-connection-checker-class-name of the example data-source?
+Can you get the stale connection checker class name of the example datasource?
+What specific conditions does the `isStaleConnection(SQLException)` method check for to determine if a connection is stale?
 
 ## syntax of the operation to get the data-source stale-connection-checker-module
-// TODO
+Can you get the stale-connection-checker-module of the example data-source?
+Can you get the stale connection checker module of the example datasource?
+What is the module that provides the implementation for `org.jboss.jca.adapters.jdbc.StaleConnectionChecker`?
 
 ## syntax of the operation to get the data-source stale-connection-checker-properties
-// TODO
+Can you get the stale-connection-checker-properties of the example data-source?
+Can you get the stale connection checker properties of the example datasource?
+What specific properties should be configured for the stale connection checker?
 
 ## syntax of the operation to get the data-source statistics-enabled
-// TODO
+Can you get the statistics-enabled of the example data-source?
+Can you get the statistics enabled of the example datasource?
+Are runtime statistics currently activated?
 
 ## syntax of the operation to get the data-source track-statements
-// TODO
+Can you get the track-statements of the example data-source?
+Can you get the track statements of the example datasource?
+What is the default setting for this configuration?
 
 ## syntax of the operation to get the data-source tracking
-// TODO
+Can you get the tracking of the example data-source?
+Do you want to enable or disable tracking of connection handles across transaction boundaries in IronJacamar?
 
 ## syntax of the operation to get the data-source transaction-isolation
-// TODO
+Can you get the transaction-isolation of the example data-source?
+Can you get the transaction isolation of the example datasource?
+Which method should be used to set the `java.sql.Connection` transaction isolation level to `TRANSACTION_REPEATABLE_READ`?
 
 ## syntax of the operation to get the data-source url-delimiter
-// TODO
+Can you get the url-delimiter of the example data-source?
+Can you get the url delimiter of the example datasource?
+What are the acceptable delimiter characters for URLs in a connection URL for high-availability (HA) data sources?
 
 ## syntax of the operation to get the data-source url-selector-strategy-class-name
-// TODO
+Can you get the url-selector-strategy-class-name of the example data-source?
+Can you get the url selector strategy class name of the example datasource?
+What are the primary responsibilities of a class that implements `org.jboss.jca.adapters.jdbc.URLSelectorStrategy`?
 
 ## syntax of the operation to get the data-source use-ccm
-// TODO
+Can you get the use-ccm of the example data-source?
+Can you get the use ccm of the example datasource?
+What type of connection manager are you looking to cache?
 
 ## syntax of the operation to get the data-source use-fast-fail
-// TODO
+Can you get the use-fast-fail of the example data-source?
+Can you get the use fast fail of the example datasource?
+Should the system attempt to reuse all available connections before failing the allocation?
 
 ## syntax of the operation to get the data-source use-java-context
-// TODO
+Can you get the use-java-context of the example data-source?
+Can you get the use java context of the example datasource?
+What happens when this is set to true?
 
 ## syntax of the operation to get the data-source use-try-lock
-// TODO
+Can you get the use-try-lock of the example data-source?
+Can you get the use try lock of the example datasource?
+How long is the configured timeout for internal locks on the resource adapter objects?
 
 ## syntax of the operation to get the data-source user-name
-// TODO
+Can you get the user-name of the example data-source?
+Can you get the user name of the example datasource?
+What is the user name you intend to use for the new connection?
 
 ## syntax of the operation to get the data-source valid-connection-checker-class-name
-// TODO
+Can you get the valid-connection-checker-class-name of the example data-source?
+Can you get the valid connection checker class name of the example datasource?
+What specific exceptions does the `isValidConnection(Connection)` method in `org.jboss.jca.adapters.jdbc.ValidConnectionChecker` return to indicate an invalid connection?
 
 ## syntax of the operation to get the data-source valid-connection-checker-module
-// TODO
+Can you get the valid-connection-checker-module of the example data-source?
+Can you get the valid connection checker module of the example datasource?
+What is the module that provides the `org.jboss.jca.adapters.jdbc.ValidConnectionChecker` implementation?
 
 ## syntax of the operation to get the data-source valid-connection-checker-properties
-// TODO
+Can you get the valid-connection-checker-properties of the example data-source?
+Can you get the valid connection checker properties of the example datasource?
+What specific properties should be included in a valid connection checker?
 
 ## syntax of the operation to get the data-source validate-on-match
-// TODO
+Can you get the validate-on-match of the example data-source?
+Can you get the validate on match of the example datasource?
+What are the implications of enabling background validation in conjunction with the validate-on-match element?
 

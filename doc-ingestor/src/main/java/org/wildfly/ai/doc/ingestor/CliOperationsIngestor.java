@@ -11,10 +11,13 @@ import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
+import dev.langchain4j.model.mistralai.MistralAiChatModel;
+import static dev.langchain4j.model.mistralai.MistralAiChatModelName.MISTRAL_SMALL_LATEST;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,7 +33,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CliOperationsIngestor {
-
+    
+    private static String alternative(String name) {
+        return name.replaceAll("-", " ");
+    } 
+    private static String reduce(String name) {
+        return name.replaceAll("-", "");
+    } 
     /**
      * @param args the command line arguments
      */
@@ -45,14 +54,20 @@ public class CliOperationsIngestor {
         Path questionsSegments = Paths.get("segments/segments-cli-questions.txt");
         String question = System.getProperty("question");
         List<String> questions = Files.readAllLines(Paths.get("questions/cli-questions.md"));
-        if (question == null) {
+        if(Boolean.getBoolean("generate-doc")) {
             // First generate the doc and question templates
             Path descriptionsDir = Paths.get("json-descriptions");
             Set<Path> descriptions = Stream.of(descriptionsDir.toFile().listFiles())
                     .filter(file -> !file.isDirectory() && file.getName().endsWith(".json"))
                     .map(File::toPath)
                     .collect(Collectors.toSet());
-            
+            ChatLanguageModel model = MistralAiChatModel.builder()
+                    .apiKey(System.getenv("MISTRAL_API_KEY")) // Please use your own Mistral AI API key
+                    .modelName("mistral-small-latest")
+                    .logRequests(true)
+                    .logResponses(true)
+                    .build();
+
             for (Path desc : descriptions) {
                 String name = desc.getFileName().toString().substring(0, desc.getFileName().toString().length() - 5);
                 StringBuilder docbuilder = new StringBuilder();
@@ -68,16 +83,30 @@ public class CliOperationsIngestor {
                     String title = "## syntax of the operation to get the " + name + " " + fieldName + "\n";
                     docbuilder.append(title);
                     questionsbuilder.append(title);
-                    questionsbuilder.append("// TODO\n\n");
+                    questionsbuilder.append("Can you get the " + fieldName + " of the example " + name + "?\n");
+                    String alternative = alternative(fieldName);
+                    if(!alternative.equals(fieldName)) {
+                        questionsbuilder.append("Can you get the " + alternative(fieldName) + " of the example " + reduce(name) + "?\n");
+                    }
+                    String generatedQuestion = model.chat("Your reply must only contain a generated question for the following text: " + description);
+                    System.out.println("TEXT: " + description);
+                    System.out.println("MISTRAL GENERATED: " + generatedQuestion);
+                    questionsbuilder.append(generatedQuestion +"\n\n");
+                    Thread.sleep(1000);
                     docbuilder.append(description).append("\n");
                     docbuilder.append("get the `" + name +"` `"+fieldName+"` attribute.\n");
                     docbuilder.append("operation: `/subsystem=datasources/data-source=<data-source name>:read-attribute(name="+fieldName + ")`\n\n");
                 }
                 Path doctemplate = Paths.get("templates/docs/" + name + "-template.md");
+                Files.delete(doctemplate);
                 Files.write(doctemplate, docbuilder.toString().getBytes(), StandardOpenOption.CREATE);
                 Path questionstemplate = Paths.get("templates/questions/" + name + "-questions-template.md");
+                Files.delete(questionstemplate);
                 Files.write(questionstemplate, questionsbuilder.toString().getBytes(), StandardOpenOption.CREATE);
             }
+            return;
+        }
+        if (question == null) {
             // First vectorize the doc
             InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
             DocumentSplitter splitter = new HeaderDocumentSpliter();
