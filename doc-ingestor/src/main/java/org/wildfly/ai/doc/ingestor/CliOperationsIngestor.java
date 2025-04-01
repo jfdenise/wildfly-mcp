@@ -267,6 +267,7 @@ public class CliOperationsIngestor {
         Path cliDoc = Paths.get("wildfly-docs/cli/cli.md");
         Path generatedCliDoc = Paths.get("wildfly-docs/cli/cli-generated.md");
         Path questionsSegments = Paths.get("segments/segments-cli-questions.txt");
+        Path quen2515bQuestions = Paths.get("questions/cli-questions-llm-qwen2.51.5b-generated.md");
         Path questionsDoc = Paths.get("questions/cli-questions.md");
         Path generatedQuestionsDoc = Paths.get("questions/cli-questions-generated.md");
         Path generatedLLMQuestionsTemplateDoc = Paths.get("templates/cli-questions-llm-generated.md");
@@ -405,6 +406,7 @@ public class CliOperationsIngestor {
                 System.out.println("Reading questions...");
                 questions.addAll(Files.readAllLines(questionsDoc));
                 questions.addAll(Files.readAllLines(generatedQuestionsDoc));
+                questions.addAll(Files.readAllLines(quen2515bQuestions));
                 // For now reuse the input doc as lexique
                 Set<String> questionHeaders = new HashSet<>();
                 Set<String> docHeaders = new HashSet<>();
@@ -442,7 +444,7 @@ public class CliOperationsIngestor {
                         continue;
                     }
                     numQuestions += 1;
-                    String filteredQuestion = generalizeQuestion(line, lexique, dictionary);
+                    String filteredQuestion = line;//generalizeQuestion(line, lexique, dictionary);
                     Embedding queryEmbedding = embeddingModel.embed(filteredQuestion.toString()).content();
                     List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 4);
                     StringBuilder messageBuilder = new StringBuilder();
@@ -497,15 +499,15 @@ public class CliOperationsIngestor {
                     }
                 }
                 System.out.println("--------------------------");
-                System.out.println("NUM TOP RANKED QUESTIONS     :" + questionsTopRanked.size());
-                System.out.println("NUM NOT TOP RANKED QUESTIONS :" + questionsNotTopRanked.size());
-                System.out.println("NUM NOT RANKED QUESTIONS     :" + questionsNotRanked.size());
                 System.out.println("TOTAL NUM OF QUESTIONS       :" + numQuestions);
+                System.out.println("NUM TOP RANKED QUESTIONS     :" + questionsTopRanked.size() + " " + ((questionsTopRanked.size() * 100 / numQuestions) + "%"));
+                System.out.println("NUM NOT TOP RANKED QUESTIONS :" + questionsNotTopRanked.size() + " " + ((questionsNotTopRanked.size() * 100 / numQuestions) + "%"));
+                System.out.println("NUM NOT RANKED QUESTIONS     :" + questionsNotRanked.size() + " " + ((questionsNotRanked.size() * 100 / numQuestions) + "%"));
                 if (!questionsNotRanked.isEmpty()) {
                     throw new Exception("Some questions are not ranked!");
                 }
             } else {
-                String generalizedQuestion = generalizeQuestion(question, lexique, dictionary);
+                String generalizedQuestion = question;//generalizeQuestion(question, lexique, dictionary);
                 Embedding queryEmbedding = embeddingModel.embed(generalizedQuestion).content();
                 List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 4);
                 StringBuilder messageBuilder = new StringBuilder();
