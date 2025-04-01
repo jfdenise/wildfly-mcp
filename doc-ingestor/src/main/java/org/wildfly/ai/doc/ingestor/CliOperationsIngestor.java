@@ -250,13 +250,13 @@ public class CliOperationsIngestor {
 //                .logResponses(true)
 //                .build();
         ChatLanguageModel model = OllamaChatModel.builder()
-                .modelName("qwen2.5:1.5b")
+                .modelName("qwen2.5:3b")
                 .baseUrl("http://127.0.0.1:11434")
                 .logRequests(true)
                 .logResponses(true)
                 .build();
         if (Boolean.getBoolean("generate-llm")) {
-            Path generatedLLMQuestionsDoc = Paths.get("questions/cli-questions-llm-qwen2.51.5b-generated.md");
+            Path generatedLLMQuestionsDoc = Paths.get("questions/cli-questions-llm-qwen2.5-3b-generated.md");
             StringBuilder output = new StringBuilder();
             List<String> lines = Files.readAllLines(generatedLLMQuestionsTemplateDoc);
             StringBuilder currentQuestion = new StringBuilder();
