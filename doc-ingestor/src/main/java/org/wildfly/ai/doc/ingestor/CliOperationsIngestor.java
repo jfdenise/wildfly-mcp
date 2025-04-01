@@ -37,131 +37,102 @@ public class CliOperationsIngestor {
         return name.replaceAll("-", " ");
     }
 
-    private static String reduce(String name) {
-        return name.replaceAll("-", "");
+    private static boolean isPossessive(int i, char[] chars, char c) {
+        return (i > 0 && chars[i - 1] != ' ' && c == '\'' && chars.length > i + 1 && chars[i + 1] == 's' && chars.length == i + 1);
+    }
+
+    private static String getWordToAdd(Set<String> dictionary, String word) {
+        if (word.isEmpty()) {
+            return word;
+        }
+        word = word.trim();
+        // search the first alphanumeric char
+        boolean foundAlpha = false;
+        StringBuilder wordToCheck = new StringBuilder();
+        char[] wordChars = word.toCharArray();
+        boolean block = false;
+        boolean expression = false;
+        int indexOfEndExpression = 0;
+        for (int j = 0; j < wordChars.length; j++) {
+            char wc = wordChars[j];
+            if (wc == '`' && j == 0) {
+                if (!block) {
+                    block = true;
+                }
+            }
+            if (wc == '$' && j == 0) {
+                if (wordChars.length > 2) {
+                    if (wordChars[1] == '{') {
+                        expression = true;
+                    }
+                }
+            }
+            if (wc == '}') {
+                if (expression) {
+                    indexOfEndExpression = j;
+                }
+            }
+            if (foundAlpha) {
+                wordToCheck.append(wc);
+            } else {
+                if ((wc < 48 || (wc > 57 && wc < 97)) || ((wc < 97 && wc > 57) || wc > 122)) {
+                    if (isPossessive(j, wordChars, wc)) {
+                        // Do not include 's
+                        break;
+                    }
+                } else {
+                    foundAlpha = true;
+                    wordToCheck.append(wc);
+                }
+            }
+        }
+        char[] wordChars2 = wordToCheck.toString().toCharArray();
+        int lastAlpha = 0;
+        for (int j = wordChars2.length - 1; j > 0; j--) {
+            char wc = wordChars2[j];
+            if ((wc < 48 || (wc > 57 && wc < 97)) || ((wc < 97 && wc > 57) || wc > 122)) {
+                // do nothing, ignore the char
+            } else {
+                lastAlpha = j;
+                break;
+            }
+        }
+        if (!wordToCheck.isEmpty()) {
+            String cleanedWord = wordToCheck.substring(0, lastAlpha + 1).toString();
+            if (indexOfEndExpression != 0) {
+                cleanedWord = "${" + cleanedWord + "}";
+            }
+            if (!dictionary.contains(cleanedWord)) {
+                if (!block) {
+                    word = word.replace(cleanedWord, "`" + cleanedWord + "`");
+                }
+            }
+        }
+        return word;
     }
 
     private static String formatDescription(Set<String> dictionary, String text) {
         StringBuilder formated = new StringBuilder();
         text = text.toLowerCase();
         char[] chars = text.toCharArray();
-        boolean blockEntered = false;
         StringBuilder currentWord = new StringBuilder();
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
-            //System.out.println("[" + c + "], [" + currentWord + "], [" + formated + "]");
-            if (c == '\'' || c == '\"') {
-                if (blockEntered) {
-                    String w = currentWord.toString();
-                    w = w.trim();
-                    if (w.isEmpty()) {
+            if ((c < 48 || (c > 57 && c < 97)) || ((c < 97 && c > 57) || c > 122)) {
+                if (c == ' ' || c == '\n') {
+                    String word = currentWord.toString();
+                    currentWord = new StringBuilder();
+                    if (word.isEmpty()) {
+                        formated.append(c);
                         continue;
                     }
-                    boolean lastCharRemoved = false;
-                    boolean lastChar2Removed = false;
-                    char last = w.charAt(w.length() - 1);
-                    char last2 = 0;
-                    if (w.length() > 2) {
-                        last2 = w.charAt(w.length() - 2);
-                        if ((last < 48 || (last > 57 && last < 97)) || ((last < 97 && last > 57) || last > 122)) {
-                            w = w.substring(0, w.length() - 1);
-                            lastCharRemoved = true;
-                        }
-                        if ((last2 < 48 || (last2 > 57 && last2 < 97)) || ((last2 < 97 && last2 > 57) || last2 > 122)) {
-                            w = w.substring(0, w.length() - 1);
-                            lastChar2Removed = true;
-                        }
-                    }
-                    if (!w.toString().isEmpty() && !dictionary.contains(w)) {
-                        formated.append("`" + w + "`" + (lastChar2Removed ? last2 : "") + (lastCharRemoved ? last : ""));
-                    } else {
-                        formated.append(w + (lastChar2Removed ? last2 : "") + (lastCharRemoved ? last : ""));
-                    }
-                    //formated.append(" ");
-                    currentWord = new StringBuilder();
-                    blockEntered = false;
-                } else {
-                    if (i > 0 && chars[i - 1] != ' ' && c == '\'' && chars.length > i + 1 && (chars[i + 1] == 's' || chars[i + 1] == 't')) {
-                        currentWord.append(c);
-                    } else {
-                        blockEntered = true;
-                    }
-                }
-            } else {
-                if (c == '(') {
-                    if (blockEntered) {
-                        currentWord.append(c);
-                    } else {
-                        formated.append(c);
-                    }
-                } else {
-
-                    if (c == ' ' || c == '\n') {
-
-                        if (!blockEntered) {
-                            String w = currentWord.toString();
-                            //w = w.trim();
-                            if (w.isEmpty()) {
-                                formated.append(c);
-                                continue;
-                            }
-                            boolean lastCharRemoved = false;
-                            boolean lastChar2Removed = false;
-                            char last = w.charAt(w.length() - 1);
-                            if ((last < 48 || (last > 57 && last < 97)) || ((last < 97 && last > 57) || last > 122)) {
-                                w = w.substring(0, w.length() - 1);
-                                lastCharRemoved = true;
-                            }
-                            char last2 = 0;
-                            if (w.length() > 2) {
-                                last2 = w.charAt(w.length() - 1);
-                                if ((last2 < 48 || (last2 > 57 && last2 < 97)) || ((last2 < 97 && last2 > 57) || last2 > 122)) {
-                                    w = w.substring(0, w.length() - 1);
-                                    lastChar2Removed = true;
-                                }
-                            }
-                            if (!w.toString().isEmpty() && !dictionary.contains(w)) {
-                                formated.append("`" + w + (lastChar2Removed ? last2 : "") + "`" + (lastCharRemoved ? last : ""));
-                            } else {
-                                formated.append(w + (lastChar2Removed ? last2 : "") + (lastCharRemoved ? last : ""));
-                            }
-                            formated.append(" ");
-                            currentWord = new StringBuilder();
-                        } else {
-                            formated.append(c);
-                        }
-                    } else {
-                        currentWord.append(c);
-                    }
+                    word = getWordToAdd(dictionary, word);
+                    formated.append(word + c);
                 }
             }
+            currentWord.append(c);
         }
-        String w = currentWord.toString();
-        w = w.trim();
-        if (!w.isEmpty()) {
-            boolean lastCharRemoved = false;
-            boolean lastChar2Removed = false;
-            if (w.length() == 1) {
-                formated.append(w);
-            } else {
-                char last = w.charAt(w.length() - 1);
-                char last2 = w.charAt(w.length() - 2);
-                if ((last < 48 || (last > 57 && last < 97)) || ((last < 97 && last > 57) || last > 122)) {
-                    w = w.substring(0, w.length() - 1);
-                    lastCharRemoved = true;
-                }
-                if ((last2 < 48 || (last2 > 57 && last2 < 97)) || ((last2 < 97 && last2 > 57) || last2 > 122)) {
-                    w = w.substring(0, w.length() - 1);
-                    lastChar2Removed = true;
-                }
-
-                if (!w.toString().isEmpty() && !dictionary.contains(w)) {
-                    formated.append("`" + w + "`" + (lastChar2Removed ? last2 : "") + (lastCharRemoved ? last : ""));
-                } else {
-                    formated.append(w + (lastChar2Removed ? last2 : "") + (lastCharRemoved ? last : ""));
-                }
-            }
-        }
+        formated.append(getWordToAdd(dictionary, currentWord.toString()));
         return formated.toString();
     }
 
@@ -433,15 +404,15 @@ public class CliOperationsIngestor {
                 int num = 0;
                 int total = 0;
                 for (String line : questions) {
+                    line = line.trim();
+                    if (line.startsWith("#") || line.isEmpty() || line.startsWith("//")) {
+                        continue;
+                    }
                     num += 1;
                     if (num == 100) {
                         total += num;
                         System.out.println("Checked " + total);
                         num = 0;
-                    }
-                    line = line.trim();
-                    if (line.startsWith("#") || line.isEmpty() || line.startsWith("//")) {
-                        continue;
                     }
                     numQuestions += 1;
                     String filteredQuestion = line;//generalizeQuestion(line, lexique, dictionary);
