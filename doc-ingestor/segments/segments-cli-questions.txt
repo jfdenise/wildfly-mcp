@@ -31561,3 +31561,79 @@ syntax of the operation to get the `microprofile-reactive-messaging-smallrye` `o
 Can you get the kafka-connector of the example microprofile-reactive-messaging-smallrye opentelemetry-tracing config?
 Can you get the kafka connector of the example microprofile reactive messaging smallrye opentelemetry tracing config?
 -------------------
+
+-------------------
+parent=
+title=syntax of the operation to get the `iiop-openjdk` `add-component-via-interceptor`
+syntax of the operation to get the `iiop-openjdk` `add-component-via-interceptor`
+-------------------
+
+-------------------
+parent=
+title=syntax of the operation to get the `iiop-openjdk` `auth-method`
+syntax of the operation to get the `iiop-openjdk` `auth-method`
+What does the "add-component-via-interceptor" attribute in the IIOP-OpenJDK configuration indicate?
+-------------------
+
+-------------------
+parent=
+title=syntax of the operation to get the `iiop-openjdk` `authentication-context`
+syntax of the operation to get the `iiop-openjdk` `authentication-context`
+What is the valid value for the "iiop-openjdk auth-method" attribute?
+-------------------
+
+-------------------
+parent=
+title=syntax of the operation to get the `iiop-openjdk` `caller-propagation`
+syntax of the operation to get the `iiop-openjdk` `caller-propagation`
+What does the "authentication-context" attribute in the IIOP-OpenJDK configuration refer to?
+-------------------
+
+-------------------
+parent=
+title=syntax of the operation to get the `iiop-openjdk` `client-requires`
+syntax of the operation to get the `iiop-openjdk` `client-requires`
+Under what condition will the SAS context propagate the caller identity when using the IIOP openJDK interface?
+-------------------
+
+-------------------
+parent=
+title=syntax of the operation to get the `iiop-openjdk` `client-requires-ssl`
+syntax of the operation to get the `iiop-openjdk` `client-requires-ssl`
+What is the value used to indicate the client's SSL required parameters in an IIOP-OpenJDK client?
+-------------------
+
+-------------------
+parent=
+title=syntax of the operation to get the `iiop-openjdk` `client-ssl-context`
+syntax of the operation to get the `iiop-openjdk` `client-ssl-context`
+When configuring an IIOP (Internet Inter-Object Request Protocol) connection in Java using OpenJDK, what should be set to ensure that secure communication is established?
+-------------------
+
+-------------------
+parent=
+title=syntax of the operation to get the `iiop-openjdk` `client-supports`
+syntax of the operation to get the `iiop-openjdk` `client-supports`
+Which attribute in the iiop-openjdk client refers to the name of the SSL context that is used to create client-side SSL sockets?
+-------------------
+
+-------------------
+parent=
+title=syntax of the operation to get the `iiop-openjdk` `confidentiality`
+syntax of the operation to get the `iiop-openjdk` `confidentiality`
+What does the "ClientSupports" attribute in the IIOP-OpenJDK client support parameter indicate?
+-------------------
+
+-------------------
+parent=
+title=syntax of the operation to get the `iiop-openjdk` `detect-misordering`
+syntax of the operation to get the `iiop-openjdk` `detect-misordering`
+Question: What does the "iiop-openjdk" confidentiality attribute specify regarding the required confidentiality on the transport level?
+-------------------
+
+-------------------
+parent=
+title=syntax of the operation to get the `iiop-openjdk` `detect-replay`
+syntax of the operation to get the `iiop-openjdk` `detect-replay`
+Which option does the "iiop-openjdk detect-misordering" attribute specify for requiring misordering detection in transport?
+-------------------

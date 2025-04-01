@@ -18,6 +18,7 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 import dev.langchain4j.model.mistralai.MistralAiChatModel;
+import dev.langchain4j.model.ollama.OllamaChatModel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -80,7 +81,7 @@ public class CliOperationsIngestor {
                     currentWord = new StringBuilder();
                     blockEntered = false;
                 } else {
-                    if(i > 0 && chars[i-1] != ' ' && c == '\'' && chars.length > i+1 && (chars[i+1] == 's' || chars[i+1] == 't')) {
+                    if (i > 0 && chars[i - 1] != ' ' && c == '\'' && chars.length > i + 1 && (chars[i + 1] == 's' || chars[i + 1] == 't')) {
                         currentWord.append(c);
                     } else {
                         blockEntered = true;
@@ -165,9 +166,9 @@ public class CliOperationsIngestor {
     }
 
     private static String unblock(String str) {
-        if(str.startsWith("`") && str.endsWith("`")) {
+        if (str.startsWith("`") && str.endsWith("`")) {
             StringBuilder builder = new StringBuilder();
-            for(char c : str.toCharArray()) {
+            for (char c : str.toCharArray()) {
                 if (c == '`') {
                     continue;
                 }
@@ -177,8 +178,10 @@ public class CliOperationsIngestor {
         }
         return str;
     }
+
     private static void generateResourceDoc(ChatLanguageModel model, Set<String> dictionary, StringBuilder docbuilder,
             StringBuilder questionsbuilder,
+            StringBuilder questionsLLMbuilder,
             JsonNode resourceNode,
             boolean isCustomNamed,
             String resourceName,
@@ -189,7 +192,7 @@ public class CliOperationsIngestor {
             while (knownResources.hasNext()) {
                 String knownResource = knownResources.next();
                 JsonNode resource = resourceNode.get(knownResource);
-                generateResourceDoc(model, dictionary, docbuilder, questionsbuilder, resource, true, resourceName + " `" + knownResource + "`", null, currentPath + knownResource);
+                generateResourceDoc(model, dictionary, docbuilder, questionsbuilder, questionsLLMbuilder, resource, true, resourceName + " `" + knownResource + "`", null, currentPath + knownResource);
             }
         } else {
             if (resourceType != null && !resourceType.equals("subsystem")) {
@@ -214,6 +217,9 @@ public class CliOperationsIngestor {
                     docbuilder.append(title);
                     questionsbuilder.append(title);
                     questionsbuilder.append("Can you get the " + unblock(fieldName) + " of the example " + unblock(resourceName) + "?\n");
+                    questionsLLMbuilder.append(title);
+                    questionsLLMbuilder.append("Your reply must only contain a generated question for the following text. "
+                            + "description of the " + unblock(resourceName) + " " + unblock(fieldName) + " attribute:" + description + "\n");
 //                    String generatedQuestion = model.chat("Your reply must only contain a generated question for the following text: " + description);
 //                    System.out.println("TEXT: " + description);
 //                    System.out.println("MISTRAL GENERATED: " + generatedQuestion);
@@ -221,7 +227,7 @@ public class CliOperationsIngestor {
 //                    Thread.sleep(1000);
 
                     String alternative = alternative(unblock(fieldName));
-                    String resourceAlernative =   alternative(unblock(resourceName));
+                    String resourceAlernative = alternative(unblock(resourceName));
                     if (!alternative.equals(fieldName) || !resourceAlernative.equals(resourceName)) {
                         questionsbuilder.append("Can you get the " + alternative + " of the example " + resourceAlernative + "?\n");
                     }
@@ -239,7 +245,7 @@ public class CliOperationsIngestor {
                     boolean isChildCustomeNamed = children.get(childrenName).get("model-description").has("*");
                     JsonNode node = isChildCustomeNamed ? children.get(childrenName).get("model-description").get("*")
                             : children.get(childrenName).get("model-description");
-                    generateResourceDoc(model, dictionary, docbuilder, questionsbuilder,
+                    generateResourceDoc(model, dictionary, docbuilder, questionsbuilder, questionsLLMbuilder,
                             node,
                             isChildCustomeNamed,
                             resourceName + " `" + childrenName + "`",
@@ -263,34 +269,73 @@ public class CliOperationsIngestor {
         Path questionsSegments = Paths.get("segments/segments-cli-questions.txt");
         Path questionsDoc = Paths.get("questions/cli-questions.md");
         Path generatedQuestionsDoc = Paths.get("questions/cli-questions-generated.md");
+        Path generatedLLMQuestionsTemplateDoc = Paths.get("templates/cli-questions-llm-generated.md");
 
+//        ChatLanguageModel model = MistralAiChatModel.builder()
+//                .apiKey(System.getenv("MISTRAL_API_KEY")) // Please use your own Mistral AI API key
+//                .modelName("mistral-small-latest")
+//                .logRequests(true)
+//                .logResponses(true)
+//                .build();
+        ChatLanguageModel model = OllamaChatModel.builder()
+                .modelName("qwen2.5:1.5b")
+                .baseUrl("http://127.0.0.1:11434")
+                .logRequests(true)
+                .logResponses(true)
+                .build();
+        if (Boolean.getBoolean("generate-llm")) {
+            Path generatedLLMQuestionsDoc = Paths.get("questions/cli-questions-llm-qwen2.51.5b-generated.md");
+            StringBuilder output = new StringBuilder();
+            List<String> lines = Files.readAllLines(generatedLLMQuestionsTemplateDoc);
+            StringBuilder currentQuestion = new StringBuilder();
+            for (String line : lines) {
+                if (line.startsWith("#")) {
+                    if (!currentQuestion.isEmpty()) {
+                        System.out.println(currentQuestion);
+                        String reply = model.chat(currentQuestion.toString());
+
+                        System.out.println("==>" + reply);
+                        output.append(reply + "\n\n");
+                    }
+                    output.append(line + "\n");
+                    currentQuestion = new StringBuilder();
+                } else {
+                    if (line.isEmpty()) {
+                        output.append(line + "\n");
+                    } else {
+                        currentQuestion.append(line);
+                    }
+                }
+            }
+            String reply = model.chat(currentQuestion.toString());
+            System.out.println("==>" + reply);
+            output.append(reply + "\n\n");
+            Files.deleteIfExists(generatedLLMQuestionsDoc);
+            Files.write(generatedLLMQuestionsDoc, output.toString().getBytes(), StandardOpenOption.CREATE);
+            return;
+        }
         if (Boolean.getBoolean("generate-doc")) {
             // First generate the doc and question templates
             Path descriptionsDir = Paths.get("json-descriptions");
             Path wildflyModel = descriptionsDir.resolve("wildfly-subsystems-model.json");
-
-            ChatLanguageModel model = MistralAiChatModel.builder()
-                    .apiKey(System.getenv("MISTRAL_API_KEY")) // Please use your own Mistral AI API key
-                    .modelName("mistral-small-latest")
-                    .logRequests(true)
-                    .logResponses(true)
-                    .build();
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode descObj = objectMapper.readTree(Files.readString(wildflyModel));
             ArrayNode children = (ArrayNode) descObj.get("result");
             StringBuilder docbuilder = new StringBuilder();
             StringBuilder questionsbuilder = new StringBuilder();
+            StringBuilder questionsLLMbuilder = new StringBuilder();
             for (JsonNode n : children) {
                 ArrayNode address = (ArrayNode) n.get("address");
                 String subsystemName = address.get(0).get("subsystem").asText();
                 String path = "/subsystem=" + subsystemName;
-                generateResourceDoc(model, dictionary, docbuilder, questionsbuilder, n.get("result"), true, "`"+subsystemName+"`", "subsystem", path);
+                generateResourceDoc(model, dictionary, docbuilder, questionsbuilder, questionsLLMbuilder, n.get("result"), true, "`" + subsystemName + "`", "subsystem", path);
             }
             Files.deleteIfExists(generatedCliDoc);
             Files.write(generatedCliDoc, docbuilder.toString().getBytes(), StandardOpenOption.CREATE);
             Files.deleteIfExists(generatedQuestionsDoc);
             Files.write(generatedQuestionsDoc, questionsbuilder.toString().getBytes(), StandardOpenOption.CREATE);
-
+            Files.deleteIfExists(generatedLLMQuestionsTemplateDoc);
+            Files.write(generatedLLMQuestionsTemplateDoc, questionsLLMbuilder.toString().getBytes(), StandardOpenOption.CREATE);
             Files.deleteIfExists(lexiqueFile);
             Files.createFile(lexiqueFile);
             System.out.println("Build lexique....");
@@ -541,12 +586,12 @@ public class CliOperationsIngestor {
             }
         }
         Set<String> clean = new TreeSet<>();
-        for(String w : lexique) {
-            if(w.endsWith("'s")) {
-                w = w.substring(0, w.length()-2);
+        for (String w : lexique) {
+            if (w.endsWith("'s")) {
+                w = w.substring(0, w.length() - 2);
             }
-            if(w.endsWith(")") && (!w.startsWith("/") && !w.startsWith(":"))) {
-                w = w.substring(0, w.length()-1);
+            if (w.endsWith(")") && (!w.startsWith("/") && !w.startsWith(":"))) {
+                w = w.substring(0, w.length() - 1);
             }
             if (!englishDictionary.contains(w)) {
                 clean.add(w);
