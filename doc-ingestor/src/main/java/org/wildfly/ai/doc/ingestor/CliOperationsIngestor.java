@@ -167,14 +167,16 @@ public class CliOperationsIngestor {
             }
         } else {
             if (resourceType != null && !resourceType.equals("subsystem")) {
-                docbuilder.append("## syntax of the operation to get a " + resourceName).append("\n");
+                String title = "## syntax of the operation to get a " + resourceName+"\n";
+                docbuilder.append(title);
                 docbuilder.append("operation: `" + currentPath + ":read-resource()`\n");
                 docbuilder.append("To get the list of all the " + resourceName + " use '*' for `<" + resourceType + " name>`.\n\n");
-                questionsbuilder.append("## syntax of the operation to get a " + resourceName).append("\n");
+                questionsbuilder.append(title);
                 questionsbuilder.append("Can you get all the " + unblock(resourceName) + "?\n");
                 questionsbuilder.append("Can you get all the " + unblock(resourceName) + "s?\n");
                 questionsbuilder.append("Can you get the " + unblock(resourceName) + " foo?\n");
                 questionsbuilder.append("Can you get the foo " + unblock(resourceName) + "?\n\n");
+                questionsLLMbuilder.append(title);
             }
             if (resourceNode.has("attributes")) {
                 JsonNode attributes = resourceNode.get("attributes");
@@ -191,12 +193,6 @@ public class CliOperationsIngestor {
                     questionsLLMbuilder.append(title);
                     questionsLLMbuilder.append("Your reply must only contain a generated question for the following text. "
                             + "description of the " + unblock(resourceName) + " " + unblock(fieldName) + " attribute:" + description + "\n");
-//                    String generatedQuestion = model.chat("Your reply must only contain a generated question for the following text: " + description);
-//                    System.out.println("TEXT: " + description);
-//                    System.out.println("MISTRAL GENERATED: " + generatedQuestion);
-//                    questionsbuilder.append(generatedQuestion + "\n\n");
-//                    Thread.sleep(1000);
-
                     String alternative = alternative(unblock(fieldName));
                     String resourceAlernative = alternative(unblock(resourceName));
                     if (!alternative.equals(fieldName) || !resourceAlernative.equals(resourceName)) {

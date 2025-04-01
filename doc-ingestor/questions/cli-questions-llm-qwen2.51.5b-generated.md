@@ -287,7 +287,6 @@ Which property within the `connection-factory` entry determines the JNDI name th
 What is the "type" attribute used for in the configuration of a Messaging-Activemq connection factory?
 
 ## syntax of the operation to get the `messaging-activemq` `connection-factory` `failover-on-initial-connection`
-Generated Question:
 How does setting `failover-on-initial-connection` to `true` affect the messaging-activemq configuration regarding failover during a new connection?
 
 ## syntax of the operation to get the `messaging-activemq` `connection-factory` `group-id`
@@ -339,7 +338,6 @@ What does the `transaction-batch-size` attribute in connection factories within 
 What is the implication of setting `useGlobalPools` to True in relation to the Messaging-ActiveMQ connection factory?
 
 ## syntax of the operation to get the `messaging-activemq` `connection-factory` `use-topology-for-load-balancing`
-Question:
 What is the default setting for using topology information when configuring a connection factory in Apache ActiveMQ?
 
 ## syntax of the operation to get the `messaging-activemq` `jms-bridge` `aborted-message-count`
@@ -385,7 +383,6 @@ What is the name of the source connection factory that needs to be looked up whe
 What properties should be configured using the `sourceContext` attribute in the Messaging-Activemq JMS Bridge?
 
 ## syntax of the operation to get the `messaging-activemq` `jms-bridge` `source-credential-reference`
-Question:
 What credential is referenced through the `source-credential-reference` attribute in the Messaging-ACTIVEMQ-JMS-Bridge configuration?
 
 ## syntax of the operation to get the `messaging-activemq` `jms-bridge` `source-destination`
@@ -425,8 +422,7 @@ What is the name of the user that will be used to create the target connection w
 What is the HTTP acceptor used by the messaging-activemq http-connector?
 
 ## syntax of the operation to get the `messaging-activemq` `http-connector` `params`
-Key: `connectionfactory-class`
-Value: Configuration class name for the connection factory to use with this connector.
+What does the "message-messaging-activemq http-connector params" attribute do?
 
 ## syntax of the operation to get the `messaging-activemq` `http-connector` `server-name`
 What should you set for the `server-name` attribute in your messaging-activemq configuration when connecting to a remote server using an HTTP connector?
@@ -459,7 +455,6 @@ What is the interval at which the Messaging-ACTIVEMQ server scans for addresses 
 When configuring the messaging-activemq server, what does the "async-connection-execution-enabled" attribute do?
 
 ## syntax of the operation to get the `messaging-activemq` `server` `cluster-credential-reference`
-Question:
 What does the `credential-reference` attribute in the Messaging-ActiveMQ server cluster configuration specify?
 
 ## syntax of the operation to get the `messaging-activemq` `server` `cluster-password`
@@ -2074,7 +2069,6 @@ What does the "consumer-max-rate" attribute in the Messaging-Activemq-pooled-Con
 What does the "consumer.window.size" attribute in the "pooled.connection.factory" configuration do?
 
 ## syntax of the operation to get the `messaging-activemq` `pooled-connection-factory` `credential-reference`
-Question:
 What is the `credential` attribute used in the `pooled-connection-factory` configuration, and how does it relate to authenticating a connection factory?
 
 ## syntax of the operation to get the `messaging-activemq` `pooled-connection-factory` `deserialization-allow-list`
@@ -2192,7 +2186,6 @@ Under what condition would the Auto Recovery feature be enabled for the `pooled-
 What is the purpose of setting "useGlobalPools" to true in the Messaging-ACTIVEMQ-Pooled-Connection-Factory configuration?
 
 ## syntax of the operation to get the `messaging-activemq` `pooled-connection-factory` `use-jndi`
-Generated Question:
 How should you configure the `use-jndi` property in the Messaging-Activemq Pooled Connection Factory to use JNDI to find the destination for incoming connections?
 
 ## syntax of the operation to get the `messaging-activemq` `pooled-connection-factory` `use-local-tx`
@@ -2211,8 +2204,6 @@ What does the "key-value pair" in "A key-value pair understood by the connector 
 What is the Socket Binding used by the Messaging-ActivemQ Remote Connector when creating connections?
 
 ## syntax of the operation to get the `messaging-activemq` `remote-connector` `ssl-context`
-To generate a suitable question about the `sslContext` attribute in the Messaging-ActiveMQ Remote Connector, I would need more specific details on how this attribute works or what it typically refers to. Since no further description is provided, an appropriate generic question could be:
-
 How does the `sslContext` attribute within the Messaging-ActiveMQ Remote Connector influence its ability to securely connect over a network?
 
 ## syntax of the operation to get the `messaging-activemq` `socket-discovery-group` `initial-wait-timeout`
@@ -5393,10 +5384,6 @@ What is the significance of setting the "max-header-size" attribute on an Undert
 What does the `max-headers` attribute in an Undertow server listener configuration primarily ensure?
 
 ## syntax of the operation to get the `undertow` `server` `https-listener` `max-parameters`
-What is the significance of setting a limit on the maximum number of parameters that will be parsed for an undertow server? How does this protection apply to different types of input, and what factors determine the effective total parameter count?
-
-Generate Question:
-
 How should you configure the `max-parameters` attribute in Undertow's `https-listener` to ensure it adequately protects against potential hash vulnerabilities while allowing a reasonable number of parameters for processing?
 
 ## syntax of the operation to get the `undertow` `server` `https-listener` `max-post-size`
@@ -6282,7 +6269,6 @@ What is the minimum log level that can be set for a specific logger in a logging
 What is the purpose of specifying "named-formatter" in the logging configuration?
 
 ## syntax of the operation to get the `logging` `logging-profile` `socket-handler` `outbound-socket-binding-ref`
-Question:
 What is the significance of specifying an `outboundSocketBindingRef` attribute in the logging profile when configuring a socket connection?
 
 ## syntax of the operation to get the `logging` `logging-profile` `socket-handler` `protocol`
@@ -6854,7 +6840,6 @@ Which attributes does the Handler class in the client-config web services have?
 What is the Protocol Binding in the context of the webservices client-config post-handler-chain protocol-bindings?
 
 ## syntax of the operation to get the `webservices` `client-config` `post-handler-chain` `handler` `class`
-Generated Question:
 What is the Handler class attribute called in the context of the webservices client-config, and what does it represent?
 
 ## syntax of the operation to get the `webservices` `client-config` `property` `value`
@@ -8408,7 +8393,6 @@ What does the "pre-defined path" in an Elytron filesystem realm refer to?
 What is the alias used for when configuring the secret key in the Elytron filesystem-realm?
 
 ## syntax of the operation to get the `elytron` `secret-key-credential-store` `create`
-Generated Question:
 What is the recommended action if the requested credential store does not already exist when creating an instance of `ElytronSecretKeyCredentialStore` in a Java application using Spring Security?
 
 ## syntax of the operation to get the `elytron` `secret-key-credential-store` `default-alias`
@@ -8787,7 +8771,6 @@ What does the "elk" attribute in an Elasticsearch instance configuration represe
 What is the purpose of setting the `attributeName` property in the ELItron X500 Attribute Principal Decoder?
 
 ## syntax of the operation to get the `elytron` `x500-attribute-principal-decoder` `convert`
-Question:
 What happens when the `convertAttribute` setting in the `Elytron X500AttributePrincipalDecoder` is enabled?
 
 ## syntax of the operation to get the `elytron` `x500-attribute-principal-decoder` `joiner`
@@ -8806,7 +8789,6 @@ What attributes are essential to ensure proper functioning and validation of an 
 What specific OIDs are required to ensure the proper functionality and validation of the `elkroon.x500AttributePrincipalDecoder` implementation?
 
 ## syntax of the operation to get the `elytron` `x500-attribute-principal-decoder` `reverse`
-Generated Question:
 What happens when the "reverse" attribute is enabled for the Elytron X500 principal decoder, and how does it affect the processing of attribute values?
 
 ## syntax of the operation to get the `elytron` `x500-attribute-principal-decoder` `start-segment`
@@ -9908,7 +9890,6 @@ What is the default behavior when the 'cors-max-age' attribute is not configured
 What role does the "secure-deployment" credential attribute play in the secure deployment of an Elytron-OIDC client?
 
 ## syntax of the operation to get the `elytron-oidc-client` `secure-deployment` `disable-trust-manager`
-Question:
 What does the `disableTrustManager` attribute do in the elytron-oidc-client library, and how should it be configured for secure deployment in production?
 
 ## syntax of the operation to get the `elytron-oidc-client` `secure-deployment` `enable-basic-auth`
@@ -10191,7 +10172,6 @@ What is the name of the default stateful bean cache that applies to all clustere
 What does the `ejb3.default-distinct-name` attribute do in Java EE 7 and how can it be set or modified?
 
 ## syntax of the operation to get the `ejb3` `default-entity-bean-instance-pool`
-Question:
 What is the purpose of the `ejb3.default-entity-bean-instance-pool` attribute and how does it affect the behavior of a Java Enterprise Bean (EJB)?
 
 ## syntax of the operation to get the `ejb3` `default-entity-bean-optimistic-locking`

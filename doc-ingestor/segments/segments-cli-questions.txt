@@ -924,7 +924,6 @@ What is the "type" attribute used for in the configuration of a Messaging-Active
 parent=
 title=syntax of the operation to get the `messaging-activemq` `connection-factory` `failover-on-initial-connection`
 syntax of the operation to get the `messaging-activemq` `connection-factory` `failover-on-initial-connection`
-Generated Question:
 How does setting `failover-on-initial-connection` to `true` affect the messaging-activemq configuration regarding failover during a new connection?
 -------------------
 
@@ -1044,7 +1043,6 @@ What is the implication of setting `useGlobalPools` to True in relation to the M
 parent=
 title=syntax of the operation to get the `messaging-activemq` `connection-factory` `use-topology-for-load-balancing`
 syntax of the operation to get the `messaging-activemq` `connection-factory` `use-topology-for-load-balancing`
-Question:
 What is the default setting for using topology information when configuring a connection factory in Apache ActiveMQ?
 -------------------
 
@@ -1150,7 +1148,6 @@ What properties should be configured using the `sourceContext` attribute in the 
 parent=
 title=syntax of the operation to get the `messaging-activemq` `jms-bridge` `source-credential-reference`
 syntax of the operation to get the `messaging-activemq` `jms-bridge` `source-credential-reference`
-Question:
 What credential is referenced through the `source-credential-reference` attribute in the Messaging-ACTIVEMQ-JMS-Bridge configuration?
 -------------------
 
@@ -1242,8 +1239,7 @@ What is the HTTP acceptor used by the messaging-activemq http-connector?
 parent=
 title=syntax of the operation to get the `messaging-activemq` `http-connector` `params`
 syntax of the operation to get the `messaging-activemq` `http-connector` `params`
-Key: `connectionfactory-class`
-Value: Configuration class name for the connection factory to use with this connector.
+What does the "message-messaging-activemq http-connector params" attribute do?
 -------------------
 
 -------------------
@@ -1320,7 +1316,6 @@ When configuring the messaging-activemq server, what does the "async-connection-
 parent=
 title=syntax of the operation to get the `messaging-activemq` `server` `cluster-credential-reference`
 syntax of the operation to get the `messaging-activemq` `server` `cluster-credential-reference`
-Question:
 What does the `credential-reference` attribute in the Messaging-ActiveMQ server cluster configuration specify?
 -------------------
 
@@ -5087,7 +5082,6 @@ What does the "consumer.window.size" attribute in the "pooled.connection.factory
 parent=
 title=syntax of the operation to get the `messaging-activemq` `pooled-connection-factory` `credential-reference`
 syntax of the operation to get the `messaging-activemq` `pooled-connection-factory` `credential-reference`
-Question:
 What is the `credential` attribute used in the `pooled-connection-factory` configuration, and how does it relate to authenticating a connection factory?
 -------------------
 
@@ -5361,7 +5355,6 @@ What is the purpose of setting "useGlobalPools" to true in the Messaging-ACTIVEM
 parent=
 title=syntax of the operation to get the `messaging-activemq` `pooled-connection-factory` `use-jndi`
 syntax of the operation to get the `messaging-activemq` `pooled-connection-factory` `use-jndi`
-Generated Question:
 How should you configure the `use-jndi` property in the Messaging-Activemq Pooled Connection Factory to use JNDI to find the destination for incoming connections?
 -------------------
 
@@ -5404,7 +5397,6 @@ What is the Socket Binding used by the Messaging-ActivemQ Remote Connector when 
 parent=
 title=syntax of the operation to get the `messaging-activemq` `remote-connector` `ssl-context`
 syntax of the operation to get the `messaging-activemq` `remote-connector` `ssl-context`
-To generate a suitable question about the `sslContext` attribute in the Messaging-ActiveMQ Remote Connector, I would need more specific details on how this attribute works or what it typically refers to. Since no further description is provided, an appropriate generic question could be:
 How does the `sslContext` attribute within the Messaging-ActiveMQ Remote Connector influence its ability to securely connect over a network?
 -------------------
 
@@ -12825,8 +12817,6 @@ What does the `max-headers` attribute in an Undertow server listener configurati
 parent=
 title=syntax of the operation to get the `undertow` `server` `https-listener` `max-parameters`
 syntax of the operation to get the `undertow` `server` `https-listener` `max-parameters`
-What is the significance of setting a limit on the maximum number of parameters that will be parsed for an undertow server? How does this protection apply to different types of input, and what factors determine the effective total parameter count?
-Generate Question:
 How should you configure the `max-parameters` attribute in Undertow's `https-listener` to ensure it adequately protects against potential hash vulnerabilities while allowing a reasonable number of parameters for processing?
 -------------------
 
@@ -14892,7 +14882,6 @@ What is the purpose of specifying "named-formatter" in the logging configuration
 parent=
 title=syntax of the operation to get the `logging` `logging-profile` `socket-handler` `outbound-socket-binding-ref`
 syntax of the operation to get the `logging` `logging-profile` `socket-handler` `outbound-socket-binding-ref`
-Question:
 What is the significance of specifying an `outboundSocketBindingRef` attribute in the logging profile when configuring a socket connection?
 -------------------
 
@@ -16224,7 +16213,6 @@ What is the Protocol Binding in the context of the webservices client-config pos
 parent=
 title=syntax of the operation to get the `webservices` `client-config` `post-handler-chain` `handler` `class`
 syntax of the operation to get the `webservices` `client-config` `post-handler-chain` `handler` `class`
-Generated Question:
 What is the Handler class attribute called in the context of the webservices client-config, and what does it represent?
 -------------------
 
@@ -19840,7 +19828,6 @@ What is the alias used for when configuring the secret key in the Elytron filesy
 parent=
 title=syntax of the operation to get the `elytron` `secret-key-credential-store` `create`
 syntax of the operation to get the `elytron` `secret-key-credential-store` `create`
-Generated Question:
 What is the recommended action if the requested credential store does not already exist when creating an instance of `ElytronSecretKeyCredentialStore` in a Java application using Spring Security?
 -------------------
 
@@ -20723,7 +20710,6 @@ What is the purpose of setting the `attributeName` property in the ELItron X500 
 parent=
 title=syntax of the operation to get the `elytron` `x500-attribute-principal-decoder` `convert`
 syntax of the operation to get the `elytron` `x500-attribute-principal-decoder` `convert`
-Question:
 What happens when the `convertAttribute` setting in the `Elytron X500AttributePrincipalDecoder` is enabled?
 -------------------
 
@@ -20766,7 +20752,6 @@ What specific OIDs are required to ensure the proper functionality and validatio
 parent=
 title=syntax of the operation to get the `elytron` `x500-attribute-principal-decoder` `reverse`
 syntax of the operation to get the `elytron` `x500-attribute-principal-decoder` `reverse`
-Generated Question:
 What happens when the "reverse" attribute is enabled for the Elytron X500 principal decoder, and how does it affect the processing of attribute values?
 -------------------
 
@@ -23336,7 +23321,6 @@ What role does the "secure-deployment" credential attribute play in the secure d
 parent=
 title=syntax of the operation to get the `elytron-oidc-client` `secure-deployment` `disable-trust-manager`
 syntax of the operation to get the `elytron-oidc-client` `secure-deployment` `disable-trust-manager`
-Question:
 What does the `disableTrustManager` attribute do in the elytron-oidc-client library, and how should it be configured for secure deployment in production?
 -------------------
 
@@ -23995,7 +23979,6 @@ What does the `ejb3.default-distinct-name` attribute do in Java EE 7 and how can
 parent=
 title=syntax of the operation to get the `ejb3` `default-entity-bean-instance-pool`
 syntax of the operation to get the `ejb3` `default-entity-bean-instance-pool`
-Question:
 What is the purpose of the `ejb3.default-entity-bean-instance-pool` attribute and how does it affect the behavior of a Java Enterprise Bean (EJB)?
 -------------------
 
