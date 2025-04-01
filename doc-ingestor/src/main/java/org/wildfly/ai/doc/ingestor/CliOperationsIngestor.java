@@ -18,7 +18,6 @@ import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 import dev.langchain4j.model.mistralai.MistralAiChatModel;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CliOperationsIngestor {
 
@@ -42,30 +40,167 @@ public class CliOperationsIngestor {
         return name.replaceAll("-", "");
     }
 
-    private static void generateResourceDoc(StringBuilder docbuilder,
+    private static String formatDescription(Set<String> dictionary, String text) {
+        StringBuilder formated = new StringBuilder();
+        text = text.toLowerCase();
+        char[] chars = text.toCharArray();
+        boolean blockEntered = false;
+        StringBuilder currentWord = new StringBuilder();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            //System.out.println("[" + c + "], [" + currentWord + "], [" + formated + "]");
+            if (c == '\'' || c == '\"') {
+                if (blockEntered) {
+                    String w = currentWord.toString();
+                    w = w.trim();
+                    if (w.isEmpty()) {
+                        continue;
+                    }
+                    boolean lastCharRemoved = false;
+                    boolean lastChar2Removed = false;
+                    char last = w.charAt(w.length() - 1);
+                    char last2 = 0;
+                    if (w.length() > 2) {
+                        last2 = w.charAt(w.length() - 2);
+                        if ((last < 48 || (last > 57 && last < 97)) || ((last < 97 && last > 57) || last > 122)) {
+                            w = w.substring(0, w.length() - 1);
+                            lastCharRemoved = true;
+                        }
+                        if ((last2 < 48 || (last2 > 57 && last2 < 97)) || ((last2 < 97 && last2 > 57) || last2 > 122)) {
+                            w = w.substring(0, w.length() - 1);
+                            lastChar2Removed = true;
+                        }
+                    }
+                    if (!w.toString().isEmpty() && !dictionary.contains(w)) {
+                        formated.append("`" + w + "`" + (lastChar2Removed ? last2 : "") + (lastCharRemoved ? last : ""));
+                    } else {
+                        formated.append(w + (lastChar2Removed ? last2 : "") + (lastCharRemoved ? last : ""));
+                    }
+                    //formated.append(" ");
+                    currentWord = new StringBuilder();
+                    blockEntered = false;
+                } else {
+                    if(i > 0 && chars[i-1] != ' ' && c == '\'' && chars.length > i+1 && (chars[i+1] == 's' || chars[i+1] == 't')) {
+                        currentWord.append(c);
+                    } else {
+                        blockEntered = true;
+                    }
+                }
+            } else {
+                if (c == '(') {
+                    if (blockEntered) {
+                        currentWord.append(c);
+                    } else {
+                        formated.append(c);
+                    }
+                } else {
+
+                    if (c == ' ' || c == '\n') {
+
+                        if (!blockEntered) {
+                            String w = currentWord.toString();
+                            //w = w.trim();
+                            if (w.isEmpty()) {
+                                formated.append(c);
+                                continue;
+                            }
+                            boolean lastCharRemoved = false;
+                            boolean lastChar2Removed = false;
+                            char last = w.charAt(w.length() - 1);
+                            if ((last < 48 || (last > 57 && last < 97)) || ((last < 97 && last > 57) || last > 122)) {
+                                w = w.substring(0, w.length() - 1);
+                                lastCharRemoved = true;
+                            }
+                            char last2 = 0;
+                            if (w.length() > 2) {
+                                last2 = w.charAt(w.length() - 1);
+                                if ((last2 < 48 || (last2 > 57 && last2 < 97)) || ((last2 < 97 && last2 > 57) || last2 > 122)) {
+                                    w = w.substring(0, w.length() - 1);
+                                    lastChar2Removed = true;
+                                }
+                            }
+                            if (!w.toString().isEmpty() && !dictionary.contains(w)) {
+                                formated.append("`" + w + (lastChar2Removed ? last2 : "") + "`" + (lastCharRemoved ? last : ""));
+                            } else {
+                                formated.append(w + (lastChar2Removed ? last2 : "") + (lastCharRemoved ? last : ""));
+                            }
+                            formated.append(" ");
+                            currentWord = new StringBuilder();
+                        } else {
+                            formated.append(c);
+                        }
+                    } else {
+                        currentWord.append(c);
+                    }
+                }
+            }
+        }
+        String w = currentWord.toString();
+        w = w.trim();
+        if (!w.isEmpty()) {
+            boolean lastCharRemoved = false;
+            boolean lastChar2Removed = false;
+            if (w.length() == 1) {
+                formated.append(w);
+            } else {
+                char last = w.charAt(w.length() - 1);
+                char last2 = w.charAt(w.length() - 2);
+                if ((last < 48 || (last > 57 && last < 97)) || ((last < 97 && last > 57) || last > 122)) {
+                    w = w.substring(0, w.length() - 1);
+                    lastCharRemoved = true;
+                }
+                if ((last2 < 48 || (last2 > 57 && last2 < 97)) || ((last2 < 97 && last2 > 57) || last2 > 122)) {
+                    w = w.substring(0, w.length() - 1);
+                    lastChar2Removed = true;
+                }
+
+                if (!w.toString().isEmpty() && !dictionary.contains(w)) {
+                    formated.append("`" + w + "`" + (lastChar2Removed ? last2 : "") + (lastCharRemoved ? last : ""));
+                } else {
+                    formated.append(w + (lastChar2Removed ? last2 : "") + (lastCharRemoved ? last : ""));
+                }
+            }
+        }
+        return formated.toString();
+    }
+
+    private static String unblock(String str) {
+        if(str.startsWith("`") && str.endsWith("`")) {
+            StringBuilder builder = new StringBuilder();
+            for(char c : str.toCharArray()) {
+                if (c == '`') {
+                    continue;
+                }
+                builder.append(c);
+            }
+            str = builder.toString();
+        }
+        return str;
+    }
+    private static void generateResourceDoc(ChatLanguageModel model, Set<String> dictionary, StringBuilder docbuilder,
             StringBuilder questionsbuilder,
             JsonNode resourceNode,
             boolean isCustomNamed,
             String resourceName,
             String resourceType,
-            String currentPath) {
+            String currentPath) throws Exception {
         if (!isCustomNamed) {
             Iterator<String> knownResources = resourceNode.fieldNames();
             while (knownResources.hasNext()) {
                 String knownResource = knownResources.next();
                 JsonNode resource = resourceNode.get(knownResource);
-                generateResourceDoc(docbuilder, questionsbuilder, resource, true, resourceName + " " + knownResource, null, currentPath + knownResource);
+                generateResourceDoc(model, dictionary, docbuilder, questionsbuilder, resource, true, resourceName + " `" + knownResource + "`", null, currentPath + knownResource);
             }
         } else {
             if (resourceType != null && !resourceType.equals("subsystem")) {
                 docbuilder.append("## syntax of the operation to get a " + resourceName).append("\n");
                 docbuilder.append("operation: `" + currentPath + ":read-resource()`\n");
-                docbuilder.append("To get the list of all the `" + resourceName + "` use '*' for `<" + resourceType + " name>`.\n\n");
+                docbuilder.append("To get the list of all the " + resourceName + " use '*' for `<" + resourceType + " name>`.\n\n");
                 questionsbuilder.append("## syntax of the operation to get a " + resourceName).append("\n");
-                questionsbuilder.append("Can you get all the " + resourceName + "?\n");
-                questionsbuilder.append("Can you get all the " + resourceName + "s?\n");
-                questionsbuilder.append("Can you get the " + resourceName + " foo?\n");
-                questionsbuilder.append("Can you get the foo " + resourceName + "?\n\n");
+                questionsbuilder.append("Can you get all the " + unblock(resourceName) + "?\n");
+                questionsbuilder.append("Can you get all the " + unblock(resourceName) + "s?\n");
+                questionsbuilder.append("Can you get the " + unblock(resourceName) + " foo?\n");
+                questionsbuilder.append("Can you get the foo " + unblock(resourceName) + "?\n\n");
             }
             if (resourceNode.has("attributes")) {
                 JsonNode attributes = resourceNode.get("attributes");
@@ -74,16 +209,24 @@ public class CliOperationsIngestor {
                     String fieldName = fieldNames.next();
                     JsonNode field = attributes.get(fieldName);
                     String description = field.get("description").asText();
-                    String title = "## syntax of the operation to get the " + resourceName + " " + fieldName + "\n";
+                    String fornmattedDescription = formatDescription(dictionary, description);
+                    String title = "## syntax of the operation to get the " + resourceName + " `" + fieldName + "`\n";
                     docbuilder.append(title);
                     questionsbuilder.append(title);
-                    questionsbuilder.append("Can you get the " + fieldName + " of the example " + resourceName + "?\n");
-                    String alternative = alternative(fieldName);
-                    if (!alternative.equals(fieldName)) {
-                        questionsbuilder.append("Can you get the " + alternative(fieldName) + " of the example " + reduce(resourceName) + "?\n");
+                    questionsbuilder.append("Can you get the " + unblock(fieldName) + " of the example " + unblock(resourceName) + "?\n");
+//                    String generatedQuestion = model.chat("Your reply must only contain a generated question for the following text: " + description);
+//                    System.out.println("TEXT: " + description);
+//                    System.out.println("MISTRAL GENERATED: " + generatedQuestion);
+//                    questionsbuilder.append(generatedQuestion + "\n\n");
+//                    Thread.sleep(1000);
+
+                    String alternative = alternative(unblock(fieldName));
+                    String resourceAlernative =   alternative(unblock(resourceName));
+                    if (!alternative.equals(fieldName) || !resourceAlernative.equals(resourceName)) {
+                        questionsbuilder.append("Can you get the " + alternative + " of the example " + resourceAlernative + "?\n");
                     }
-                    docbuilder.append(description).append("\n");
-                    docbuilder.append("get the `" + resourceName + "` `" + fieldName + "` attribute.\n");
+                    docbuilder.append(fornmattedDescription).append("\n");
+                    docbuilder.append("get the " + resourceName + " `" + fieldName + "` attribute.\n");
                     String operation = "`" + currentPath + ":read-attribute(name=" + fieldName + ")`\n\n";
                     docbuilder.append(operation);
                 }
@@ -96,10 +239,10 @@ public class CliOperationsIngestor {
                     boolean isChildCustomeNamed = children.get(childrenName).get("model-description").has("*");
                     JsonNode node = isChildCustomeNamed ? children.get(childrenName).get("model-description").get("*")
                             : children.get(childrenName).get("model-description");
-                    generateResourceDoc(docbuilder, questionsbuilder,
+                    generateResourceDoc(model, dictionary, docbuilder, questionsbuilder,
                             node,
                             isChildCustomeNamed,
-                            resourceName + " " + childrenName,
+                            resourceName + " `" + childrenName + "`",
                             childrenName,
                             currentPath + "/" + childrenName + "=" + (isChildCustomeNamed ? "<" + childrenName + " name>" : ""));
                 }
@@ -112,7 +255,7 @@ public class CliOperationsIngestor {
      */
     public static void main(String[] args) throws Exception {
         EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
-        List<String> englishDictionary = Files.readAllLines(Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/words_alpha.txt"));
+        Set<String> dictionary = Files.readAllLines(Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/words_alpha.txt")).stream().collect(Collectors.toSet());
         Path docEmbeddings = Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/embeddings.json");
         Path lexiqueFile = Paths.get("../wildfly-chat-bot/extra-content/standalone/configuration/cli_lexique.txt");
         Path cliDoc = Paths.get("wildfly-docs/cli/cli.md");
@@ -141,18 +284,27 @@ public class CliOperationsIngestor {
                 ArrayNode address = (ArrayNode) n.get("address");
                 String subsystemName = address.get(0).get("subsystem").asText();
                 String path = "/subsystem=" + subsystemName;
-                generateResourceDoc(docbuilder, questionsbuilder, n.get("result"), true, subsystemName, "subsystem", path);
+                generateResourceDoc(model, dictionary, docbuilder, questionsbuilder, n.get("result"), true, "`"+subsystemName+"`", "subsystem", path);
             }
             Files.deleteIfExists(generatedCliDoc);
             Files.write(generatedCliDoc, docbuilder.toString().getBytes(), StandardOpenOption.CREATE);
             Files.deleteIfExists(generatedQuestionsDoc);
             Files.write(generatedQuestionsDoc, questionsbuilder.toString().getBytes(), StandardOpenOption.CREATE);
+
+            Files.deleteIfExists(lexiqueFile);
+            Files.createFile(lexiqueFile);
+            System.out.println("Build lexique....");
+            System.out.println("Reading doc...");
+            List<String> doc = new ArrayList<>();
+            doc.addAll(Files.readAllLines(cliDoc));
+            doc.addAll(Files.readAllLines(generatedCliDoc));
+            Set<String> lexique = buildLexique(doc, dictionary);
+            for (String l : lexique) {
+                Files.writeString(lexiqueFile, l + "\n", StandardOpenOption.APPEND);
+            }
+            System.out.println("Lexique written to " + lexiqueFile.toAbsolutePath());
             return;
         }
-        System.out.println("Reading doc...");
-        List<String> doc = new ArrayList<>();
-        doc.addAll(Files.readAllLines(cliDoc));
-        doc.addAll(Files.readAllLines(generatedCliDoc));
         String question = System.getProperty("question");
         if (question == null) {
             // First vectorize the doc
@@ -189,15 +341,11 @@ public class CliOperationsIngestor {
                     Files.write(questionsSegments, ss.getBytes(), StandardOpenOption.APPEND);
                 }
             }
-            Files.deleteIfExists(lexiqueFile);
-            Files.createFile(lexiqueFile);
-            System.out.println("Build lexique....");
-            Set<String> lexique = buildLexique(doc, englishDictionary);
-            for (String l : lexique) {
-                Files.writeString(lexiqueFile, l + "\n", StandardOpenOption.APPEND);
-            }
-            System.out.println("Lexique written to " + lexiqueFile.toAbsolutePath());
         } else {
+            System.out.println("Reading doc...");
+            List<String> doc = new ArrayList<>();
+            doc.addAll(Files.readAllLines(cliDoc));
+            doc.addAll(Files.readAllLines(generatedCliDoc));
             Set<String> lexique = Files.readAllLines(lexiqueFile).stream().collect(Collectors.toSet());
             List<String> questionsNotTopRanked = new ArrayList<>();
             List<String> questionsTopRanked = new ArrayList<>();
@@ -215,7 +363,7 @@ public class CliOperationsIngestor {
                 // For now reuse the input doc as lexique
                 Set<String> questionHeaders = new HashSet<>();
                 Set<String> docHeaders = new HashSet<>();
-                
+
                 for (String line : questions) {
                     if (line.startsWith("#")) {
                         questionHeaders.add(line.trim());
@@ -238,9 +386,9 @@ public class CliOperationsIngestor {
                 int num = 0;
                 int total = 0;
                 for (String line : questions) {
-                    num+=1;
+                    num += 1;
                     if (num == 100) {
-                        total+=num;
+                        total += num;
                         System.out.println("Checked " + total);
                         num = 0;
                     }
@@ -249,7 +397,7 @@ public class CliOperationsIngestor {
                         continue;
                     }
                     numQuestions += 1;
-                    String filteredQuestion = generalizeQuestion(line, lexique, englishDictionary);
+                    String filteredQuestion = generalizeQuestion(line, lexique, dictionary);
                     Embedding queryEmbedding = embeddingModel.embed(filteredQuestion.toString()).content();
                     List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 4);
                     StringBuilder messageBuilder = new StringBuilder();
@@ -312,7 +460,7 @@ public class CliOperationsIngestor {
                     throw new Exception("Some questions are not ranked!");
                 }
             } else {
-                String generalizedQuestion = generalizeQuestion(question, lexique, englishDictionary);
+                String generalizedQuestion = generalizeQuestion(question, lexique, dictionary);
                 Embedding queryEmbedding = embeddingModel.embed(generalizedQuestion).content();
                 List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 4);
                 StringBuilder messageBuilder = new StringBuilder();
@@ -343,12 +491,12 @@ public class CliOperationsIngestor {
         throw new Exception("Question " + question + " has no " + key);
     }
 
-    private static Set<String> buildLexique(List<String> lines, List<String> englishDictionary) {
+    private static Set<String> buildLexique(List<String> lines, Set<String> englishDictionary) {
         Set<String> lexique = new TreeSet<>();
-        System.out.println("Documentation lines "+ lines.size());
+        System.out.println("Documentation lines " + lines.size());
         for (String l : lines) {
             // Remove comments and operations
-            if (l.startsWith("//") || l.isEmpty() || l.startsWith("`/")) {
+            if (l.startsWith("//") || l.isEmpty()) {
                 continue;
             }
             l = l.toLowerCase();
@@ -392,11 +540,23 @@ public class CliOperationsIngestor {
                 lexique.add(currentWord.toString());
             }
         }
-        return lexique;
+        Set<String> clean = new TreeSet<>();
+        for(String w : lexique) {
+            if(w.endsWith("'s")) {
+                w = w.substring(0, w.length()-2);
+            }
+            if(w.endsWith(")") && (!w.startsWith("/") && !w.startsWith(":"))) {
+                w = w.substring(0, w.length()-1);
+            }
+            if (!englishDictionary.contains(w)) {
+                clean.add(w);
+            }
+        }
+        return clean;
     }
 
     // TODO must apply logic from lexique generation
-    private static String generalizeQuestion(String question, Set<String> lexique, List<String> dictionary) {
+    private static String generalizeQuestion(String question, Set<String> lexique, Set<String> dictionary) {
         String[] words = question.split("\\s+");
         StringBuilder filteredQuestion = new StringBuilder();
         for (String word : words) {

@@ -66,7 +66,7 @@ An empty result returned by this operation means that no system properties are s
 
 ## get or resolve the value of the expression
 
-operation: `:resolve-expression(expression=<expression_value>})`
+operation: `:resolve-expression(expression=<expression_value>)`
 An `<expression_value>` can be an environment variable or a system property. Examples of expressions are `${JBOSS_HOME}` and `${jboss.node.name}`.
 
 # interface
