@@ -238,7 +238,8 @@ public class CliOperationsIngestor {
         Path cliDoc = Paths.get("wildfly-docs/cli/cli.md");
         Path generatedCliDoc = Paths.get("wildfly-docs/cli/cli-generated.md");
         Path questionsSegments = Paths.get("segments/segments-cli-questions.txt");
-        Path quen2515bQuestions = Paths.get("questions/cli-questions-llm-qwen2.51.5b-generated.md");
+        Path qwen2515bQuestions = Paths.get("questions/cli-questions-llm-qwen2.51.5b-generated.md");
+        Path qwen253bQuestions = Paths.get("questions/cli-questions-llm-qwen2.5-3b-generated.md");
         Path questionsDoc = Paths.get("questions/cli-questions.md");
         Path generatedQuestionsDoc = Paths.get("questions/cli-questions-generated.md");
         Path generatedLLMQuestionsTemplateDoc = Paths.get("templates/cli-questions-llm-generated.md");
@@ -377,7 +378,8 @@ public class CliOperationsIngestor {
                 System.out.println("Reading questions...");
                 questions.addAll(Files.readAllLines(questionsDoc));
                 questions.addAll(Files.readAllLines(generatedQuestionsDoc));
-                questions.addAll(Files.readAllLines(quen2515bQuestions));
+                questions.addAll(Files.readAllLines(qwen2515bQuestions));
+                questions.addAll(Files.readAllLines(qwen253bQuestions));
                 // For now reuse the input doc as lexique
                 Set<String> questionHeaders = new HashSet<>();
                 Set<String> docHeaders = new HashSet<>();
