@@ -403,7 +403,6 @@ If you don't have enough information in the directives to generate CLI operation
                     boolean found = false;
                     for (String s : ops) {
                         if (llmOps.contains(s)) {
-                            System.out.println("MATCH FOR " + s);
                             found = true;
                             containsExactOp += 1;
                             break;
