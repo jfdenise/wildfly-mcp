@@ -29,9 +29,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.jboss.as.cli.CommandContext;
+import org.jboss.as.cli.CommandContextFactory;
+import org.jboss.dmr.ModelNode;
 
 public class CliOperationsIngestor {
+
+    private static final String PROMPT = """
+You are a WildFly expert who understands well how to administrate the WildFly server and its components.
+You have to answer the user question delimited by  ---
+Your reply must only contain WildFly CLI operations. To generate the CLI operations you must only use the directives delimited by %%% 
+If you don't have enough information in the directives to generate CLI operations, your reply must be: FAILED TO GENERATE OPERATIONS
+                                         """;
 
     private static String alternative(String name) {
         return name.replaceAll("-", " ");
@@ -167,16 +179,15 @@ public class CliOperationsIngestor {
             }
         } else {
             if (resourceType != null && !resourceType.equals("subsystem")) {
-                String title = "## syntax of the operation to get a " + resourceName+"\n";
+                String title = "## syntax of the operation to get a " + resourceName + "\n";
                 docbuilder.append(title);
-                docbuilder.append("operation: `" + currentPath + ":read-resource()`\n");
-                docbuilder.append("To get the list of all the " + resourceName + " use '*' for `<" + resourceType + " name>`.\n\n");
+                docbuilder.append("* operation: `" + currentPath + ":read-resource()`\n");
+                docbuilder.append("* To get the list of all the " + resourceName + " use '*' for `<" + resourceType + " name>`.\n\n");
                 questionsbuilder.append(title);
                 questionsbuilder.append("Can you get all the " + unblock(resourceName) + "?\n");
                 questionsbuilder.append("Can you get all the " + unblock(resourceName) + "s?\n");
                 questionsbuilder.append("Can you get the " + unblock(resourceName) + " foo?\n");
                 questionsbuilder.append("Can you get the foo " + unblock(resourceName) + "?\n\n");
-                questionsLLMbuilder.append(title);
             }
             if (resourceNode.has("attributes")) {
                 JsonNode attributes = resourceNode.get("attributes");
@@ -185,23 +196,24 @@ public class CliOperationsIngestor {
                     String fieldName = fieldNames.next();
                     JsonNode field = attributes.get(fieldName);
                     String description = field.get("description").asText();
-                    String fornmattedDescription = formatDescription(dictionary, description);
+                    String formattedDescription = formatDescription(dictionary, description);
                     String title = "## syntax of the operation to get the " + resourceName + " `" + fieldName + "`\n";
                     docbuilder.append(title);
                     questionsbuilder.append(title);
                     questionsbuilder.append("Can you get the " + unblock(fieldName) + " of the example " + unblock(resourceName) + "?\n");
                     questionsLLMbuilder.append(title);
-                    questionsLLMbuilder.append("Your reply must only contain a generated question for the following text. "
+                    questionsLLMbuilder.append("Your reply must only contain a generated question that should capture the idea of retrieving a value for the following text: "
                             + "description of the " + unblock(resourceName) + " " + unblock(fieldName) + " attribute:" + description + "\n");
                     String alternative = alternative(unblock(fieldName));
                     String resourceAlernative = alternative(unblock(resourceName));
                     if (!alternative.equals(fieldName) || !resourceAlernative.equals(resourceName)) {
                         questionsbuilder.append("Can you get the " + alternative + " of the example " + resourceAlernative + "?\n");
                     }
-                    docbuilder.append(fornmattedDescription).append("\n");
-                    docbuilder.append("get the " + resourceName + " `" + fieldName + "` attribute.\n");
+                    docbuilder.append("* Retrieve the " + resourceName + " `" + fieldName + "` attribute value.\n");
+                    docbuilder.append("* `" + fieldName + "` attribute description: " + formattedDescription).append("\n");
+
                     String operation = "`" + currentPath + ":read-attribute(name=" + fieldName + ")`\n\n";
-                    docbuilder.append(operation);
+                    docbuilder.append("* operation: " + operation);
                 }
             }
             if (resourceNode.has("children")) {
@@ -240,6 +252,8 @@ public class CliOperationsIngestor {
         Path generatedQuestionsDoc = Paths.get("questions/cli-questions-generated.md");
         Path generatedLLMQuestionsTemplateDoc = Paths.get("templates/cli-questions-llm-generated.md");
 
+        Path llmRagReplies = Paths.get("rag-cli-replies.md");
+
 //        ChatLanguageModel model = MistralAiChatModel.builder()
 //                .apiKey(System.getenv("MISTRAL_API_KEY")) // Please use your own Mistral AI API key
 //                .modelName("mistral-small-latest")
@@ -252,25 +266,32 @@ public class CliOperationsIngestor {
                 .logRequests(true)
                 .logResponses(true)
                 .build();
+        ChatLanguageModel mistralModel = MistralAiChatModel.builder()
+                .modelName("mistral-small-latest")
+                .apiKey(System.getenv("MISTRAL_API_KEY"))
+                .logRequests(true)
+                .logResponses(true)
+                .build();
         if (Boolean.getBoolean("generate-llm")) {
-            Path generatedLLMQuestionsDoc = Paths.get("questions/cli-questions-llm-qwen2.5-3b-generated.md");
-            StringBuilder output = new StringBuilder();
+            Path generatedLLMQuestionsDoc = Paths.get("questions/cli-questions-llm-mistral-small-generated.md");
+            Files.deleteIfExists(generatedLLMQuestionsDoc);
+            Files.createFile(generatedLLMQuestionsDoc);
             List<String> lines = Files.readAllLines(generatedLLMQuestionsTemplateDoc);
             StringBuilder currentQuestion = new StringBuilder();
             for (String line : lines) {
                 if (line.startsWith("#")) {
                     if (!currentQuestion.isEmpty()) {
                         System.out.println(currentQuestion);
-                        String reply = model.chat(currentQuestion.toString());
+                        String reply = invokeLLM(mistralModel, currentQuestion.toString(), 2000);
 
                         System.out.println("==>" + reply);
-                        output.append(reply + "\n\n");
+                        Files.write(generatedLLMQuestionsDoc, (reply + "\n\n").getBytes(), StandardOpenOption.APPEND);
                     }
-                    output.append(line + "\n");
+                    Files.write(generatedLLMQuestionsDoc, (line + "\n").getBytes(), StandardOpenOption.APPEND);
                     currentQuestion = new StringBuilder();
                 } else {
                     if (line.isEmpty()) {
-                        output.append(line + "\n");
+                        Files.write(generatedLLMQuestionsDoc, (line + "\n").getBytes(), StandardOpenOption.APPEND);
                     } else {
                         currentQuestion.append(line);
                     }
@@ -278,9 +299,7 @@ public class CliOperationsIngestor {
             }
             String reply = model.chat(currentQuestion.toString());
             System.out.println("==>" + reply);
-            output.append(reply + "\n\n");
-            Files.deleteIfExists(generatedLLMQuestionsDoc);
-            Files.write(generatedLLMQuestionsDoc, output.toString().getBytes(), StandardOpenOption.CREATE);
+            Files.write(generatedLLMQuestionsDoc, (reply + "\n\n").getBytes(), StandardOpenOption.APPEND);
             return;
         }
         if (Boolean.getBoolean("generate-doc")) {
@@ -317,6 +336,119 @@ public class CliOperationsIngestor {
                 Files.writeString(lexiqueFile, l + "\n", StandardOpenOption.APPEND);
             }
             System.out.println("Lexique written to " + lexiqueFile.toAbsolutePath());
+            return;
+        }
+           if (Boolean.getBoolean("analyze-llm-replies")) {
+            CommandContext ctx = CommandContextFactory.getInstance().newCommandContext();
+            Path llmHWRagReplies = Paths.get("rag-test-replies/rag-cli-replies-handwritten-questions.md");
+            List<String> lines = Files.readAllLines(llmHWRagReplies);
+            int questions = 0;
+            int noAnswer = 0;
+            int containsExactOp = 0;
+            int parsedOp = 0;
+            int failureParsedOp = 0;
+            int numllmOps = 0;
+            Iterator<String> linesIt = lines.iterator();
+            String currentQuestion = null;
+            while (linesIt.hasNext()) {
+                String l = linesIt.next();
+                if (l.trim().isEmpty()) {
+                    continue;
+                }
+                if (l.startsWith("## question")) {
+                    questions += 1;
+                    while (linesIt.hasNext()) {
+                        String q = linesIt.next().trim();
+                        if (q.isEmpty()) {
+                            continue;
+                        } else {
+                            currentQuestion = q;
+                            break;
+                        }
+                    }
+                    continue;
+                }
+                if (l.startsWith("## directives")) {
+                    Set<String> ops = new HashSet<>();
+                    Set<String> llmOps = new HashSet<>();
+                    String directiveLine = linesIt.next();
+                    String op = null;
+                    while (!directiveLine.startsWith("#")) {
+                        directiveLine = directiveLine.trim();
+                        if (directiveLine.startsWith("operation: ")) {
+                            op = unblock(directiveLine.substring(11, directiveLine.length()));
+                            if (op.endsWith("()")) {
+                                op = op.substring(0, op.length() - 2).toLowerCase();
+                            }
+                            ops.add(op);
+                        } else {
+                            Pattern p = Pattern.compile("^.* use '\\*' for `(.*)`\\.$");
+                            Matcher m = p.matcher(directiveLine);
+                            if (m.matches()) {
+                                String name = m.group(1);
+                                String allOp = op.replace(name, "*");
+                                ops.add(allOp.toLowerCase());
+                            }
+                        }
+                        directiveLine = linesIt.next();
+                    }
+                    String llmReply = linesIt.next();
+                    while (!llmReply.startsWith("#")) {
+                        llmReply = llmReply.trim();
+                        if (!llmReply.isEmpty()) {
+                            llmReply = unblock(llmReply);
+                            if (llmReply.startsWith("/")) {
+                                if (llmReply.endsWith("()")) {
+                                    llmReply = llmReply.substring(0, llmReply.length() - 2);
+                                }
+                                numllmOps += 1;
+                                llmOps.add(llmReply.toLowerCase());
+                            }
+                        }
+                        if (linesIt.hasNext()) {
+                            llmReply = linesIt.next();
+                        } else {
+                            break;
+                        }
+                    }
+                    if (llmOps.isEmpty()) {
+                        noAnswer += 1;
+                        continue;
+                    }
+                    boolean found = false;
+                    for (String s : ops) {
+                        if (llmOps.contains(s)) {
+                            found = true;
+                            containsExactOp += 1;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        // Attempt to parse the LLM operations
+                        
+                        boolean containsFailure = false;
+                        for (String o : llmOps) {
+                            try {
+                                ModelNode mn = ctx.buildRequest(o);
+                            } catch (Exception ex) {
+                                containsFailure = true;
+                            }
+                        }
+                        if (containsFailure) {
+                            failureParsedOp += 1;
+                        } else {
+                            parsedOp += 1;
+
+                        }
+                    }
+                }
+            }
+            System.out.println("NUM QUESTIONS            :" + questions);
+            System.out.println("NUM EXACT MATCH          :" + containsExactOp + " " + (containsExactOp*100)/questions + "%");
+            System.out.println("NUM NO ANSWER            :" + noAnswer + " " + (noAnswer*100)/questions + "%");
+            System.out.println("NUM REPLY PARSE OK       :" + parsedOp + " " + (parsedOp*100)/questions + "%");
+            System.out.println("NUM REPLY PARSE FAILURES :" + failureParsedOp + " " + (failureParsedOp*100)/questions + "%");
+
             return;
         }
         String question = System.getProperty("question");
@@ -372,10 +504,14 @@ public class CliOperationsIngestor {
             if ("questions".equals(question)) {
                 List<String> questions = new ArrayList<>();
                 System.out.println("Reading questions...");
-                questions.addAll(Files.readAllLines(questionsDoc));
+                if(Boolean.getBoolean("invoke-llm")) {
+                    Files.deleteIfExists(llmRagReplies);
+                    Files.createFile(llmRagReplies);
+                }
                 questions.addAll(Files.readAllLines(generatedQuestionsDoc));
                 questions.addAll(Files.readAllLines(qwen2515bQuestions));
                 questions.addAll(Files.readAllLines(qwen253bQuestions));
+                questions.addAll(Files.readAllLines(questionsDoc));
                 // For now reuse the input doc as lexique
                 Set<String> questionHeaders = new HashSet<>();
                 Set<String> docHeaders = new HashSet<>();
@@ -417,26 +553,43 @@ public class CliOperationsIngestor {
                     Embedding queryEmbedding = embeddingModel.embed(filteredQuestion.toString()).content();
                     List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 4);
                     StringBuilder messageBuilder = new StringBuilder();
+                    List<String> augmentedContext = new ArrayList<>();
                     for (EmbeddingMatch<TextSegment> match : relevant) {
+                        // Only keep the top 4.
+                        if (match.score() >= 0.7 && augmentedContext.size() < 4) {
+                            augmentedContext.add(match.embedded().text());
+                        }
                         messageBuilder.append("\n" + match.score() + " ------------\n");
                         messageBuilder.append(match.embedded().text());
                     }
-                    //Check that the best result on has the same title than the question.
-                    EmbeddingMatch<TextSegment> topScore = relevant.get(0);
-                    String matchTitle = topScore.embedded().metadata().getString("title");
                     String questionTitle = getQuestionMetadata("title", qSegments, line);
                     int index = 0;
                     double score = 0.0;
-                    if (!matchTitle.equals(questionTitle)) {
-                        for (int i = 0; i < relevant.size(); i++) {
-                            EmbeddingMatch<TextSegment> match = relevant.get(i);
-                            if (match.score() >= 0.7) {
+                    boolean topRanked = false;
+                    boolean ranked = false;
+                    for (int i = 0; i < relevant.size(); i++) {
+                        // Check the top 4
+                        if (i == 4) {
+                            break;
+                        }
+                        EmbeddingMatch<TextSegment> match = relevant.get(i);
+                        if (match.score() >= 0.7) {
+                            if (i == 0) {
+                                //Check that the best result has the same title than the question.
                                 if (match.embedded().metadata().getString("title").equals(questionTitle)) {
-                                    index = i + 1;
-                                    score = match.score();
+                                    questionsTopRanked.add(line);
+                                    topRanked = true;
+                                    ranked = true;
+                                    break;
                                 }
                             }
+                            if (match.embedded().metadata().getString("title").equals(questionTitle)) {
+                                index = i + 1;
+                                score = match.score();
+                            }
                         }
+                    }
+                    if (!topRanked) {
                         if (score != 0.0) {
                             String l = line + "[rank " + index + ", score " + score + "]";
 
@@ -444,6 +597,7 @@ public class CliOperationsIngestor {
                                 l = "\n###########\n" + l + "\n" + messageBuilder;
                             }
                             questionsNotTopRanked.add(l);
+                            ranked = true;
                         } else {
                             // questions for which the expected doc is not in any score
                             if (Boolean.getBoolean("debug")) {
@@ -451,8 +605,31 @@ public class CliOperationsIngestor {
                             }
                             questionsNotRanked.add(line);
                         }
-                    } else {
-                        questionsTopRanked.add(line);
+                    }
+                    if (ranked && Boolean.getBoolean("invoke-llm")) {
+                        // call the LLM and see 
+                        StringBuilder build = new StringBuilder(PROMPT + "\n");
+                        StringBuilder directivesBuilder = new StringBuilder();
+                        build.append("---" + line + "---\n");
+                        build.append("%%%\n");
+                        for (String directive : augmentedContext) {
+                            directivesBuilder.append(directive + "\n");
+                        }
+                        build.append(directivesBuilder.toString());
+                        build.append("%%%");
+                        System.out.println("Question " + numQuestions);
+                        StringBuilder content = new StringBuilder();
+                        content.append("# " + questionTitle + "\n\n");
+                        content.append("## question\n\n");
+                        content.append(line + "\n\n");
+                        content.append("## directives\n\n");
+                        for (String directive : augmentedContext) {
+                            content.append("* " + directive + "\n");
+                        }
+                        content.append("\n## LLM reply\n\n");
+                        String reply = invokeLLM(mistralModel, build.toString(), 2000);
+                        content.append(reply + "\n\n");
+                        Files.write(llmRagReplies, content.toString().getBytes(), StandardOpenOption.APPEND);
                     }
                 }
                 if (!questionsNotTopRanked.isEmpty()) {
@@ -492,6 +669,21 @@ public class CliOperationsIngestor {
             }
         }
 
+    }
+
+    private static final String invokeLLM(ChatLanguageModel model, String question, long sleep) throws Exception {
+        while (true) {
+            try {
+                if (sleep != -1) {
+                    Thread.sleep(sleep);
+                }
+                return model.chat(question);
+            } catch (Exception ex) {
+                System.out.println("LLM exception " + ex);
+                System.out.println("Will retry in 1 minute");
+                Thread.sleep(65000);
+            }
+        }
     }
 
     private static String getQuestionMetadata(String key, List<String> segments, String question) throws Exception {

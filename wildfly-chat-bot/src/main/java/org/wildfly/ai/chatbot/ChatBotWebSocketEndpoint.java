@@ -476,7 +476,7 @@ public class ChatBotWebSocketEndpoint {
                                 }
                             } else {
                                 String question = msgObj.get("value").asText();
-                                String generalized = generalizeQuestion(question);
+                                String generalized = question; //generalizeQuestion(question);
                                 Embedding queryEmbedding = embeddingModel.embed(generalized).content();
                                 List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 4);
                                 List<String> selected = new ArrayList<>();
