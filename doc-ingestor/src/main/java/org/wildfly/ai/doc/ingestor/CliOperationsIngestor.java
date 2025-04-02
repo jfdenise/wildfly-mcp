@@ -278,8 +278,9 @@ If you don't have enough information in the directives to generate CLI operation
         Path cliDoc = Paths.get("wildfly-docs/cli/cli.md");
         Path generatedCliDoc = Paths.get("wildfly-docs/cli/cli-generated.md");
         Path questionsSegments = Paths.get("segments/segments-cli-questions.txt");
-        Path qwen2515bQuestions = Paths.get("questions/cli-questions-llm-qwen2.51.5b-generated.md");
+        //Path qwen2515bQuestions = Paths.get("questions/cli-questions-llm-qwen2.51.5b-generated.md");
         Path qwen253bQuestions = Paths.get("questions/cli-questions-llm-qwen2.5-3b-generated.md");
+        Path mistralSmallQuestions = Paths.get("questions/cli-questions-llm-mistral-small-generated.md");
         Path questionsDoc = Paths.get("questions/cli-questions.md");
         Path generatedQuestionsDoc = Paths.get("questions/cli-questions-generated.md");
         Path generatedLLMQuestionsTemplateDoc = Paths.get("templates/cli-questions-llm-generated.md");
@@ -461,10 +462,10 @@ If you don't have enough information in the directives to generate CLI operation
                 }
             }
             System.out.println("NUM QUESTIONS            :" + questions);
-            System.out.println("NUM EXACT MATCH          :" + containsExactOp + " " + (containsExactOp * 100) / questions + "%");
-            System.out.println("NUM NO ANSWER            :" + noAnswer + " " + (noAnswer * 100) / questions + "%");
-            System.out.println("NUM REPLY PARSE OK       :" + parsedOp + " " + (parsedOp * 100) / questions + "%");
-            System.out.println("NUM REPLY PARSE FAILURES :" + failureParsedOp + " " + (failureParsedOp * 100) / questions + "%");
+            System.out.println("NUM EXACT MATCH          :" + containsExactOp + " " + (float) ((containsExactOp * 100) / questions) + "%");
+            System.out.println("NUM NO ANSWER            :" + noAnswer + " " + (float) ((noAnswer * 100) / questions) + "%");
+            System.out.println("NUM REPLY PARSE OK       :" + parsedOp + " " + (float) ((parsedOp * 100) / questions) + "%");
+            System.out.println("NUM REPLY PARSE FAILURES :" + failureParsedOp + " " + (float) ((failureParsedOp * 100) / questions) + "%");
 
             return;
         }
@@ -525,8 +526,10 @@ If you don't have enough information in the directives to generate CLI operation
                     Files.createFile(llmRagReplies);
                 }
                 questions.addAll(Files.readAllLines(generatedQuestionsDoc));
-                questions.addAll(Files.readAllLines(qwen2515bQuestions));
+                // redundant with qwen2.5:3b
+                //questions.addAll(Files.readAllLines(qwen2515bQuestions));
                 questions.addAll(Files.readAllLines(qwen253bQuestions));
+                questions.addAll(Files.readAllLines(mistralSmallQuestions));
                 questions.addAll(Files.readAllLines(questionsDoc));
                 // For now reuse the input doc as lexique
                 Set<String> questionHeaders = new HashSet<>();
@@ -662,9 +665,9 @@ If you don't have enough information in the directives to generate CLI operation
                 }
                 System.out.println("--------------------------");
                 System.out.println("TOTAL NUM OF QUESTIONS       :" + numQuestions);
-                System.out.println("NUM TOP RANKED QUESTIONS     :" + questionsTopRanked.size() + " " + ((questionsTopRanked.size() * 100 / numQuestions) + "%"));
-                System.out.println("NUM NOT TOP RANKED QUESTIONS :" + questionsNotTopRanked.size() + " " + ((questionsNotTopRanked.size() * 100 / numQuestions) + "%"));
-                System.out.println("NUM NOT RANKED QUESTIONS     :" + questionsNotRanked.size() + " " + ((questionsNotRanked.size() * 100 / numQuestions) + "%"));
+                System.out.println("NUM TOP RANKED QUESTIONS     :" + questionsTopRanked.size() + " " +   ((float)(questionsTopRanked.size() * 100) / numQuestions) + "%");
+                System.out.println("NUM NOT TOP RANKED QUESTIONS :" + questionsNotTopRanked.size() + " " +   ((float)(questionsNotTopRanked.size() * 100) / numQuestions) + "%");
+                System.out.println("NUM NOT RANKED QUESTIONS     :" + questionsNotRanked.size() + " " +   ((float)(questionsNotRanked.size() * 100) / numQuestions) + "%");
                 if (!questionsNotRanked.isEmpty()) {
                     throw new Exception("Some questions are not ranked!");
                 }
