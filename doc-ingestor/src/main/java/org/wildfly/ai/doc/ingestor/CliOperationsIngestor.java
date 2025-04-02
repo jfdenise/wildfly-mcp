@@ -254,12 +254,6 @@ If you don't have enough information in the directives to generate CLI operation
 
         Path llmRagReplies = Paths.get("rag-cli-replies.md");
 
-//        ChatLanguageModel model = MistralAiChatModel.builder()
-//                .apiKey(System.getenv("MISTRAL_API_KEY")) // Please use your own Mistral AI API key
-//                .modelName("mistral-small-latest")
-//                .logRequests(true)
-//                .logResponses(true)
-//                .build();
         ChatLanguageModel model = OllamaChatModel.builder()
                 .modelName("qwen2.5:3b")
                 .baseUrl("http://127.0.0.1:11434")
@@ -338,18 +332,19 @@ If you don't have enough information in the directives to generate CLI operation
             System.out.println("Lexique written to " + lexiqueFile.toAbsolutePath());
             return;
         }
-           if (Boolean.getBoolean("analyze-llm-replies")) {
+        if (Boolean.getBoolean("analyze-llm-replies")) {
             CommandContext ctx = CommandContextFactory.getInstance().newCommandContext();
             Path llmHWRagReplies = Paths.get("rag-test-replies/rag-cli-replies-handwritten-questions.md");
-            List<String> lines = Files.readAllLines(llmHWRagReplies);
+            Path qwen253bRagReplies = Paths.get("rag-test-replies/rag-cli-replies-qwen2.53b-questions.md");
+            List<String> allLines = new ArrayList<>();
+            allLines.addAll(Files.readAllLines(llmHWRagReplies));
+            allLines.addAll(Files.readAllLines(qwen253bRagReplies));
             int questions = 0;
             int noAnswer = 0;
             int containsExactOp = 0;
             int parsedOp = 0;
             int failureParsedOp = 0;
-            int numllmOps = 0;
-            Iterator<String> linesIt = lines.iterator();
-            String currentQuestion = null;
+            Iterator<String> linesIt = allLines.iterator();
             while (linesIt.hasNext()) {
                 String l = linesIt.next();
                 if (l.trim().isEmpty()) {
@@ -357,15 +352,6 @@ If you don't have enough information in the directives to generate CLI operation
                 }
                 if (l.startsWith("## question")) {
                     questions += 1;
-                    while (linesIt.hasNext()) {
-                        String q = linesIt.next().trim();
-                        if (q.isEmpty()) {
-                            continue;
-                        } else {
-                            currentQuestion = q;
-                            break;
-                        }
-                    }
                     continue;
                 }
                 if (l.startsWith("## directives")) {
@@ -401,7 +387,6 @@ If you don't have enough information in the directives to generate CLI operation
                                 if (llmReply.endsWith("()")) {
                                     llmReply = llmReply.substring(0, llmReply.length() - 2);
                                 }
-                                numllmOps += 1;
                                 llmOps.add(llmReply.toLowerCase());
                             }
                         }
@@ -418,6 +403,7 @@ If you don't have enough information in the directives to generate CLI operation
                     boolean found = false;
                     for (String s : ops) {
                         if (llmOps.contains(s)) {
+                            System.out.println("MATCH FOR " + s);
                             found = true;
                             containsExactOp += 1;
                             break;
@@ -425,7 +411,7 @@ If you don't have enough information in the directives to generate CLI operation
                     }
                     if (!found) {
                         // Attempt to parse the LLM operations
-                        
+
                         boolean containsFailure = false;
                         for (String o : llmOps) {
                             try {
@@ -444,10 +430,10 @@ If you don't have enough information in the directives to generate CLI operation
                 }
             }
             System.out.println("NUM QUESTIONS            :" + questions);
-            System.out.println("NUM EXACT MATCH          :" + containsExactOp + " " + (containsExactOp*100)/questions + "%");
-            System.out.println("NUM NO ANSWER            :" + noAnswer + " " + (noAnswer*100)/questions + "%");
-            System.out.println("NUM REPLY PARSE OK       :" + parsedOp + " " + (parsedOp*100)/questions + "%");
-            System.out.println("NUM REPLY PARSE FAILURES :" + failureParsedOp + " " + (failureParsedOp*100)/questions + "%");
+            System.out.println("NUM EXACT MATCH          :" + containsExactOp + " " + (containsExactOp * 100) / questions + "%");
+            System.out.println("NUM NO ANSWER            :" + noAnswer + " " + (noAnswer * 100) / questions + "%");
+            System.out.println("NUM REPLY PARSE OK       :" + parsedOp + " " + (parsedOp * 100) / questions + "%");
+            System.out.println("NUM REPLY PARSE FAILURES :" + failureParsedOp + " " + (failureParsedOp * 100) / questions + "%");
 
             return;
         }
@@ -495,7 +481,6 @@ If you don't have enough information in the directives to generate CLI operation
             Set<String> lexique = Files.readAllLines(lexiqueFile).stream().collect(Collectors.toSet());
             List<String> questionsNotTopRanked = new ArrayList<>();
             List<String> questionsTopRanked = new ArrayList<>();
-            //List<String> questionsVeryBadlyRanked = new ArrayList<>();
             List<String> questionsNotRanked = new ArrayList<>();
             System.out.println("Loading embeddings...");
             InMemoryEmbeddingStore embeddingStore = InMemoryEmbeddingStore.fromFile(docEmbeddings);
@@ -504,7 +489,7 @@ If you don't have enough information in the directives to generate CLI operation
             if ("questions".equals(question)) {
                 List<String> questions = new ArrayList<>();
                 System.out.println("Reading questions...");
-                if(Boolean.getBoolean("invoke-llm")) {
+                if (Boolean.getBoolean("invoke-llm")) {
                     Files.deleteIfExists(llmRagReplies);
                     Files.createFile(llmRagReplies);
                 }
