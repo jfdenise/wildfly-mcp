@@ -1,0 +1,9 @@
+Can you get the name?
+What is the name?
+Could you get the public interface?
+Could you get the servlet-security.war deployment?
+Could you get the servlet-security deployment?
+What is the status of the servlet-security.war deployment?
+Can you get the subsystem jaxrs?
+Can you get all the subsystems?
+What are the main attributes of the jaxrs subsystem
