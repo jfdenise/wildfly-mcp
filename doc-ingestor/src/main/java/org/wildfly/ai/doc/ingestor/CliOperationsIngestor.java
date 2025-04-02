@@ -161,7 +161,24 @@ If you don't have enough information in the directives to generate CLI operation
         }
         return str;
     }
-
+    private static String createExampleName(String resourceType) {
+        char[] chars = resourceType.toCharArray();
+        StringBuilder builder = new StringBuilder("my");
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if(i == 0) {
+                c = (""+c).toUpperCase().charAt(0);
+            } else {
+                if (c == '-') {
+                    i=i+1;
+                    c = chars[i];
+                    c = (""+c).toUpperCase().charAt(0);
+                }
+            }
+            builder.append(c);
+        }
+        return builder.toString();
+    }
     private static void generateResourceDoc(ChatLanguageModel model, Set<String> dictionary, StringBuilder docbuilder,
             StringBuilder questionsbuilder,
             StringBuilder questionsLLMbuilder,
@@ -175,7 +192,9 @@ If you don't have enough information in the directives to generate CLI operation
             while (knownResources.hasNext()) {
                 String knownResource = knownResources.next();
                 JsonNode resource = resourceNode.get(knownResource);
-                generateResourceDoc(model, dictionary, docbuilder, questionsbuilder, questionsLLMbuilder, resource, true, resourceName + " `" + knownResource + "`", null, currentPath + knownResource);
+                generateResourceDoc(model, dictionary, docbuilder, questionsbuilder, 
+                        questionsLLMbuilder, resource, true, 
+                        resourceName + " `" + knownResource + "`", null, currentPath + knownResource);
             }
         } else {
             if (resourceType != null && !resourceType.equals("subsystem")) {
@@ -192,6 +211,19 @@ If you don't have enough information in the directives to generate CLI operation
             if (resourceNode.has("attributes")) {
                 JsonNode attributes = resourceNode.get("attributes");
                 Iterator<String> fieldNames = attributes.fieldNames();
+                boolean requiresExample = resourceName.contains(" ");
+                String namedResource = unblock(resourceName);
+                if (requiresExample) {
+                    StringBuilder builder = new StringBuilder();
+                    String[] words = unblock(resourceName).split("\\s+");
+                    // Add the subsystem
+                    builder.append(words[0]);
+                    for (int i = 1; i < words.length; i++) {
+                        builder.append(" " + words[i] + " ");
+                        builder.append(createExampleName(words[i]));
+                    }
+                    namedResource = builder.toString();
+                }
                 while (fieldNames.hasNext()) {
                     String fieldName = fieldNames.next();
                     JsonNode field = attributes.get(fieldName);
@@ -200,14 +232,14 @@ If you don't have enough information in the directives to generate CLI operation
                     String title = "## syntax of the operation to get the " + resourceName + " `" + fieldName + "`\n";
                     docbuilder.append(title);
                     questionsbuilder.append(title);
-                    questionsbuilder.append("Can you get the " + unblock(fieldName) + " of the example " + unblock(resourceName) + "?\n");
+                    questionsbuilder.append("Can you get the " + unblock(fieldName) + " of the " + namedResource + "?\n");
                     questionsLLMbuilder.append(title);
                     questionsLLMbuilder.append("Your reply must only contain a generated question that should capture the idea of retrieving a value for the following text: "
                             + "description of the " + unblock(resourceName) + " " + unblock(fieldName) + " attribute:" + description + "\n");
                     String alternative = alternative(unblock(fieldName));
-                    String resourceAlernative = alternative(unblock(resourceName));
+                    String resourceAlernative = alternative(namedResource);
                     if (!alternative.equals(fieldName) || !resourceAlernative.equals(resourceName)) {
-                        questionsbuilder.append("Can you get the " + alternative + " of the example " + resourceAlernative + "?\n");
+                        questionsbuilder.append("Can you get the " + alternative + " of the " + resourceAlernative + "?\n");
                     }
                     docbuilder.append("* Retrieve the " + resourceName + " `" + fieldName + "` attribute value.\n");
                     docbuilder.append("* `" + fieldName + "` attribute description: " + formattedDescription).append("\n");
