@@ -3264,83 +3264,6 @@ ${jboss_home}
 /subsystem=rts:read-attribute(name=socket-binding)
 /subsystem=security-manager/deployment-permissions=default:read-attribute(name=maximum-permissions)
 /subsystem=security-manager/deployment-permissions=default:read-attribute(name=minimum-permissions)
-/subsystem=security/elytron-key-manager=<elytron-key-manager name>:read-attribute(name=legacy-jsse-config)
-/subsystem=security/elytron-key-manager=<elytron-key-manager name>:read-resource()
-/subsystem=security/elytron-key-store=<elytron-key-store name>:read-attribute(name=legacy-jsse-config)
-/subsystem=security/elytron-key-store=<elytron-key-store name>:read-resource()
-/subsystem=security/elytron-realm=<elytron-realm name>:read-attribute(name=apply-role-mappers)
-/subsystem=security/elytron-realm=<elytron-realm name>:read-attribute(name=legacy-jaas-config)
-/subsystem=security/elytron-realm=<elytron-realm name>:read-resource()
-/subsystem=security/elytron-trust-manager=<elytron-trust-manager name>:read-attribute(name=legacy-jsse-config)
-/subsystem=security/elytron-trust-manager=<elytron-trust-manager name>:read-resource()
-/subsystem=security/elytron-trust-store=<elytron-trust-store name>:read-attribute(name=legacy-jsse-config)
-/subsystem=security/elytron-trust-store=<elytron-trust-store name>:read-resource()
-/subsystem=security/security-domain=<security-domain name>/acl=classic/acl-module=<acl-module name>:read-attribute(name=code)
-/subsystem=security/security-domain=<security-domain name>/acl=classic/acl-module=<acl-module name>:read-attribute(name=flag)
-/subsystem=security/security-domain=<security-domain name>/acl=classic/acl-module=<acl-module name>:read-attribute(name=module)
-/subsystem=security/security-domain=<security-domain name>/acl=classic/acl-module=<acl-module name>:read-attribute(name=module-options)
-/subsystem=security/security-domain=<security-domain name>/acl=classic/acl-module=<acl-module name>:read-resource()
-/subsystem=security/security-domain=<security-domain name>/acl=classic:read-attribute(name=acl-modules)
-/subsystem=security/security-domain=<security-domain name>/audit=classic/provider-module=<provider-module name>:read-attribute(name=code)
-/subsystem=security/security-domain=<security-domain name>/audit=classic/provider-module=<provider-module name>:read-attribute(name=module)
-/subsystem=security/security-domain=<security-domain name>/audit=classic/provider-module=<provider-module name>:read-attribute(name=module-options)
-/subsystem=security/security-domain=<security-domain name>/audit=classic/provider-module=<provider-module name>:read-resource()
-/subsystem=security/security-domain=<security-domain name>/audit=classic:read-attribute(name=provider-modules)
-/subsystem=security/security-domain=<security-domain name>/authentication=classic/login-module=<login-module name>:read-attribute(name=code)
-/subsystem=security/security-domain=<security-domain name>/authentication=classic/login-module=<login-module name>:read-attribute(name=flag)
-/subsystem=security/security-domain=<security-domain name>/authentication=classic/login-module=<login-module name>:read-attribute(name=module)
-/subsystem=security/security-domain=<security-domain name>/authentication=classic/login-module=<login-module name>:read-attribute(name=module-options)
-/subsystem=security/security-domain=<security-domain name>/authentication=classic/login-module=<login-module name>:read-resource()
-/subsystem=security/security-domain=<security-domain name>/authentication=classic:read-attribute(name=login-modules)
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/auth-module=<auth-module name>:read-attribute(name=code)
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/auth-module=<auth-module name>:read-attribute(name=flag)
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/auth-module=<auth-module name>:read-attribute(name=login-module-stack-ref)
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/auth-module=<auth-module name>:read-attribute(name=module)
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/auth-module=<auth-module name>:read-attribute(name=module-options)
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/auth-module=<auth-module name>:read-resource()
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/login-module-stack=<login-module-stack name>/login-module=<login-module name>:read-attribute(name=code)
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/login-module-stack=<login-module-stack name>/login-module=<login-module name>:read-attribute(name=flag)
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/login-module-stack=<login-module-stack name>/login-module=<login-module name>:read-attribute(name=module)
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/login-module-stack=<login-module-stack name>/login-module=<login-module name>:read-attribute(name=module-options)
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/login-module-stack=<login-module-stack name>/login-module=<login-module name>:read-resource()
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/login-module-stack=<login-module-stack name>:read-attribute(name=login-modules)
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi/login-module-stack=<login-module-stack name>:read-resource()
-/subsystem=security/security-domain=<security-domain name>/authentication=jaspi:read-attribute(name=auth-modules)
-/subsystem=security/security-domain=<security-domain name>/authorization=classic/policy-module=<policy-module name>:read-attribute(name=code)
-/subsystem=security/security-domain=<security-domain name>/authorization=classic/policy-module=<policy-module name>:read-attribute(name=flag)
-/subsystem=security/security-domain=<security-domain name>/authorization=classic/policy-module=<policy-module name>:read-attribute(name=module)
-/subsystem=security/security-domain=<security-domain name>/authorization=classic/policy-module=<policy-module name>:read-attribute(name=module-options)
-/subsystem=security/security-domain=<security-domain name>/authorization=classic/policy-module=<policy-module name>:read-resource()
-/subsystem=security/security-domain=<security-domain name>/authorization=classic:read-attribute(name=policy-modules)
-/subsystem=security/security-domain=<security-domain name>/identity-trust=classic/trust-module=<trust-module name>:read-attribute(name=code)
-/subsystem=security/security-domain=<security-domain name>/identity-trust=classic/trust-module=<trust-module name>:read-attribute(name=flag)
-/subsystem=security/security-domain=<security-domain name>/identity-trust=classic/trust-module=<trust-module name>:read-attribute(name=module)
-/subsystem=security/security-domain=<security-domain name>/identity-trust=classic/trust-module=<trust-module name>:read-attribute(name=module-options)
-/subsystem=security/security-domain=<security-domain name>/identity-trust=classic/trust-module=<trust-module name>:read-resource()
-/subsystem=security/security-domain=<security-domain name>/identity-trust=classic:read-attribute(name=trust-modules)
-/subsystem=security/security-domain=<security-domain name>/jsse=classic:read-attribute(name=additional-properties)
-/subsystem=security/security-domain=<security-domain name>/jsse=classic:read-attribute(name=cipher-suites)
-/subsystem=security/security-domain=<security-domain name>/jsse=classic:read-attribute(name=client-alias)
-/subsystem=security/security-domain=<security-domain name>/jsse=classic:read-attribute(name=client-auth)
-/subsystem=security/security-domain=<security-domain name>/jsse=classic:read-attribute(name=key-manager)
-/subsystem=security/security-domain=<security-domain name>/jsse=classic:read-attribute(name=keystore)
-/subsystem=security/security-domain=<security-domain name>/jsse=classic:read-attribute(name=protocols)
-/subsystem=security/security-domain=<security-domain name>/jsse=classic:read-attribute(name=server-alias)
-/subsystem=security/security-domain=<security-domain name>/jsse=classic:read-attribute(name=service-auth-token)
-/subsystem=security/security-domain=<security-domain name>/jsse=classic:read-attribute(name=trust-manager)
-/subsystem=security/security-domain=<security-domain name>/jsse=classic:read-attribute(name=truststore)
-/subsystem=security/security-domain=<security-domain name>/mapping=classic/mapping-module=<mapping-module name>:read-attribute(name=code)
-/subsystem=security/security-domain=<security-domain name>/mapping=classic/mapping-module=<mapping-module name>:read-attribute(name=module)
-/subsystem=security/security-domain=<security-domain name>/mapping=classic/mapping-module=<mapping-module name>:read-attribute(name=module-options)
-/subsystem=security/security-domain=<security-domain name>/mapping=classic/mapping-module=<mapping-module name>:read-attribute(name=type)
-/subsystem=security/security-domain=<security-domain name>/mapping=classic/mapping-module=<mapping-module name>:read-resource()
-/subsystem=security/security-domain=<security-domain name>/mapping=classic:read-attribute(name=mapping-modules)
-/subsystem=security/security-domain=<security-domain name>:read-attribute(name=cache-type)
-/subsystem=security/security-domain=<security-domain name>:read-resource()
-/subsystem=security/vault=classic:read-attribute(name=code)
-/subsystem=security/vault=classic:read-attribute(name=vault-options)
-/subsystem=security:read-attribute(name=deep-copy-subject-mode)
-/subsystem=security:read-attribute(name=initialize-jacc)
 /subsystem=singleton/singleton-policy=<singleton-policy name>/deployment=<deployment name>:read-attribute(name=is-primary)
 /subsystem=singleton/singleton-policy=<singleton-policy name>/deployment=<deployment name>:read-attribute(name=primary-provider)
 /subsystem=singleton/singleton-policy=<singleton-policy name>/deployment=<deployment name>:read-attribute(name=providers)
@@ -3885,7 +3808,6 @@ ${jboss_home}
 8601
 :resolve-expression(expression=<expression_value>)
 <acceptor name>
-<acl-module name>
 <add-prefix-role-mapper name>
 <add-suffix-role-mapper name>
 <address-setting name>
@@ -3904,7 +3826,6 @@ ${jboss_home}
 <ajp-listener name>
 <application-security-domain name>
 <async-handler name>
-<auth-module name>
 <authentication-configuration name>
 <authentication-context name>
 <backup name>
@@ -3979,11 +3900,6 @@ ${jboss_home}
 <distributed-workmanager name>
 <divert name>
 <dynamic-client-ssl-context name>
-<elytron-key-manager name>
-<elytron-key-store name>
-<elytron-realm name>
-<elytron-trust-manager name>
-<elytron-trust-store name>
 <endpoint-config name>
 <error-page name>
 <expression-filter name>
@@ -4054,8 +3970,6 @@ ${jboss_home}
 <logging-profile name>
 <logical-permission-mapper name>
 <logical-role-mapper name>
-<login-module name>
-<login-module-stack name>
 <long-running-threads name>
 <mail-session name>
 <managed-executor-service name>
@@ -4063,7 +3977,6 @@ ${jboss_home}
 <managed-thread-factory name>
 <mapped-regex-realm-mapper name>
 <mapped-role-mapper name>
-<mapping-module name>
 <mdb-delivery-group name>
 <mechanism-provider-filtering-sasl-server-factory name>
 <mime-mapping name>
@@ -4080,7 +3993,6 @@ ${jboss_home}
 <periodic-size-rotating-file-handler name>
 <permission-set name>
 <policy name>
-<policy-module name>
 <pooled-connection-factory name>
 <post-handler-chain name>
 <pre-handler-chain name>
@@ -4091,7 +4003,6 @@ ${jboss_home}
 <provider name>
 <provider-http-server-mechanism-factory name>
 <provider-loader name>
-<provider-module name>
 <provider-sasl-server-factory name>
 <proxy name>
 <queue name>
@@ -4159,7 +4070,6 @@ ${jboss_home}
 <transactions name>
 <transport name>
 <trust-manager name>
-<trust-module name>
 <virtual-security-domain name>
 <welcome-file name>
 <worker name>
@@ -4179,9 +4089,6 @@ access-control-expose-headers
 access-control-max-age
 access-log
 access_token
-acl
-acl-module
-acl-modules
 acquire-timeout
 activactions
 active-connections
@@ -4196,7 +4103,6 @@ add-logging-api-dependencies
 add-messageid-in-header
 add-prefix-role-mapper
 add-suffix-role-mapper
-additional-properties
 address-as-uuid
 address-full-policy
 address-queue-scan-period
@@ -4265,7 +4171,6 @@ application-level
 application-security-domain
 application-supplied
 application/xml
-apply-role-mappers
 archive-validation
 as7
 async-connection-execution-enabled
@@ -4277,8 +4182,6 @@ attribute-name
 attribute-values
 audit-log
 auth-method
-auth-module
-auth-modules
 auth-realm
 auth-server-url
 auth.login.defaultcallbackhandler
@@ -4386,7 +4289,6 @@ cache-large-message-client
 cache-loader-loads
 cache-loader-misses
 cache-manager-status
-cache-type
 cacheable
 cached-connection-manager
 cached-connections-per-thread
@@ -4428,15 +4330,12 @@ chunk-size
 cipher-suite
 cipher-suite-filter
 cipher-suite-names
-cipher-suites
 class-level
 class-name
 class-names
 classes/persistence.xml
 classloader
 classpath
-client-alias
-client-auth
 client-config
 client-failure-check-period
 client-id
@@ -4456,7 +4355,6 @@ client-side
 client-ssl-context
 client-supports
 clientauth
-cloneable
 cluster-connection
 cluster-connection-address
 cluster-credential-reference
@@ -4593,7 +4491,6 @@ date/time
 db2
 dead-letter-address
 decode-url
-deep-copy-subject-mode
 default-alias
 default-authentication-context
 default-bean-management
@@ -4730,13 +4627,8 @@ ejb3
 election-policy
 elytron-domain
 elytron-enabled
-elytron-key-manager
-elytron-key-store
 elytron-managed
 elytron-oidc-client
-elytron-realm
-elytron-trust-manager
-elytron-trust-store
 emit-events
 empty-liveness-checks-status
 empty-readiness-checks-status
@@ -4827,7 +4719,6 @@ final-providers
 flush-packets
 flush-strategy
 flush-wait
-flushes/logout
 follow-symlink
 forward-secrecy
 forwarding-address
@@ -4931,7 +4822,6 @@ id-cache-size
 id-column
 identity-mapping
 identity-realm
-identity-trust
 idle-connections
 idle-timeout
 idle-timeout-minutes
@@ -4969,7 +4859,6 @@ initial-pool-size
 initial-providers
 initial-replication-sync-timeout
 initial-wait-timeout
-initialize-jacc
 inserted/deleted
 installed-drivers
 instance-id
@@ -5098,13 +4987,11 @@ journal-sync-non-transactional
 journal-sync-transactional
 journal-type
 jpa
-jsee
 jsessionid
 jsf
 json
 json-formatter
 jsp
-jsse
 jta
 jts
 jvm
@@ -5135,7 +5022,6 @@ key-value
 key/value
 keycloak
 keycloak-specific
-keymanager
 keymanagerfactory
 keystore
 keystorecredentialstore
@@ -5157,8 +5043,6 @@ legacy-compliant-principal-propagation
 legacy-connection-factory
 legacy-empty-beans-xml-treatment
 legacy-entries
-legacy-jaas-config
-legacy-jsse-config
 level-name:color-name.valid
 level/authentication
 live-only
@@ -5186,10 +5070,6 @@ logging-profile
 logical-operation
 logical-permission-mapper
 logical-role-mapper
-login-module
-login-module-stack
-login-module-stack-ref
-login-modules
 login.config.url
 loginmodules
 long-running-tasks
@@ -5214,8 +5094,6 @@ mapped-file
 mapped-regex-realm-mapper
 mapped-role-mapper
 mapping-mode
-mapping-module
-mapping-modules
 mariadb
 match-rules
 max-active
@@ -5329,7 +5207,6 @@ modcluster
 modification-queue-size
 modification-test-interval
 modify-wsdl-address
-module-options
 module-slot
 mp-jwt
 mssql
@@ -5506,8 +5383,6 @@ persistent-sessions
 picketbox
 pid
 plugin
-policy-module
-policy-modules
 policy-options
 pool-fair
 pool-prefill
@@ -5547,7 +5422,6 @@ principaltransformer
 print-details
 print-namespace
 privatekeyentry
-privatekeys
 proactive-authentication
 problem-server-retry
 process-id-socket-binding
@@ -5565,8 +5439,6 @@ protocol-manager-factory
 protocol-version
 provider-http-server-mechanism-factory
 provider-loader
-provider-module
-provider-modules
 provider-name
 provider-sasl-server-factory
 provider-url
@@ -5822,7 +5694,6 @@ sent-bytes
 sent-messages
 server(s
 server-address
-server-alias
 server-auth
 server-auth-modules
 server-dump-interval
@@ -5837,7 +5708,6 @@ server-state
 server-supports
 serverauth
 serverauthmodule
-service-auth-token
 service-loader
 service-loader-http-server-mechanism-factory
 service-loader-sasl-server-factory
@@ -5928,7 +5798,6 @@ sslengine
 sslserversocket
 sslsession
 sslsocket
-sslsockets
 stack-size
 stack-trace-on-error
 staging-url
@@ -6048,8 +5917,6 @@ true/false
 trust-in-client
 trust-in-target
 trust-manager
-trust-module
-trust-modules
 trusted-security-domains
 trusted-virtual-security-domains
 trustmanagerfactory
@@ -6114,7 +5981,6 @@ valid-connection-checker-properties
 validate-on-match
 validator
 value-size-estimate
-vault-options
 verify-client
 verify-token-audience
 virtual-security-domain

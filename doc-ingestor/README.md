@@ -1,5 +1,9 @@
 # Documentation generator, ingestor, tester
 
+## Dump the model
+
+sh dump-model.sh
+
 ## Generate documentation and questions
 
 mvn exec:java -Dgenerate-doc=true

@@ -18,7 +18,6 @@ embed-server --empty-config -c=model-dump.xml --remove-existing
 /extension=org.jboss.as.pojo:add
 /extension=org.jboss.as.remoting:add
 /extension=org.jboss.as.sar:add
-/extension=org.jboss.as.security:add
 /extension=org.jboss.as.transactions:add
 /extension=org.jboss.as.webservices:add
 /extension=org.jboss.as.weld:add
