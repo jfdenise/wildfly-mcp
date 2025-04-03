@@ -435,10 +435,11 @@ If you don't have enough information in the directives to generate CLI operation
         if (Boolean.getBoolean("analyze-llm-replies")) {
             CommandContext ctx = CommandContextFactory.getInstance().newCommandContext();
             Path llmHWRagReplies = Paths.get("rag-test-replies/rag-cli-replies-handwritten-questions.md");
-            Path qwen253bRagReplies = Paths.get("rag-test-replies/rag-cli-replies-qwen2.53b-questions.md");
+            //Path qwen253bRagReplies = Paths.get("rag-test-replies/rag-cli-replies-qwen2.53b-questions.md");
+            Path mistralSmallRagReplies = Paths.get("rag-test-replies/rag-cli-replies-mistrall-small-questions-old.md");
             List<String> allLines = new ArrayList<>();
-            allLines.addAll(Files.readAllLines(llmHWRagReplies));
-            allLines.addAll(Files.readAllLines(qwen253bRagReplies));
+            //allLines.addAll(Files.readAllLines(llmHWRagReplies));
+            allLines.addAll(Files.readAllLines(mistralSmallRagReplies));
             int questions = 0;
             int noAnswer = 0;
             int containsExactOp = 0;
@@ -459,21 +460,30 @@ If you don't have enough information in the directives to generate CLI operation
                     Set<String> llmOps = new HashSet<>();
                     String directiveLine = linesIt.next();
                     String op = null;
+                    String extraName = null;
                     while (!directiveLine.startsWith("#")) {
                         directiveLine = directiveLine.trim();
-                        if (directiveLine.startsWith("operation: ")) {
-                            op = unblock(directiveLine.substring(11, directiveLine.length()));
+                        if (directiveLine.startsWith("* operation: ")) {
+                            op = unblock(directiveLine.substring(13, directiveLine.length()));
                             if (op.endsWith("()")) {
                                 op = op.substring(0, op.length() - 2).toLowerCase();
                             }
                             ops.add(op);
+                            if (extraName != null) {
+                                String allOp = op.replace(extraName, "*");
+                                ops.add(allOp.toLowerCase());
+                            }
                         } else {
                             Pattern p = Pattern.compile("^.* use '\\*' for `(.*)`\\.$");
                             Matcher m = p.matcher(directiveLine);
                             if (m.matches()) {
                                 String name = m.group(1);
-                                String allOp = op.replace(name, "*");
-                                ops.add(allOp.toLowerCase());
+                                if(op == null) {
+                                    extraName = name;
+                                } else {
+                                    String allOp = op.replace(name, "*");
+                                    ops.add(allOp.toLowerCase());
+                                }
                             }
                         }
                         directiveLine = linesIt.next();
@@ -596,8 +606,6 @@ If you don't have enough information in the directives to generate CLI operation
                     Files.createFile(llmRagReplies);
                 }
                 questions.addAll(Files.readAllLines(generatedQuestionsDoc));
-                // redundant with qwen2.5:3b
-                //questions.addAll(Files.readAllLines(qwen2515bQuestions));
                 //questions.addAll(Files.readAllLines(qwen253bQuestions));
                 questions.addAll(Files.readAllLines(mistralSmallQuestions));
                 questions.addAll(Files.readAllLines(questionsDoc));
