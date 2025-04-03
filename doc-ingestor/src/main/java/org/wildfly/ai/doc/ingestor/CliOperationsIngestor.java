@@ -23,7 +23,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -245,14 +247,14 @@ If you don't have enough information in the directives to generate CLI operation
                     String title = "## syntax of the operation to get the " + resourceName + "\n";
                     docbuilder.append(title);
                     docbuilder.append("* Retrieve the " + resourceName + " attributes\n");
-                    docbuilder.append("* " + resourceName + " description: " + formattedDescription+"\n");
+                    docbuilder.append("* " + resourceName + " description: " + formattedDescription + "\n");
                     docbuilder.append("* operation: `" + currentPath + ":read-resource()`\n\n");
 
                     questionsbuilder.append(title);
                     questionsbuilder.append("Can you get the " + unblockLine(resourceName) + "?\n");
                     String alternative = alternative(unblockLine(resourceName));
                     if (alternative.equals(resourceName)) {
-                        questionsbuilder.append("Can you get the " +  alternative + "?\n");
+                        questionsbuilder.append("Can you get the " + alternative + "?\n");
                     }
                     List<String> words = new ArrayList<>();
                     getWords(resourceName, words);
@@ -363,7 +365,7 @@ If you don't have enough information in the directives to generate CLI operation
                 .logRequests(true)
                 .logResponses(true)
                 .build();
-        float minScore = Float.parseFloat(System.getProperty("min-score", "0.7"));
+        double minScore = Double.parseDouble(System.getProperty("min-score", "0.7"));
         if (Boolean.getBoolean("generate-llm")) {
             Path generatedLLMQuestionsDoc = Paths.get("questions/cli-questions-llm-qwen2.5-3b-generated.md");
             Files.deleteIfExists(generatedLLMQuestionsDoc);
@@ -628,10 +630,15 @@ If you don't have enough information in the directives to generate CLI operation
                 int maxContextSize = 0;
                 String maxQuestion = null;
                 Map<Integer, Integer> sizeDistribution = new TreeMap<>();
-                Map<Double, Integer> scoreDistribution = new TreeMap<>();
-                scoreDistribution.put(0.9, 0);
-                scoreDistribution.put(0.8, 0);
-                scoreDistribution.put(0.7, 0);
+                Map<Double, Integer> scoreDistribution = new TreeMap<>(Collections.reverseOrder());
+                double boundary = minScore;
+                scoreDistribution.put(minScore, 0);
+                while (boundary < 0.9d) {
+                    boundary += 0.1d;
+                    if (boundary < 0.9d) {
+                        scoreDistribution.put(boundary, 0);
+                    }
+                }
                 int numContexts = 0;
                 for (String line : questions) {
                     line = line.trim();
@@ -647,7 +654,7 @@ If you don't have enough information in the directives to generate CLI operation
                     numQuestions += 1;
                     String filteredQuestion = line;//generalizeQuestion(line, lexique, dictionary);
                     Embedding queryEmbedding = embeddingModel.embed(filteredQuestion.toString()).content();
-                    List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 100);
+                    List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 500);
                     StringBuilder messageBuilder = new StringBuilder();
                     List<String> augmentedContext = new ArrayList<>();
                     for (EmbeddingMatch<TextSegment> match : relevant) {
@@ -673,7 +680,7 @@ If you don't have enough information in the directives to generate CLI operation
                             if (topRanked) {
                                 if (augmentedContext.size() < 4) {
                                     augmentedContext.add(match.embedded().text());
-                                    numContexts+=1;
+                                    numContexts += 1;
                                     incrementScoreDistribution(scoreDistribution, match);
                                     continue;
                                 } else {
@@ -690,7 +697,7 @@ If you don't have enough information in the directives to generate CLI operation
                     if (!topRanked) {
                         if (index != 0) {
                             // Keep at min 4 scores
-                            if(index < 3) {
+                            if (index < 3) {
                                 index = 3;
                             }
                             String l = line + "[rank " + index + ", score " + score + "]";
@@ -702,7 +709,7 @@ If you don't have enough information in the directives to generate CLI operation
                             for (int i = 0; i <= index; i++) {
                                 EmbeddingMatch<TextSegment> match = relevant.get(i);
                                 augmentedContext.add(match.embedded().text());
-                                numContexts+=1;
+                                numContexts += 1;
                                 incrementScoreDistribution(scoreDistribution, match);
                             }
                             ranked = true;
@@ -769,9 +776,11 @@ If you don't have enough information in the directives to generate CLI operation
                 for (Entry<Integer, Integer> entry : sizeDistribution.entrySet()) {
                     System.out.println("Context size " + entry.getKey() + " num: " + entry.getValue() + " " + ((float) (entry.getValue() * 100) / numQuestions) + "%");
                 }
+                System.out.println("TOTAL NUM OF CONTEXTS        : " + numContexts);
                 System.out.println("SCORE DISTRIBUTION  :");
-                for (Entry<Double, Integer> entry : scoreDistribution.entrySet()) {
-                    System.out.println("Score > " + entry.getKey() + " num: " + entry.getValue() + " " + ((float) (entry.getValue() * 100) / numContexts) + "%");
+                DecimalFormat df = new DecimalFormat("####0.00");
+                for (Entry<Double, Integer> k : scoreDistribution.entrySet()) {
+                    System.out.println(df.format(k.getKey()) + "=" + k.getValue() + " " + ((float) (k.getValue() * 100) / numContexts) + "%" );
                 }
 
                 if (!questionsNotRanked.isEmpty()) {
@@ -780,7 +789,7 @@ If you don't have enough information in the directives to generate CLI operation
             } else {
                 String generalizedQuestion = question;//generalizeQuestion(question, lexique, dictionary);
                 Embedding queryEmbedding = embeddingModel.embed(generalizedQuestion).content();
-                List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 100);
+                List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 500);
                 StringBuilder messageBuilder = new StringBuilder();
                 List<Double> scores = new ArrayList<>();
                 String questionTitle = getQuestionMetadata("title", qSegments, generalizedQuestion);
@@ -816,13 +825,10 @@ If you don't have enough information in the directives to generate CLI operation
     }
 
     private static void incrementScoreDistribution(Map<Double, Integer> scoreDistribution, EmbeddingMatch<TextSegment> match) {
-        if (match.score() >= 0.9) {
-            scoreDistribution.put(0.9, scoreDistribution.get(0.9) + 1);
-        } else {
-            if (match.score() >= 0.8) {
-                scoreDistribution.put(0.8, scoreDistribution.get(0.8) + 1);
-            } else {
-                scoreDistribution.put(0.7, scoreDistribution.get(0.7) + 1);
+        for (Entry<Double, Integer> k : scoreDistribution.entrySet()) {
+            if (match.score() >= k.getKey()) {
+                scoreDistribution.put(k.getKey(), scoreDistribution.get(k.getKey()) + 1);
+                break;
             }
         }
     }
