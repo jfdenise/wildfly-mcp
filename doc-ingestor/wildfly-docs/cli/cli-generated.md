@@ -1,3 +1,8 @@
+## syntax of the operation to get the `iiop-openjdk` subsystem
+* Retrieve the `iiop-openjdk` subsystem attributes
+* `iiop-openjdk` subsystem description: the `iiop-openjdk` subsystem configuration.
+* operation: `/subsystem=iiop-openjdk:read-resource()`
+
 ## syntax of the operation to get the `add-component-via-interceptor` attribute of the `iiop-openjdk` subsystem
 * Retrieve the `add-component-via-interceptor` attribute value of the `iiop-openjdk` subsystem
 * `add-component-via-interceptor` attribute description: indicates whether `ssl` components should be added by an `ior` interceptor (on) or not (off).
@@ -168,6 +173,16 @@
 * `trust-in-target` attribute description: indicates if the transport must require trust in target to be established. valid values are 'none' and 'supported'.
 * operation: `/subsystem=iiop-openjdk:read-attribute(name=trust-in-target)`
 
+## syntax of the operation to get the `jsr77` subsystem
+* Retrieve the `jsr77` subsystem attributes
+* `jsr77` subsystem description: the configuration of the `jsr-77` subsystem.
+* operation: `/subsystem=jsr77:read-resource()`
+
+## syntax of the operation to get the `opentelemetry` subsystem
+* Retrieve the `opentelemetry` subsystem attributes
+* `opentelemetry` subsystem description: `opentelemetry` subsystem
+* operation: `/subsystem=opentelemetry:read-resource()`
+
 ## syntax of the operation to get the `batch-delay` attribute of the `opentelemetry` subsystem
 * Retrieve the `batch-delay` attribute value of the `opentelemetry` subsystem
 * `batch-delay` attribute description: the interval, in milliseconds, between two consecutive exports. default is `5000`.
@@ -218,6 +233,11 @@
 * `span-processor-type` attribute description: the type of processor to use. valid values are 'simple' and 'batch'.
 * operation: `/subsystem=opentelemetry:read-attribute(name=span-processor-type)`
 
+## syntax of the operation to get the `jpa` subsystem
+* Retrieve the `jpa` subsystem attributes
+* `jpa` subsystem description: the configuration of the jakarta persistence subsystem.
+* operation: `/subsystem=jpa:read-resource()`
+
 ## syntax of the operation to get the `default-datasource` attribute of the `jpa` subsystem
 * Retrieve the `default-datasource` attribute value of the `jpa` subsystem
 * `default-datasource` attribute description: the name of the default global `datasource`.
@@ -227,6 +247,11 @@
 * Retrieve the `default-extended-persistence-inheritance` attribute value of the `jpa` subsystem
 * `default-extended-persistence-inheritance` attribute description: controls how jakarta persistence extended persistence context (`xpc`) inheritance is performed. 'deep' shares the extended persistence context at top bean level.  'shallow' the extended `persistece` context is only shared with the parent bean (never with sibling beans).
 * operation: `/subsystem=jpa:read-attribute(name=default-extended-persistence-inheritance)`
+
+## syntax of the operation to get the `messaging-activemq` subsystem
+* Retrieve the `messaging-activemq` subsystem attributes
+* `messaging-activemq` subsystem description: the `messaging-activemq` subsystem.
+* operation: `/subsystem=messaging-activemq:read-resource()`
 
 ## syntax of the operation to get the `global-client-scheduled-thread-pool-active-count` attribute of the `messaging-activemq` subsystem
 * Retrieve the `global-client-scheduled-thread-pool-active-count` attribute value of the `messaging-activemq` subsystem
@@ -3869,6 +3894,11 @@
 * `socket-binding` attribute description: the discovery group socket binding.
 * operation: `/subsystem=messaging-activemq/socket-discovery-group=<socket-discovery-group name>:read-attribute(name=socket-binding)`
 
+## syntax of the operation to get the `transactions` subsystem
+* Retrieve the `transactions` subsystem attributes
+* `transactions` subsystem description: the configuration of the transaction subsystem.
+* operation: `/subsystem=transactions:read-resource()`
+
 ## syntax of the operation to get the `average-commit-time` attribute of the `transactions` subsystem
 * Retrieve the `average-commit-time` attribute value of the `transactions` subsystem
 * `average-commit-time` attribute description: the average time of transaction commit, measured from the moment the client calls commit until the transaction manager determines that the commit attempt was successful.
@@ -4156,6 +4186,11 @@
 * `name` attribute description: defines the database table name used for storing ids associated with this `cmr` resource. the default value for naming the database table is '`xids`'.
 * operation: `/subsystem=transactions/commit-markable-resource=<commit-markable-resource name>:read-attribute(name=name)`
 
+## syntax of the operation to get the `modcluster` subsystem
+* Retrieve the `modcluster` subsystem attributes
+* `modcluster` subsystem description: configuration and runtime operations for `mod_cluster` subsystem.
+* operation: `/subsystem=modcluster:read-resource()`
+
 ## syntax of the operation to get a `proxy` resource of the `modcluster` subsystem
 * operation: `/subsystem=modcluster/proxy=<proxy name>:read-resource()`
 * To get the list of all the `proxy` resource of the `modcluster` subsystem use '*' for `<proxy name>`.
@@ -4363,6 +4398,11 @@
 * `factor` attribute description: dynamic load provider computes the load balance factor of a node from a defined set of load metrics.
 * operation: `/subsystem=modcluster/proxy=<proxy name>/load-provider=simple:read-attribute(name=factor)`
 
+## syntax of the operation to get the `discovery` subsystem
+* Retrieve the `discovery` subsystem attributes
+* `discovery` subsystem description: the discovery subsystem
+* operation: `/subsystem=discovery:read-resource()`
+
 ## syntax of the operation to get a `static-provider` resource of the `discovery` subsystem
 * operation: `/subsystem=discovery/static-provider=<static-provider name>:read-resource()`
 * To get the list of all the `static-provider` resource of the `discovery` subsystem use '*' for `<static-provider name>`.
@@ -4380,6 +4420,16 @@
 * Retrieve the `providers` attribute value of the `aggregate-provider` resource of the `discovery` subsystem
 * `providers` attribute description: the list of providers that are aggregated by this provider
 * operation: `/subsystem=discovery/aggregate-provider=<aggregate-provider name>:read-attribute(name=providers)`
+
+## syntax of the operation to get the `pojo` subsystem
+* Retrieve the `pojo` subsystem attributes
+* `pojo` subsystem description: support `jboss5` and `jboss6` `pojo` configuration model.
+* operation: `/subsystem=pojo:read-resource()`
+
+## syntax of the operation to get the `infinispan` subsystem
+* Retrieve the `infinispan` subsystem attributes
+* `infinispan` subsystem description: the configuration of the `infinispan` subsystem.
+* operation: `/subsystem=infinispan:read-resource()`
 
 ## syntax of the operation to get a `cache-container` resource of the `infinispan` subsystem
 * operation: `/subsystem=infinispan/cache-container=<cache-container name>:read-resource()`
@@ -7163,6 +7213,16 @@
 * `min-idle` attribute description: sets a target value for the minimum number of idle connections (per server) that should always be available. if this parameter is set to a positive number and `timebetweenevictionrunsmillis` > `0`, each time the idle connection eviction thread runs, it will try to create enough idle instances so that there will be `minidle` idle instances available for each server.
 * operation: `/subsystem=infinispan/remote-cache-container=<remote-cache-container name>/component=connection-pool:read-attribute(name=min-idle)`
 
+## syntax of the operation to get the `microprofile-telemetry` subsystem
+* Retrieve the `microprofile-telemetry` subsystem attributes
+* `microprofile-telemetry` subsystem description: `microprofile` telemetry subsystem
+* operation: `/subsystem=microprofile-telemetry:read-resource()`
+
+## syntax of the operation to get the `metrics` subsystem
+* Retrieve the `metrics` subsystem attributes
+* `metrics` subsystem description: `wildfly` extension for base metrics
+* operation: `/subsystem=metrics:read-resource()`
+
 ## syntax of the operation to get the `exposed-subsystems` attribute of the `metrics` subsystem
 * Retrieve the `exposed-subsystems` attribute value of the `metrics` subsystem
 * `exposed-subsystems` attribute description: the names of the `wildfly` subsystems that exposes their metrics (or '*' to expose any subsystem metrics).
@@ -7177,6 +7237,11 @@
 * Retrieve the `security-enabled` attribute value of the `metrics` subsystem
 * `security-enabled` attribute description: true if authentication is required to access the `http` endpoint on the `http` management interface.
 * operation: `/subsystem=metrics:read-attribute(name=security-enabled)`
+
+## syntax of the operation to get the `core-management` subsystem
+* Retrieve the `core-management` subsystem attributes
+* `core-management` subsystem description: the configuration of the `core-management` subsystem.
+* operation: `/subsystem=core-management:read-resource()`
 
 ## syntax of the operation to get the `max-history` attribute of the `configuration-changes` `service` resource of the `core-management` subsystem
 * Retrieve the `max-history` attribute value of the `configuration-changes` `service` resource of the `core-management` subsystem
@@ -7206,6 +7271,11 @@
 * Retrieve the `timeout` attribute value of the `process-state-listener` resource of the `core-management` subsystem
 * `timeout` attribute description: duration value before cancelling the execution of a listener.
 * operation: `/subsystem=core-management/process-state-listener=<process-state-listener name>:read-attribute(name=timeout)`
+
+## syntax of the operation to get the `jca` subsystem
+* Retrieve the `jca` subsystem attributes
+* `jca` subsystem description: the jakarta connectors architecture subsystem providing general configuration for resource adapters
+* operation: `/subsystem=jca:read-resource()`
 
 ## syntax of the operation to get the `enabled` attribute of the `bean-validation` `bean-validation` resource of the `jca` subsystem
 * Retrieve the `enabled` attribute value of the `bean-validation` `bean-validation` resource of the `jca` subsystem
@@ -7550,6 +7620,11 @@
 * `thread-factory` attribute description: specifies the name of a specific thread factory to use to create worker threads. if not defined an appropriate default thread factory will be used.
 * operation: `/subsystem=jca/distributed-workmanager=<distributed-workmanager name>/long-running-threads=<long-running-threads name>:read-attribute(name=thread-factory)`
 
+## syntax of the operation to get the `request-controller` subsystem
+* Retrieve the `request-controller` subsystem attributes
+* `request-controller` subsystem description: the request controller subsystem. used for request limiting and graceful shutdown.
+* operation: `/subsystem=request-controller:read-resource()`
+
 ## syntax of the operation to get the `active-requests` attribute of the `request-controller` subsystem
 * Retrieve the `active-requests` attribute value of the `request-controller` subsystem
 * `active-requests` attribute description: the number of requests that are currently running on the server.
@@ -7564,6 +7639,11 @@
 * Retrieve the `track-individual-endpoints` attribute value of the `request-controller` subsystem
 * `track-individual-endpoints` attribute description: if this is true, requests are tracked at an endpoint level, which will allow individual deployments to be suspended.
 * operation: `/subsystem=request-controller:read-attribute(name=track-individual-endpoints)`
+
+## syntax of the operation to get the `microprofile-config-smallrye` subsystem
+* Retrieve the `microprofile-config-smallrye` subsystem attributes
+* `microprofile-config-smallrye` subsystem description: `wildfly` extension for `microprofile` `config` with `smallrye`
+* operation: `/subsystem=microprofile-config-smallrye:read-resource()`
 
 ## syntax of the operation to get a `config-source-provider` resource of the `microprofile-config-smallrye` subsystem
 * operation: `/subsystem=microprofile-config-smallrye/config-source-provider=<config-source-provider name>:read-resource()`
@@ -7597,6 +7677,11 @@
 * Retrieve the `properties` attribute value of the `config-source` resource of the `microprofile-config-smallrye` subsystem
 * `properties` attribute description: properties configured for this `config` source and stored directly in `wildfly` management model.
 * operation: `/subsystem=microprofile-config-smallrye/config-source=<config-source name>:read-attribute(name=properties)`
+
+## syntax of the operation to get the `undertow` subsystem
+* Retrieve the `undertow` subsystem attributes
+* `undertow` subsystem description: undertow subsystem
+* operation: `/subsystem=undertow:read-resource()`
 
 ## syntax of the operation to get the `default-security-domain` attribute of the `undertow` subsystem
 * Retrieve the `default-security-domain` attribute value of the `undertow` subsystem
@@ -9544,6 +9629,11 @@
 * `max-regions` attribute description: the maximum number of regions
 * operation: `/subsystem=undertow/buffer-cache=<buffer-cache name>:read-attribute(name=max-regions)`
 
+## syntax of the operation to get the `security-manager` subsystem
+* Retrieve the `security-manager` subsystem attributes
+* `security-manager` subsystem description: the security manager subsystem
+* operation: `/subsystem=security-manager:read-resource()`
+
 ## syntax of the operation to get the `maximum-permissions` attribute of the `default` `deployment-permissions` resource of the `security-manager` subsystem
 * Retrieve the `maximum-permissions` attribute value of the `default` `deployment-permissions` resource of the `security-manager` subsystem
 * `maximum-permissions` attribute description: the maximum set of permissions that can be granted to a deployment or jars.
@@ -9553,6 +9643,11 @@
 * Retrieve the `minimum-permissions` attribute value of the `default` `deployment-permissions` resource of the `security-manager` subsystem
 * `minimum-permissions` attribute description: the minimum set of permissions to be granted to a deployment or jars.
 * operation: `/subsystem=security-manager/deployment-permissions=default:read-attribute(name=minimum-permissions)`
+
+## syntax of the operation to get the `datasources` subsystem
+* Retrieve the `datasources` subsystem attributes
+* `datasources` subsystem description: the `data-sources` subsystem, used to declare `jdbc` `data-sources`
+* operation: `/subsystem=datasources:read-resource()`
 
 ## syntax of the operation to get the `installed-drivers` attribute of the `datasources` subsystem
 * Retrieve the `installed-drivers` attribute value of the `datasources` subsystem
@@ -10363,6 +10458,11 @@
 * Retrieve the `value` attribute value of the `xa-datasource-properties` resource of the `xa-data-source` resource of the `datasources` subsystem
 * `value` attribute description: specifies a property value to assign to the `xadatasource` implementation class. each property is identified by the name attribute and the property value is given by the `xa-datasource-property` element content. the property is mapped onto the `xadatasource` implementation by looking for a `javabeans` style getter method for the property name. if found, the value of the property is set using the `javabeans` setter with the element text translated to the true property type using the `java.beans.propertyeditor`
 * operation: `/subsystem=datasources/xa-data-source=<xa-data-source name>/xa-datasource-properties=<xa-datasource-properties name>:read-attribute(name=value)`
+
+## syntax of the operation to get the `logging` subsystem
+* Retrieve the `logging` subsystem attributes
+* `logging` subsystem description: the configuration of the logging subsystem.
+* operation: `/subsystem=logging:read-resource()`
 
 ## syntax of the operation to get the `add-logging-api-dependencies` attribute of the `logging` subsystem
 * Retrieve the `add-logging-api-dependencies` attribute value of the `logging` subsystem
@@ -11876,6 +11976,11 @@
 * `use-parent-handlers` attribute description: specifies whether or not this logger should send its output to its parent logger.
 * operation: `/subsystem=logging/logger=<logger name>:read-attribute(name=use-parent-handlers)`
 
+## syntax of the operation to get the `naming` subsystem
+* Retrieve the `naming` subsystem attributes
+* `naming` subsystem description: the configuration of the naming subsystem.
+* operation: `/subsystem=naming:read-resource()`
+
 ## syntax of the operation to get a `binding` resource of the `naming` subsystem
 * operation: `/subsystem=naming/binding=<binding name>:read-resource()`
 * To get the list of all the `binding` resource of the `naming` subsystem use '*' for `<binding name>`.
@@ -11919,6 +12024,11 @@
 * Retrieve the `value` attribute value of the `binding` resource of the `naming` subsystem
 * `value` attribute description: the value to bind for simple bindings
 * operation: `/subsystem=naming/binding=<binding name>:read-attribute(name=value)`
+
+## syntax of the operation to get the `webservices` subsystem
+* Retrieve the `webservices` subsystem attributes
+* `webservices` subsystem description: the configuration of the web services subsystem.
+* operation: `/subsystem=webservices:read-resource()`
 
 ## syntax of the operation to get the `modify-wsdl-address` attribute of the `webservices` subsystem
 * Retrieve the `modify-wsdl-address` attribute value of the `webservices` subsystem
@@ -12053,6 +12163,11 @@
 * `value` attribute description: endpoint configuration property value
 * operation: `/subsystem=webservices/endpoint-config=<endpoint-config name>/property=<property name>:read-attribute(name=value)`
 
+## syntax of the operation to get the `micrometer` subsystem
+* Retrieve the `micrometer` subsystem attributes
+* `micrometer` subsystem description: micrometer subsystem
+* operation: `/subsystem=micrometer:read-resource()`
+
 ## syntax of the operation to get the `endpoint` attribute of the `micrometer` subsystem
 * Retrieve the `endpoint` attribute value of the `micrometer` subsystem
 * `endpoint` attribute description: the `url` to which metrics will be published.
@@ -12088,6 +12203,16 @@
 * `step` attribute description: the step size (reporting frequency) to use in seconds.
 * operation: `/subsystem=micrometer/registry=otlp:read-attribute(name=step)`
 
+## syntax of the operation to get the `jdr` subsystem
+* Retrieve the `jdr` subsystem attributes
+* `jdr` subsystem description: `jboss` diagnostic reporter (`jdr`) subsystem.
+* operation: `/subsystem=jdr:read-resource()`
+
+## syntax of the operation to get the `xts` subsystem
+* Retrieve the `xts` subsystem attributes
+* `xts` subsystem description: the configuration of the `xst` subsystem.
+* operation: `/subsystem=xts:read-resource()`
+
 ## syntax of the operation to get the `async-registration` attribute of the `xts` subsystem
 * Retrieve the `async-registration` attribute value of the `xts` subsystem
 * `async-registration` attribute description: initialize endpoints for asynchronous registration needed for `ws-at` .net integration.
@@ -12112,6 +12237,11 @@
 * Retrieve the `xts-environment` attribute value of the `xts` subsystem
 * `xts-environment` attribute description: the `xts` environment configuration.
 * operation: `/subsystem=xts:read-attribute(name=xts-environment)`
+
+## syntax of the operation to get the `deployment-scanner` subsystem
+* Retrieve the `deployment-scanner` subsystem attributes
+* `deployment-scanner` subsystem description: an individual deployment scanner that scans a particular location.
+* operation: `/subsystem=deployment-scanner:read-resource()`
 
 ## syntax of the operation to get a `scanner` resource of the `deployment-scanner` subsystem
 * operation: `/subsystem=deployment-scanner/scanner=<scanner name>:read-resource()`
@@ -12162,6 +12292,11 @@
 * `scan-interval` attribute description: periodic interval, in milliseconds, at which the repository should be scanned for changes. a value of less than `1` indicates the repository should only be scanned at initial startup.
 * operation: `/subsystem=deployment-scanner/scanner=<scanner name>:read-attribute(name=scan-interval)`
 
+## syntax of the operation to get the `rts` subsystem
+* Retrieve the `rts` subsystem attributes
+* `rts` subsystem description: `rts` subsystem
+* operation: `/subsystem=rts:read-resource()`
+
 ## syntax of the operation to get the `host` attribute of the `rts` subsystem
 * Retrieve the `host` attribute value of the `rts` subsystem
 * `host` attribute description: name of the host which should be used to deploy `servlets`
@@ -12176,6 +12311,11 @@
 * Retrieve the `socket-binding` attribute value of the `rts` subsystem
 * `socket-binding` attribute description: name of the socket binding which should be used
 * operation: `/subsystem=rts:read-attribute(name=socket-binding)`
+
+## syntax of the operation to get the `distributable-web` subsystem
+* Retrieve the `distributable-web` subsystem attributes
+* `distributable-web` subsystem description: the `distributable-web` subsystem
+* operation: `/subsystem=distributable-web:read-resource()`
 
 ## syntax of the operation to get the `default-session-management` attribute of the `distributable-web` subsystem
 * Retrieve the `default-session-management` attribute value of the `distributable-web` subsystem
@@ -12287,6 +12427,11 @@
 * Retrieve the `max-routes` attribute value of the `ranked` `affinity` resource of the `infinispan-session-management` resource of the `distributable-web` subsystem
 * `max-routes` attribute description: the maximum number of routes to encode into the session identifier
 * operation: `/subsystem=distributable-web/infinispan-session-management=<infinispan-session-management name>/affinity=ranked:read-attribute(name=max-routes)`
+
+## syntax of the operation to get the `mail` subsystem
+* Retrieve the `mail` subsystem attributes
+* `mail` subsystem description: the mail subsystem
+* operation: `/subsystem=mail:read-resource()`
 
 ## syntax of the operation to get a `mail-session` resource of the `mail` subsystem
 * operation: `/subsystem=mail/mail-session=<mail-session name>:read-resource()`
@@ -12436,6 +12581,16 @@
 * `username` attribute description: `username` to authenticate on server
 * operation: `/subsystem=mail/mail-session=<mail-session name>/custom=<custom name>:read-attribute(name=username)`
 
+## syntax of the operation to get the `sar` subsystem
+* Retrieve the `sar` subsystem attributes
+* `sar` subsystem description: the sar subsystem allowing you to deploy sar archives containing `mbeans` configured by `meta-inf/jboss-service.xml`
+* operation: `/subsystem=sar:read-resource()`
+
+## syntax of the operation to get the `distributable-ejb` subsystem
+* Retrieve the `distributable-ejb` subsystem attributes
+* `distributable-ejb` subsystem description: the `distributable-ejb` subsystem
+* operation: `/subsystem=distributable-ejb:read-resource()`
+
 ## syntax of the operation to get the `default-bean-management` attribute of the `distributable-ejb` subsystem
 * Retrieve the `default-bean-management` attribute value of the `distributable-ejb` subsystem
 * `default-bean-management` attribute description: the default distributable bean management provider of the server
@@ -12493,6 +12648,11 @@
 * Retrieve the `max-active-beans` attribute value of the `infinispan-bean-management` resource of the `distributable-ejb` subsystem
 * `max-active-beans` attribute description: the maximum number active beans to retain in memory at a time, after which the least recently used will passivate
 * operation: `/subsystem=distributable-ejb/infinispan-bean-management=<infinispan-bean-management name>:read-attribute(name=max-active-beans)`
+
+## syntax of the operation to get the `resource-adapters` subsystem
+* Retrieve the `resource-adapters` subsystem attributes
+* `resource-adapters` subsystem description: configuration of the resource adapters subsystem.
+* operation: `/subsystem=resource-adapters:read-resource()`
 
 ## syntax of the operation to get the `report-directory` attribute of the `resource-adapters` subsystem
 * Retrieve the `report-directory` attribute value of the `resource-adapters` subsystem
@@ -12883,6 +13043,11 @@
 * `value` attribute description: custom defined `config` property value.
 * operation: `/subsystem=resource-adapters/resource-adapter=<resource-adapter name>/connection-definitions=<connection-definitions name>/config-properties=<config-properties name>:read-attribute(name=value)`
 
+## syntax of the operation to get the `jaxrs` subsystem
+* Retrieve the `jaxrs` subsystem attributes
+* `jaxrs` subsystem description: the configuration of the jakarta restful web services subsystem.
+* operation: `/subsystem=jaxrs:read-resource()`
+
 ## syntax of the operation to get the `jaxrs-2-0-request-matching` attribute of the `jaxrs` subsystem
 * Retrieve the `jaxrs-2-0-request-matching` attribute value of the `jaxrs` subsystem
 * `jaxrs-2-0-request-matching` attribute description: in searching for a matching resource method with which to respond to a request, consider only resource methods with the best match for the request path.
@@ -13002,6 +13167,11 @@
 * Retrieve the `tracing-type` attribute value of the `jaxrs` subsystem
 * `tracing-type` attribute description: "all" will enable the tracing feature. "`on_demand`" mode will give control to the client side: a client can send a tracing request via `http` header and get the tracing info back from response headers. "off" mode will disable the tracing feature, and this is the default mode. note that it is suggested this is set to "off" for production servers.
 * operation: `/subsystem=jaxrs:read-attribute(name=tracing-type)`
+
+## syntax of the operation to get the `ee` subsystem
+* Retrieve the `ee` subsystem attributes
+* `ee` subsystem description: the configuration of the ee subsystem.
+* operation: `/subsystem=ee:read-resource()`
 
 ## syntax of the operation to get the `annotation-property-replacement` attribute of the `ee` subsystem
 * Retrieve the `annotation-property-replacement` attribute value of the `ee` subsystem
@@ -13293,10 +13463,20 @@
 * `thread-priority` attribute description: the priority applied to threads created by the executor.
 * operation: `/subsystem=ee/managed-executor-service=<managed-executor-service name>:read-attribute(name=thread-priority)`
 
+## syntax of the operation to get the `health` subsystem
+* Retrieve the `health` subsystem attributes
+* `health` subsystem description: `wildfly` extension for health
+* operation: `/subsystem=health:read-resource()`
+
 ## syntax of the operation to get the `security-enabled` attribute of the `health` subsystem
 * Retrieve the `security-enabled` attribute value of the `health` subsystem
 * `security-enabled` attribute description: true if authentication is required to access the `http` endpoints on the `http` management interface.
 * operation: `/subsystem=health:read-attribute(name=security-enabled)`
+
+## syntax of the operation to get the `remoting` subsystem
+* Retrieve the `remoting` subsystem attributes
+* `remoting` subsystem description: the configuration of the `remoting` subsystem.
+* operation: `/subsystem=remoting:read-resource()`
 
 ## syntax of the operation to get the `auth-realm` attribute of the `remoting` subsystem
 * Retrieve the `auth-realm` attribute value of the `remoting` subsystem
@@ -13686,6 +13866,11 @@
 * `value` attribute description: the property value.
 * operation: `/subsystem=remoting/remote-outbound-connection=<remote-outbound-connection name>/property=<property name>:read-attribute(name=value)`
 
+## syntax of the operation to get the `jmx` subsystem
+* Retrieve the `jmx` subsystem attributes
+* `jmx` subsystem description: the configuration of the `jmx` subsystem.
+* operation: `/subsystem=jmx:read-resource()`
+
 ## syntax of the operation to get the `non-core-mbean-sensitivity` attribute of the `jmx` subsystem
 * Retrieve the `non-core-mbean-sensitivity` attribute value of the `jmx` subsystem
 * `non-core-mbean-sensitivity` attribute description: whether or not core `mbeans`, `i.e`. `mbeans` not coming from the model controller, should be considered sensitive.
@@ -13734,6 +13919,11 @@
 * Retrieve the `domain-name` attribute value of the `expression` `expose-model` resource of the `jmx` subsystem
 * `domain-name` attribute description: the domain name to use for the 'expression' model controller `jmx` facade in the `mbeanserver`.
 * operation: `/subsystem=jmx/expose-model=expression:read-attribute(name=domain-name)`
+
+## syntax of the operation to get the `singleton` subsystem
+* Retrieve the `singleton` subsystem attributes
+* `singleton` subsystem description: the configuration of the singleton subsystem
+* operation: `/subsystem=singleton:read-resource()`
 
 ## syntax of the operation to get the `default` attribute of the `singleton` subsystem
 * Retrieve the `default` attribute value of the `singleton` subsystem
@@ -13822,6 +14012,11 @@
 * `providers` attribute description: the members on which the singleton service is installed
 * operation: `/subsystem=singleton/singleton-policy=<singleton-policy name>/service=<service name>:read-attribute(name=providers)`
 
+## syntax of the operation to get the `weld` subsystem
+* Retrieve the `weld` subsystem attributes
+* `weld` subsystem description: the configuration of the weld subsystem.
+* operation: `/subsystem=weld:read-resource()`
+
 ## syntax of the operation to get the `development-mode` attribute of the `weld` subsystem
 * Retrieve the `development-mode` attribute value of the `weld` subsystem
 * `development-mode` attribute description: weld comes with a special mode for application development. when the development mode is enabled, certain `built-in` tools, which facilitate the development of jakarta contexts and dependency injection applications are available. setting this attribute to true activates the development mode.
@@ -13847,6 +14042,11 @@
 * `thread-pool-size` attribute description: the number of threads to be used by the weld thread pool. the pool is shared across all jakarta contexts and dependency injection enabled deployments and used primarily for parallel weld bootstrapping.
 * operation: `/subsystem=weld:read-attribute(name=thread-pool-size)`
 
+## syntax of the operation to get the `microprofile-lra-coordinator` subsystem
+* Retrieve the `microprofile-lra-coordinator` subsystem attributes
+* `microprofile-lra-coordinator` subsystem description: the `microprofile` `lra` coordinator subsystem implemented by `narayana`
+* operation: `/subsystem=microprofile-lra-coordinator:read-resource()`
+
 ## syntax of the operation to get the `host` attribute of the `microprofile-lra-coordinator` subsystem
 * Retrieve the `host` attribute value of the `microprofile-lra-coordinator` subsystem
 * `host` attribute description: name of the undertow subsystem 'host' resource that the `lra` coordinator will be deployed to.
@@ -13856,6 +14056,11 @@
 * Retrieve the `server` attribute value of the `microprofile-lra-coordinator` subsystem
 * `server` attribute description: name of the undertow subsystem 'server' resource that the `lra` coordinator will be deployed to.
 * operation: `/subsystem=microprofile-lra-coordinator:read-attribute(name=server)`
+
+## syntax of the operation to get the `jgroups` subsystem
+* Retrieve the `jgroups` subsystem attributes
+* `jgroups` subsystem description: the configuration of the `jgroups` subsystem.
+* operation: `/subsystem=jgroups:read-resource()`
 
 ## syntax of the operation to get the `default-channel` attribute of the `jgroups` subsystem
 * Retrieve the `default-channel` attribute value of the `jgroups` subsystem
@@ -14074,6 +14279,11 @@
 * Retrieve the `channel` attribute value of the `remote-site` resource of the `relay.RELAY2` `relay` resource of the `stack` resource of the `jgroups` subsystem
 * `channel` attribute description: the name of the bridge channel used to communicate with this remote site.
 * operation: `/subsystem=jgroups/stack=<stack name>/relay=relay.RELAY2/remote-site=<remote-site name>:read-attribute(name=channel)`
+
+## syntax of the operation to get the `elytron` subsystem
+* Retrieve the `elytron` subsystem attributes
+* `elytron` subsystem description: the elytron subsystem
+* operation: `/subsystem=elytron:read-resource()`
 
 ## syntax of the operation to get the `default-authentication-context` attribute of the `elytron` subsystem
 * Retrieve the `default-authentication-context` attribute value of the `elytron` subsystem
@@ -16581,6 +16791,26 @@
 * `module` attribute description: the module to use to load the custom realm.
 * operation: `/subsystem=elytron/custom-realm=<custom-realm name>:read-attribute(name=module)`
 
+## syntax of the operation to get the `bean-validation` subsystem
+* Retrieve the `bean-validation` subsystem attributes
+* `bean-validation` subsystem description: jakarta bean validation subsystem
+* operation: `/subsystem=bean-validation:read-resource()`
+
+## syntax of the operation to get the `ee-security` subsystem
+* Retrieve the `ee-security` subsystem attributes
+* `ee-security` subsystem description: the configuration of the ee security subsystem.
+* operation: `/subsystem=ee-security:read-resource()`
+
+## syntax of the operation to get the `microprofile-fault-tolerance-smallrye` subsystem
+* Retrieve the `microprofile-fault-tolerance-smallrye` subsystem attributes
+* `microprofile-fault-tolerance-smallrye` subsystem description: `microprofile` fault tolerance subsystem.
+* operation: `/subsystem=microprofile-fault-tolerance-smallrye:read-resource()`
+
+## syntax of the operation to get the `jsf` subsystem
+* Retrieve the `jsf` subsystem attributes
+* `jsf` subsystem description: the jakarta server faces subsystem
+* operation: `/subsystem=jsf:read-resource()`
+
 ## syntax of the operation to get the `default-jsf-impl-slot` attribute of the `jsf` subsystem
 * Retrieve the `default-jsf-impl-slot` attribute value of the `jsf` subsystem
 * `default-jsf-impl-slot` attribute description: default jakarta server faces implementation slot
@@ -16590,6 +16820,21 @@
 * Retrieve the `disallow-doctype-decl` attribute value of the `jsf` subsystem
 * `disallow-doctype-decl` attribute description: specifies whether or not `doctype` declarations in jakarta server faces deployments should be disallowed. this setting can be overridden at the deployment level.
 * operation: `/subsystem=jsf:read-attribute(name=disallow-doctype-decl)`
+
+## syntax of the operation to get the `microprofile-openapi-smallrye` subsystem
+* Retrieve the `microprofile-openapi-smallrye` subsystem attributes
+* `microprofile-openapi-smallrye` subsystem description: `microprofile` `openapi` subsystem
+* operation: `/subsystem=microprofile-openapi-smallrye:read-resource()`
+
+## syntax of the operation to get the `microprofile-reactive-streams-operators-smallrye` subsystem
+* Retrieve the `microprofile-reactive-streams-operators-smallrye` subsystem attributes
+* `microprofile-reactive-streams-operators-smallrye` subsystem description: the `microprofile` reactive streams operators subsystem implemented by `smallrye`
+* operation: `/subsystem=microprofile-reactive-streams-operators-smallrye:read-resource()`
+
+## syntax of the operation to get the `microprofile-opentracing-smallrye` subsystem
+* Retrieve the `microprofile-opentracing-smallrye` subsystem attributes
+* `microprofile-opentracing-smallrye` subsystem description: `wildfly` extension for `microprofile` `opentracing` with `smallrye`.
+* operation: `/subsystem=microprofile-opentracing-smallrye:read-resource()`
 
 ## syntax of the operation to get the `default-tracer` attribute of the `microprofile-opentracing-smallrye` subsystem
 * Retrieve the `default-tracer` attribute value of the `microprofile-opentracing-smallrye` subsystem
@@ -16669,6 +16914,16 @@
 * Retrieve the `tracer_id_128bit` attribute value of the `jaeger-tracer` resource of the `microprofile-opentracing-smallrye` subsystem
 * `tracer_id_128bit` attribute description: `opt-in` to use `128` bit `traceids`. by default, uses `64` bits.
 * operation: `/subsystem=microprofile-opentracing-smallrye/jaeger-tracer=<jaeger-tracer name>:read-attribute(name=tracer_id_128bit)`
+
+## syntax of the operation to get the `microprofile-jwt-smallrye` subsystem
+* Retrieve the `microprofile-jwt-smallrye` subsystem attributes
+* `microprofile-jwt-smallrye` subsystem description: `wildfly` extension for `microprofile` `jwt` with `smallrye`
+* operation: `/subsystem=microprofile-jwt-smallrye:read-resource()`
+
+## syntax of the operation to get the `batch-jberet` subsystem
+* Retrieve the `batch-jberet` subsystem attributes
+* `batch-jberet` subsystem description: batch subsystem (`jsr-352`)
+* operation: `/subsystem=batch-jberet:read-resource()`
 
 ## syntax of the operation to get the `default-job-repository` attribute of the `batch-jberet` subsystem
 * Retrieve the `default-job-repository` attribute value of the `batch-jberet` subsystem
@@ -16801,6 +17056,11 @@
 * `execution-records-limit` attribute description: the maximum number of job execution records that should be returned by the job repository.
 * operation: `/subsystem=batch-jberet/jdbc-job-repository=<jdbc-job-repository name>:read-attribute(name=execution-records-limit)`
 
+## syntax of the operation to get the `microprofile-health-smallrye` subsystem
+* Retrieve the `microprofile-health-smallrye` subsystem attributes
+* `microprofile-health-smallrye` subsystem description: `wildfly` extension for `microprofile` health with `smallrye`
+* operation: `/subsystem=microprofile-health-smallrye:read-resource()`
+
 ## syntax of the operation to get the `empty-liveness-checks-status` attribute of the `microprofile-health-smallrye` subsystem
 * Retrieve the `empty-liveness-checks-status` attribute value of the `microprofile-health-smallrye` subsystem
 * `empty-liveness-checks-status` attribute description: defines the global status returned by the health checks endpoints if no liveness probes have been defined in deployments.
@@ -16820,6 +17080,11 @@
 * Retrieve the `security-enabled` attribute value of the `microprofile-health-smallrye` subsystem
 * `security-enabled` attribute description: true if authentication is required to access the `http` endpoints on the `http` management interface.
 * operation: `/subsystem=microprofile-health-smallrye:read-attribute(name=security-enabled)`
+
+## syntax of the operation to get the `elytron-oidc-client` subsystem
+* Retrieve the `elytron-oidc-client` subsystem attributes
+* `elytron-oidc-client` subsystem description: `wildfly` extension for elytron `oidc`.
+* operation: `/subsystem=elytron-oidc-client:read-resource()`
 
 ## syntax of the operation to get a `provider` resource of the `elytron-oidc-client` subsystem
 * operation: `/subsystem=elytron-oidc-client/provider=<provider name>:read-resource()`
@@ -17733,6 +17998,11 @@
 * `verify-token-audience` attribute description: if set to 'true', then during `bearer-only` authentication, the subsystem verifies if the token contains the client name defined as an audience. it is recommended to set to 'true' for improved security.
 * operation: `/subsystem=elytron-oidc-client/realm=<realm name>:read-attribute(name=verify-token-audience)`
 
+## syntax of the operation to get the `io` subsystem
+* Retrieve the `io` subsystem attributes
+* `io` subsystem description: io subsystem
+* operation: `/subsystem=io:read-resource()`
+
 ## syntax of the operation to get the `default-worker` attribute of the `io` subsystem
 * Retrieve the `default-worker` attribute value of the `io` subsystem
 * `default-worker` attribute description: specifies the default `i/o` worker
@@ -17853,6 +18123,11 @@
 * Retrieve the `direct-buffers` attribute value of the `buffer-pool` resource of the `io` subsystem
 * `direct-buffers` attribute description: does the buffer pool use direct buffers, some platforms `don't` support direct buffers
 * operation: `/subsystem=io/buffer-pool=<buffer-pool name>:read-attribute(name=direct-buffers)`
+
+## syntax of the operation to get the `ejb3` subsystem
+* Retrieve the `ejb3` subsystem attributes
+* `ejb3` subsystem description: the configuration of the `ejb3` subsystem.
+* operation: `/subsystem=ejb3:read-resource()`
 
 ## syntax of the operation to get the `allow-ejb-name-regex` attribute of the `ejb3` subsystem
 * Retrieve the `allow-ejb-name-regex` attribute value of the `ejb3` subsystem
@@ -18397,6 +18672,11 @@
 * `passivation-store` attribute description: the passivation store used by this cache
 * operation: `/subsystem=ejb3/cache=<cache name>:read-attribute(name=passivation-store)`
 
+## syntax of the operation to get the `microprofile-lra-participant` subsystem
+* Retrieve the `microprofile-lra-participant` subsystem attributes
+* `microprofile-lra-participant` subsystem description: the `microprofile` `lra` participant subsystem implemented by `narayana`
+* operation: `/subsystem=microprofile-lra-participant:read-resource()`
+
 ## syntax of the operation to get the `lra-coordinator-url` attribute of the `microprofile-lra-participant` subsystem
 * Retrieve the `lra-coordinator-url` attribute value of the `microprofile-lra-participant` subsystem
 * `lra-coordinator-url` attribute description: configuration of the `lra-coordinator-url`, used by the `lra` participant subsystem.
@@ -18412,6 +18692,11 @@
 * `proxy-server` attribute description: name of the undertow subsystem 'server' resource that the `lra` participant proxy will be deployed to.
 * operation: `/subsystem=microprofile-lra-participant:read-attribute(name=proxy-server)`
 
+## syntax of the operation to get the `microprofile-metrics-smallrye` subsystem
+* Retrieve the `microprofile-metrics-smallrye` subsystem attributes
+* `microprofile-metrics-smallrye` subsystem description: `wildfly` extension for `microprofile` metrics with `smallrye`
+* operation: `/subsystem=microprofile-metrics-smallrye:read-resource()`
+
 ## syntax of the operation to get the `exposed-subsystems` attribute of the `microprofile-metrics-smallrye` subsystem
 * Retrieve the `exposed-subsystems` attribute value of the `microprofile-metrics-smallrye` subsystem
 * `exposed-subsystems` attribute description: the names of the `wildfly` subsystems that exposes their metrics (or '*' to expose any subsystem metrics).
@@ -18426,6 +18711,11 @@
 * Retrieve the `security-enabled` attribute value of the `microprofile-metrics-smallrye` subsystem
 * `security-enabled` attribute description: true if authentication is required to access the `http` endpoint on the `http` management `interface.this` attribute overrides the value specified in the `security-enabled` attribute of the /`subsystem=metrics` resource.
 * operation: `/subsystem=microprofile-metrics-smallrye:read-attribute(name=security-enabled)`
+
+## syntax of the operation to get the `microprofile-reactive-messaging-smallrye` subsystem
+* Retrieve the `microprofile-reactive-messaging-smallrye` subsystem attributes
+* `microprofile-reactive-messaging-smallrye` subsystem description: the `microprofile` reactive messaging subsystem implemented by `smallrye`
+* operation: `/subsystem=microprofile-reactive-messaging-smallrye:read-resource()`
 
 ## syntax of the operation to get the `amqp-connector` attribute of the `config` `opentelemetry-tracing` resource of the `microprofile-reactive-messaging-smallrye` subsystem
 * Retrieve the `amqp-connector` attribute value of the `config` `opentelemetry-tracing` resource of the `microprofile-reactive-messaging-smallrye` subsystem

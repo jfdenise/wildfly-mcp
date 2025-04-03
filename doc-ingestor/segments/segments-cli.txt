@@ -200,6 +200,13 @@ To get the list of all the `data-sources` use '*' for `<data-source name>`." met
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `iiop-openjdk` subsystem
+* Retrieve the `iiop-openjdk` subsystem attributes
+* `iiop-openjdk` subsystem description: the `iiop-openjdk` subsystem configuration.
+* operation: `/subsystem=iiop-openjdk:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `iiop-openjdk` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `add-component-via-interceptor` attribute of the `iiop-openjdk` subsystem
 * Retrieve the `add-component-via-interceptor` attribute value of the `iiop-openjdk` subsystem
 * `add-component-via-interceptor` attribute description: indicates whether `ssl` components should be added by an `ior` interceptor (on) or not (off).
@@ -438,6 +445,20 @@ TextSegment { text = "syntax of the operation to get the `trust-in-target` attri
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `jsr77` subsystem
+* Retrieve the `jsr77` subsystem attributes
+* `jsr77` subsystem description: the configuration of the `jsr-77` subsystem.
+* operation: `/subsystem=jsr77:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `jsr77` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `opentelemetry` subsystem
+* Retrieve the `opentelemetry` subsystem attributes
+* `opentelemetry` subsystem description: `opentelemetry` subsystem
+* operation: `/subsystem=opentelemetry:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `opentelemetry` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `batch-delay` attribute of the `opentelemetry` subsystem
 * Retrieve the `batch-delay` attribute value of the `opentelemetry` subsystem
 * `batch-delay` attribute description: the interval, in milliseconds, between two consecutive exports. default is `5000`.
@@ -508,6 +529,13 @@ TextSegment { text = "syntax of the operation to get the `span-processor-type` a
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `jpa` subsystem
+* Retrieve the `jpa` subsystem attributes
+* `jpa` subsystem description: the configuration of the jakarta persistence subsystem.
+* operation: `/subsystem=jpa:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `jpa` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `default-datasource` attribute of the `jpa` subsystem
 * Retrieve the `default-datasource` attribute value of the `jpa` subsystem
 * `default-datasource` attribute description: the name of the default global `datasource`.
@@ -519,6 +547,13 @@ TextSegment { text = "syntax of the operation to get the `default-extended-persi
 * Retrieve the `default-extended-persistence-inheritance` attribute value of the `jpa` subsystem
 * `default-extended-persistence-inheritance` attribute description: controls how jakarta persistence extended persistence context (`xpc`) inheritance is performed. 'deep' shares the extended persistence context at top bean level.  'shallow' the extended `persistece` context is only shared with the parent bean (never with sibling beans).
 * operation: `/subsystem=jpa:read-attribute(name=default-extended-persistence-inheritance)`" metadata = {parent=, title=syntax of the operation to get the `default-extended-persistence-inheritance` attribute of the `jpa` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `messaging-activemq` subsystem
+* Retrieve the `messaging-activemq` subsystem attributes
+* `messaging-activemq` subsystem description: the `messaging-activemq` subsystem.
+* operation: `/subsystem=messaging-activemq:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `messaging-activemq` subsystem} }
 -------------------
 
 -------------------
@@ -5637,6 +5672,13 @@ TextSegment { text = "syntax of the operation to get the `socket-binding` attrib
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `transactions` subsystem
+* Retrieve the `transactions` subsystem attributes
+* `transactions` subsystem description: the configuration of the transaction subsystem.
+* operation: `/subsystem=transactions:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `transactions` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `average-commit-time` attribute of the `transactions` subsystem
 * Retrieve the `average-commit-time` attribute value of the `transactions` subsystem
 * `average-commit-time` attribute description: the average time of transaction commit, measured from the moment the client calls commit until the transaction manager determines that the commit attempt was successful.
@@ -6040,6 +6082,13 @@ TextSegment { text = "syntax of the operation to get the `name` attribute of the
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `modcluster` subsystem
+* Retrieve the `modcluster` subsystem attributes
+* `modcluster` subsystem description: configuration and runtime operations for `mod_cluster` subsystem.
+* operation: `/subsystem=modcluster:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `modcluster` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get a `proxy` resource of the `modcluster` subsystem
 * operation: `/subsystem=modcluster/proxy=<proxy name>:read-resource()`
 * To get the list of all the `proxy` resource of the `modcluster` subsystem use '*' for `<proxy name>`." metadata = {parent=, title=syntax of the operation to get a `proxy` resource of the `modcluster` subsystem} }
@@ -6331,6 +6380,13 @@ TextSegment { text = "syntax of the operation to get the `factor` attribute of t
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `discovery` subsystem
+* Retrieve the `discovery` subsystem attributes
+* `discovery` subsystem description: the discovery subsystem
+* operation: `/subsystem=discovery:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `discovery` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get a `static-provider` resource of the `discovery` subsystem
 * operation: `/subsystem=discovery/static-provider=<static-provider name>:read-resource()`
 * To get the list of all the `static-provider` resource of the `discovery` subsystem use '*' for `<static-provider name>`." metadata = {parent=, title=syntax of the operation to get a `static-provider` resource of the `discovery` subsystem} }
@@ -6354,6 +6410,20 @@ TextSegment { text = "syntax of the operation to get the `providers` attribute o
 * Retrieve the `providers` attribute value of the `aggregate-provider` resource of the `discovery` subsystem
 * `providers` attribute description: the list of providers that are aggregated by this provider
 * operation: `/subsystem=discovery/aggregate-provider=<aggregate-provider name>:read-attribute(name=providers)`" metadata = {parent=, title=syntax of the operation to get the `providers` attribute of the `aggregate-provider` resource of the `discovery` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `pojo` subsystem
+* Retrieve the `pojo` subsystem attributes
+* `pojo` subsystem description: support `jboss5` and `jboss6` `pojo` configuration model.
+* operation: `/subsystem=pojo:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `pojo` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `infinispan` subsystem
+* Retrieve the `infinispan` subsystem attributes
+* `infinispan` subsystem description: the configuration of the `infinispan` subsystem.
+* operation: `/subsystem=infinispan:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `infinispan` subsystem} }
 -------------------
 
 -------------------
@@ -10257,6 +10327,20 @@ TextSegment { text = "syntax of the operation to get the `min-idle` attribute of
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `microprofile-telemetry` subsystem
+* Retrieve the `microprofile-telemetry` subsystem attributes
+* `microprofile-telemetry` subsystem description: `microprofile` telemetry subsystem
+* operation: `/subsystem=microprofile-telemetry:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `microprofile-telemetry` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `metrics` subsystem
+* Retrieve the `metrics` subsystem attributes
+* `metrics` subsystem description: `wildfly` extension for base metrics
+* operation: `/subsystem=metrics:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `metrics` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `exposed-subsystems` attribute of the `metrics` subsystem
 * Retrieve the `exposed-subsystems` attribute value of the `metrics` subsystem
 * `exposed-subsystems` attribute description: the names of the `wildfly` subsystems that exposes their metrics (or '*' to expose any subsystem metrics).
@@ -10275,6 +10359,13 @@ TextSegment { text = "syntax of the operation to get the `security-enabled` attr
 * Retrieve the `security-enabled` attribute value of the `metrics` subsystem
 * `security-enabled` attribute description: true if authentication is required to access the `http` endpoint on the `http` management interface.
 * operation: `/subsystem=metrics:read-attribute(name=security-enabled)`" metadata = {parent=, title=syntax of the operation to get the `security-enabled` attribute of the `metrics` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `core-management` subsystem
+* Retrieve the `core-management` subsystem attributes
+* `core-management` subsystem description: the configuration of the `core-management` subsystem.
+* operation: `/subsystem=core-management:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `core-management` subsystem} }
 -------------------
 
 -------------------
@@ -10316,6 +10407,13 @@ TextSegment { text = "syntax of the operation to get the `timeout` attribute of 
 * Retrieve the `timeout` attribute value of the `process-state-listener` resource of the `core-management` subsystem
 * `timeout` attribute description: duration value before cancelling the execution of a listener.
 * operation: `/subsystem=core-management/process-state-listener=<process-state-listener name>:read-attribute(name=timeout)`" metadata = {parent=, title=syntax of the operation to get the `timeout` attribute of the `process-state-listener` resource of the `core-management` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `jca` subsystem
+* Retrieve the `jca` subsystem attributes
+* `jca` subsystem description: the jakarta connectors architecture subsystem providing general configuration for resource adapters
+* operation: `/subsystem=jca:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `jca` subsystem} }
 -------------------
 
 -------------------
@@ -10802,6 +10900,13 @@ TextSegment { text = "syntax of the operation to get the `thread-factory` attrib
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `request-controller` subsystem
+* Retrieve the `request-controller` subsystem attributes
+* `request-controller` subsystem description: the request controller subsystem. used for request limiting and graceful shutdown.
+* operation: `/subsystem=request-controller:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `request-controller` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `active-requests` attribute of the `request-controller` subsystem
 * Retrieve the `active-requests` attribute value of the `request-controller` subsystem
 * `active-requests` attribute description: the number of requests that are currently running on the server.
@@ -10820,6 +10925,13 @@ TextSegment { text = "syntax of the operation to get the `track-individual-endpo
 * Retrieve the `track-individual-endpoints` attribute value of the `request-controller` subsystem
 * `track-individual-endpoints` attribute description: if this is true, requests are tracked at an endpoint level, which will allow individual deployments to be suspended.
 * operation: `/subsystem=request-controller:read-attribute(name=track-individual-endpoints)`" metadata = {parent=, title=syntax of the operation to get the `track-individual-endpoints` attribute of the `request-controller` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `microprofile-config-smallrye` subsystem
+* Retrieve the `microprofile-config-smallrye` subsystem attributes
+* `microprofile-config-smallrye` subsystem description: `wildfly` extension for `microprofile` `config` with `smallrye`
+* operation: `/subsystem=microprofile-config-smallrye:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `microprofile-config-smallrye` subsystem} }
 -------------------
 
 -------------------
@@ -10867,6 +10979,13 @@ TextSegment { text = "syntax of the operation to get the `properties` attribute 
 * Retrieve the `properties` attribute value of the `config-source` resource of the `microprofile-config-smallrye` subsystem
 * `properties` attribute description: properties configured for this `config` source and stored directly in `wildfly` management model.
 * operation: `/subsystem=microprofile-config-smallrye/config-source=<config-source name>:read-attribute(name=properties)`" metadata = {parent=, title=syntax of the operation to get the `properties` attribute of the `config-source` resource of the `microprofile-config-smallrye` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `undertow` subsystem
+* Retrieve the `undertow` subsystem attributes
+* `undertow` subsystem description: undertow subsystem
+* operation: `/subsystem=undertow:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `undertow` subsystem} }
 -------------------
 
 -------------------
@@ -13606,6 +13725,13 @@ TextSegment { text = "syntax of the operation to get the `max-regions` attribute
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `security-manager` subsystem
+* Retrieve the `security-manager` subsystem attributes
+* `security-manager` subsystem description: the security manager subsystem
+* operation: `/subsystem=security-manager:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `security-manager` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `maximum-permissions` attribute of the `default` `deployment-permissions` resource of the `security-manager` subsystem
 * Retrieve the `maximum-permissions` attribute value of the `default` `deployment-permissions` resource of the `security-manager` subsystem
 * `maximum-permissions` attribute description: the maximum set of permissions that can be granted to a deployment or jars.
@@ -13617,6 +13743,13 @@ TextSegment { text = "syntax of the operation to get the `minimum-permissions` a
 * Retrieve the `minimum-permissions` attribute value of the `default` `deployment-permissions` resource of the `security-manager` subsystem
 * `minimum-permissions` attribute description: the minimum set of permissions to be granted to a deployment or jars.
 * operation: `/subsystem=security-manager/deployment-permissions=default:read-attribute(name=minimum-permissions)`" metadata = {parent=, title=syntax of the operation to get the `minimum-permissions` attribute of the `default` `deployment-permissions` resource of the `security-manager` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `datasources` subsystem
+* Retrieve the `datasources` subsystem attributes
+* `datasources` subsystem description: the `data-sources` subsystem, used to declare `jdbc` `data-sources`
+* operation: `/subsystem=datasources:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `datasources` subsystem} }
 -------------------
 
 -------------------
@@ -14753,6 +14886,13 @@ TextSegment { text = "syntax of the operation to get the `value` attribute of th
 * Retrieve the `value` attribute value of the `xa-datasource-properties` resource of the `xa-data-source` resource of the `datasources` subsystem
 * `value` attribute description: specifies a property value to assign to the `xadatasource` implementation class. each property is identified by the name attribute and the property value is given by the `xa-datasource-property` element content. the property is mapped onto the `xadatasource` implementation by looking for a `javabeans` style getter method for the property name. if found, the value of the property is set using the `javabeans` setter with the element text translated to the true property type using the `java.beans.propertyeditor`
 * operation: `/subsystem=datasources/xa-data-source=<xa-data-source name>/xa-datasource-properties=<xa-datasource-properties name>:read-attribute(name=value)`" metadata = {parent=, title=syntax of the operation to get the `value` attribute of the `xa-datasource-properties` resource of the `xa-data-source` resource of the `datasources` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `logging` subsystem
+* Retrieve the `logging` subsystem attributes
+* `logging` subsystem description: the configuration of the logging subsystem.
+* operation: `/subsystem=logging:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `logging` subsystem} }
 -------------------
 
 -------------------
@@ -16886,6 +17026,13 @@ TextSegment { text = "syntax of the operation to get the `use-parent-handlers` a
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `naming` subsystem
+* Retrieve the `naming` subsystem attributes
+* `naming` subsystem description: the configuration of the naming subsystem.
+* operation: `/subsystem=naming:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `naming` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get a `binding` resource of the `naming` subsystem
 * operation: `/subsystem=naming/binding=<binding name>:read-resource()`
 * To get the list of all the `binding` resource of the `naming` subsystem use '*' for `<binding name>`." metadata = {parent=, title=syntax of the operation to get a `binding` resource of the `naming` subsystem} }
@@ -16945,6 +17092,13 @@ TextSegment { text = "syntax of the operation to get the `value` attribute of th
 * Retrieve the `value` attribute value of the `binding` resource of the `naming` subsystem
 * `value` attribute description: the value to bind for simple bindings
 * operation: `/subsystem=naming/binding=<binding name>:read-attribute(name=value)`" metadata = {parent=, title=syntax of the operation to get the `value` attribute of the `binding` resource of the `naming` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `webservices` subsystem
+* Retrieve the `webservices` subsystem attributes
+* `webservices` subsystem description: the configuration of the web services subsystem.
+* operation: `/subsystem=webservices:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `webservices` subsystem} }
 -------------------
 
 -------------------
@@ -17139,6 +17293,13 @@ TextSegment { text = "syntax of the operation to get the `value` attribute of th
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `micrometer` subsystem
+* Retrieve the `micrometer` subsystem attributes
+* `micrometer` subsystem description: micrometer subsystem
+* operation: `/subsystem=micrometer:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `micrometer` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `endpoint` attribute of the `micrometer` subsystem
 * Retrieve the `endpoint` attribute value of the `micrometer` subsystem
 * `endpoint` attribute description: the `url` to which metrics will be published.
@@ -17188,6 +17349,20 @@ TextSegment { text = "syntax of the operation to get the `step` attribute of the
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `jdr` subsystem
+* Retrieve the `jdr` subsystem attributes
+* `jdr` subsystem description: `jboss` diagnostic reporter (`jdr`) subsystem.
+* operation: `/subsystem=jdr:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `jdr` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `xts` subsystem
+* Retrieve the `xts` subsystem attributes
+* `xts` subsystem description: the configuration of the `xst` subsystem.
+* operation: `/subsystem=xts:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `xts` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `async-registration` attribute of the `xts` subsystem
 * Retrieve the `async-registration` attribute value of the `xts` subsystem
 * `async-registration` attribute description: initialize endpoints for asynchronous registration needed for `ws-at` .net integration.
@@ -17220,6 +17395,13 @@ TextSegment { text = "syntax of the operation to get the `xts-environment` attri
 * Retrieve the `xts-environment` attribute value of the `xts` subsystem
 * `xts-environment` attribute description: the `xts` environment configuration.
 * operation: `/subsystem=xts:read-attribute(name=xts-environment)`" metadata = {parent=, title=syntax of the operation to get the `xts-environment` attribute of the `xts` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `deployment-scanner` subsystem
+* Retrieve the `deployment-scanner` subsystem attributes
+* `deployment-scanner` subsystem description: an individual deployment scanner that scans a particular location.
+* operation: `/subsystem=deployment-scanner:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `deployment-scanner` subsystem} }
 -------------------
 
 -------------------
@@ -17292,6 +17474,13 @@ TextSegment { text = "syntax of the operation to get the `scan-interval` attribu
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `rts` subsystem
+* Retrieve the `rts` subsystem attributes
+* `rts` subsystem description: `rts` subsystem
+* operation: `/subsystem=rts:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `rts` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `host` attribute of the `rts` subsystem
 * Retrieve the `host` attribute value of the `rts` subsystem
 * `host` attribute description: name of the host which should be used to deploy `servlets`
@@ -17310,6 +17499,13 @@ TextSegment { text = "syntax of the operation to get the `socket-binding` attrib
 * Retrieve the `socket-binding` attribute value of the `rts` subsystem
 * `socket-binding` attribute description: name of the socket binding which should be used
 * operation: `/subsystem=rts:read-attribute(name=socket-binding)`" metadata = {parent=, title=syntax of the operation to get the `socket-binding` attribute of the `rts` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `distributable-web` subsystem
+* Retrieve the `distributable-web` subsystem attributes
+* `distributable-web` subsystem description: the `distributable-web` subsystem
+* operation: `/subsystem=distributable-web:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `distributable-web` subsystem} }
 -------------------
 
 -------------------
@@ -17467,6 +17663,13 @@ TextSegment { text = "syntax of the operation to get the `max-routes` attribute 
 * Retrieve the `max-routes` attribute value of the `ranked` `affinity` resource of the `infinispan-session-management` resource of the `distributable-web` subsystem
 * `max-routes` attribute description: the maximum number of routes to encode into the session identifier
 * operation: `/subsystem=distributable-web/infinispan-session-management=<infinispan-session-management name>/affinity=ranked:read-attribute(name=max-routes)`" metadata = {parent=, title=syntax of the operation to get the `max-routes` attribute of the `ranked` `affinity` resource of the `infinispan-session-management` resource of the `distributable-web` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `mail` subsystem
+* Retrieve the `mail` subsystem attributes
+* `mail` subsystem description: the mail subsystem
+* operation: `/subsystem=mail:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `mail` subsystem} }
 -------------------
 
 -------------------
@@ -17678,6 +17881,20 @@ TextSegment { text = "syntax of the operation to get the `username` attribute of
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `sar` subsystem
+* Retrieve the `sar` subsystem attributes
+* `sar` subsystem description: the sar subsystem allowing you to deploy sar archives containing `mbeans` configured by `meta-inf/jboss-service.xml`
+* operation: `/subsystem=sar:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `sar` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `distributable-ejb` subsystem
+* Retrieve the `distributable-ejb` subsystem attributes
+* `distributable-ejb` subsystem description: the `distributable-ejb` subsystem
+* operation: `/subsystem=distributable-ejb:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `distributable-ejb` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `default-bean-management` attribute of the `distributable-ejb` subsystem
 * Retrieve the `default-bean-management` attribute value of the `distributable-ejb` subsystem
 * `default-bean-management` attribute description: the default distributable bean management provider of the server
@@ -17757,6 +17974,13 @@ TextSegment { text = "syntax of the operation to get the `max-active-beans` attr
 * Retrieve the `max-active-beans` attribute value of the `infinispan-bean-management` resource of the `distributable-ejb` subsystem
 * `max-active-beans` attribute description: the maximum number active beans to retain in memory at a time, after which the least recently used will passivate
 * operation: `/subsystem=distributable-ejb/infinispan-bean-management=<infinispan-bean-management name>:read-attribute(name=max-active-beans)`" metadata = {parent=, title=syntax of the operation to get the `max-active-beans` attribute of the `infinispan-bean-management` resource of the `distributable-ejb` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `resource-adapters` subsystem
+* Retrieve the `resource-adapters` subsystem attributes
+* `resource-adapters` subsystem description: configuration of the resource adapters subsystem.
+* operation: `/subsystem=resource-adapters:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `resource-adapters` subsystem} }
 -------------------
 
 -------------------
@@ -18307,6 +18531,13 @@ TextSegment { text = "syntax of the operation to get the `value` attribute of th
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `jaxrs` subsystem
+* Retrieve the `jaxrs` subsystem attributes
+* `jaxrs` subsystem description: the configuration of the jakarta restful web services subsystem.
+* operation: `/subsystem=jaxrs:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `jaxrs` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `jaxrs-2-0-request-matching` attribute of the `jaxrs` subsystem
 * Retrieve the `jaxrs-2-0-request-matching` attribute value of the `jaxrs` subsystem
 * `jaxrs-2-0-request-matching` attribute description: in searching for a matching resource method with which to respond to a request, consider only resource methods with the best match for the request path.
@@ -18472,6 +18703,13 @@ TextSegment { text = "syntax of the operation to get the `tracing-type` attribut
 * Retrieve the `tracing-type` attribute value of the `jaxrs` subsystem
 * `tracing-type` attribute description: "all" will enable the tracing feature. "`on_demand`" mode will give control to the client side: a client can send a tracing request via `http` header and get the tracing info back from response headers. "off" mode will disable the tracing feature, and this is the default mode. note that it is suggested this is set to "off" for production servers.
 * operation: `/subsystem=jaxrs:read-attribute(name=tracing-type)`" metadata = {parent=, title=syntax of the operation to get the `tracing-type` attribute of the `jaxrs` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `ee` subsystem
+* Retrieve the `ee` subsystem attributes
+* `ee` subsystem description: the configuration of the ee subsystem.
+* operation: `/subsystem=ee:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `ee` subsystem} }
 -------------------
 
 -------------------
@@ -18883,10 +19121,24 @@ TextSegment { text = "syntax of the operation to get the `thread-priority` attri
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `health` subsystem
+* Retrieve the `health` subsystem attributes
+* `health` subsystem description: `wildfly` extension for health
+* operation: `/subsystem=health:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `health` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `security-enabled` attribute of the `health` subsystem
 * Retrieve the `security-enabled` attribute value of the `health` subsystem
 * `security-enabled` attribute description: true if authentication is required to access the `http` endpoints on the `http` management interface.
 * operation: `/subsystem=health:read-attribute(name=security-enabled)`" metadata = {parent=, title=syntax of the operation to get the `security-enabled` attribute of the `health` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `remoting` subsystem
+* Retrieve the `remoting` subsystem attributes
+* `remoting` subsystem description: the configuration of the `remoting` subsystem.
+* operation: `/subsystem=remoting:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `remoting` subsystem} }
 -------------------
 
 -------------------
@@ -19438,6 +19690,13 @@ TextSegment { text = "syntax of the operation to get the `value` attribute of th
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `jmx` subsystem
+* Retrieve the `jmx` subsystem attributes
+* `jmx` subsystem description: the configuration of the `jmx` subsystem.
+* operation: `/subsystem=jmx:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `jmx` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `non-core-mbean-sensitivity` attribute of the `jmx` subsystem
 * Retrieve the `non-core-mbean-sensitivity` attribute value of the `jmx` subsystem
 * `non-core-mbean-sensitivity` attribute description: whether or not core `mbeans`, `i.e`. `mbeans` not coming from the model controller, should be considered sensitive.
@@ -19504,6 +19763,13 @@ TextSegment { text = "syntax of the operation to get the `domain-name` attribute
 * Retrieve the `domain-name` attribute value of the `expression` `expose-model` resource of the `jmx` subsystem
 * `domain-name` attribute description: the domain name to use for the 'expression' model controller `jmx` facade in the `mbeanserver`.
 * operation: `/subsystem=jmx/expose-model=expression:read-attribute(name=domain-name)`" metadata = {parent=, title=syntax of the operation to get the `domain-name` attribute of the `expression` `expose-model` resource of the `jmx` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `singleton` subsystem
+* Retrieve the `singleton` subsystem attributes
+* `singleton` subsystem description: the configuration of the singleton subsystem
+* operation: `/subsystem=singleton:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `singleton` subsystem} }
 -------------------
 
 -------------------
@@ -19630,6 +19896,13 @@ TextSegment { text = "syntax of the operation to get the `providers` attribute o
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `weld` subsystem
+* Retrieve the `weld` subsystem attributes
+* `weld` subsystem description: the configuration of the weld subsystem.
+* operation: `/subsystem=weld:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `weld` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `development-mode` attribute of the `weld` subsystem
 * Retrieve the `development-mode` attribute value of the `weld` subsystem
 * `development-mode` attribute description: weld comes with a special mode for application development. when the development mode is enabled, certain `built-in` tools, which facilitate the development of jakarta contexts and dependency injection applications are available. setting this attribute to true activates the development mode.
@@ -19665,6 +19938,13 @@ TextSegment { text = "syntax of the operation to get the `thread-pool-size` attr
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `microprofile-lra-coordinator` subsystem
+* Retrieve the `microprofile-lra-coordinator` subsystem attributes
+* `microprofile-lra-coordinator` subsystem description: the `microprofile` `lra` coordinator subsystem implemented by `narayana`
+* operation: `/subsystem=microprofile-lra-coordinator:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `microprofile-lra-coordinator` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `host` attribute of the `microprofile-lra-coordinator` subsystem
 * Retrieve the `host` attribute value of the `microprofile-lra-coordinator` subsystem
 * `host` attribute description: name of the undertow subsystem 'host' resource that the `lra` coordinator will be deployed to.
@@ -19676,6 +19956,13 @@ TextSegment { text = "syntax of the operation to get the `server` attribute of t
 * Retrieve the `server` attribute value of the `microprofile-lra-coordinator` subsystem
 * `server` attribute description: name of the undertow subsystem 'server' resource that the `lra` coordinator will be deployed to.
 * operation: `/subsystem=microprofile-lra-coordinator:read-attribute(name=server)`" metadata = {parent=, title=syntax of the operation to get the `server` attribute of the `microprofile-lra-coordinator` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `jgroups` subsystem
+* Retrieve the `jgroups` subsystem attributes
+* `jgroups` subsystem description: the configuration of the `jgroups` subsystem.
+* operation: `/subsystem=jgroups:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `jgroups` subsystem} }
 -------------------
 
 -------------------
@@ -19984,6 +20271,13 @@ TextSegment { text = "syntax of the operation to get the `channel` attribute of 
 * Retrieve the `channel` attribute value of the `remote-site` resource of the `relay.RELAY2` `relay` resource of the `stack` resource of the `jgroups` subsystem
 * `channel` attribute description: the name of the bridge channel used to communicate with this remote site.
 * operation: `/subsystem=jgroups/stack=<stack name>/relay=relay.RELAY2/remote-site=<remote-site name>:read-attribute(name=channel)`" metadata = {parent=, title=syntax of the operation to get the `channel` attribute of the `remote-site` resource of the `relay.RELAY2` `relay` resource of the `stack` resource of the `jgroups` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `elytron` subsystem
+* Retrieve the `elytron` subsystem attributes
+* `elytron` subsystem description: the elytron subsystem
+* operation: `/subsystem=elytron:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `elytron` subsystem} }
 -------------------
 
 -------------------
@@ -23533,6 +23827,34 @@ TextSegment { text = "syntax of the operation to get the `module` attribute of t
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `bean-validation` subsystem
+* Retrieve the `bean-validation` subsystem attributes
+* `bean-validation` subsystem description: jakarta bean validation subsystem
+* operation: `/subsystem=bean-validation:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `bean-validation` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `ee-security` subsystem
+* Retrieve the `ee-security` subsystem attributes
+* `ee-security` subsystem description: the configuration of the ee security subsystem.
+* operation: `/subsystem=ee-security:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `ee-security` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `microprofile-fault-tolerance-smallrye` subsystem
+* Retrieve the `microprofile-fault-tolerance-smallrye` subsystem attributes
+* `microprofile-fault-tolerance-smallrye` subsystem description: `microprofile` fault tolerance subsystem.
+* operation: `/subsystem=microprofile-fault-tolerance-smallrye:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `microprofile-fault-tolerance-smallrye` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `jsf` subsystem
+* Retrieve the `jsf` subsystem attributes
+* `jsf` subsystem description: the jakarta server faces subsystem
+* operation: `/subsystem=jsf:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `jsf` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `default-jsf-impl-slot` attribute of the `jsf` subsystem
 * Retrieve the `default-jsf-impl-slot` attribute value of the `jsf` subsystem
 * `default-jsf-impl-slot` attribute description: default jakarta server faces implementation slot
@@ -23544,6 +23866,27 @@ TextSegment { text = "syntax of the operation to get the `disallow-doctype-decl`
 * Retrieve the `disallow-doctype-decl` attribute value of the `jsf` subsystem
 * `disallow-doctype-decl` attribute description: specifies whether or not `doctype` declarations in jakarta server faces deployments should be disallowed. this setting can be overridden at the deployment level.
 * operation: `/subsystem=jsf:read-attribute(name=disallow-doctype-decl)`" metadata = {parent=, title=syntax of the operation to get the `disallow-doctype-decl` attribute of the `jsf` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `microprofile-openapi-smallrye` subsystem
+* Retrieve the `microprofile-openapi-smallrye` subsystem attributes
+* `microprofile-openapi-smallrye` subsystem description: `microprofile` `openapi` subsystem
+* operation: `/subsystem=microprofile-openapi-smallrye:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `microprofile-openapi-smallrye` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `microprofile-reactive-streams-operators-smallrye` subsystem
+* Retrieve the `microprofile-reactive-streams-operators-smallrye` subsystem attributes
+* `microprofile-reactive-streams-operators-smallrye` subsystem description: the `microprofile` reactive streams operators subsystem implemented by `smallrye`
+* operation: `/subsystem=microprofile-reactive-streams-operators-smallrye:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `microprofile-reactive-streams-operators-smallrye` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `microprofile-opentracing-smallrye` subsystem
+* Retrieve the `microprofile-opentracing-smallrye` subsystem attributes
+* `microprofile-opentracing-smallrye` subsystem description: `wildfly` extension for `microprofile` `opentracing` with `smallrye`.
+* operation: `/subsystem=microprofile-opentracing-smallrye:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `microprofile-opentracing-smallrye` subsystem} }
 -------------------
 
 -------------------
@@ -23655,6 +23998,20 @@ TextSegment { text = "syntax of the operation to get the `tracer_id_128bit` attr
 * Retrieve the `tracer_id_128bit` attribute value of the `jaeger-tracer` resource of the `microprofile-opentracing-smallrye` subsystem
 * `tracer_id_128bit` attribute description: `opt-in` to use `128` bit `traceids`. by default, uses `64` bits.
 * operation: `/subsystem=microprofile-opentracing-smallrye/jaeger-tracer=<jaeger-tracer name>:read-attribute(name=tracer_id_128bit)`" metadata = {parent=, title=syntax of the operation to get the `tracer_id_128bit` attribute of the `jaeger-tracer` resource of the `microprofile-opentracing-smallrye` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `microprofile-jwt-smallrye` subsystem
+* Retrieve the `microprofile-jwt-smallrye` subsystem attributes
+* `microprofile-jwt-smallrye` subsystem description: `wildfly` extension for `microprofile` `jwt` with `smallrye`
+* operation: `/subsystem=microprofile-jwt-smallrye:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `microprofile-jwt-smallrye` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `batch-jberet` subsystem
+* Retrieve the `batch-jberet` subsystem attributes
+* `batch-jberet` subsystem description: batch subsystem (`jsr-352`)
+* operation: `/subsystem=batch-jberet:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `batch-jberet` subsystem} }
 -------------------
 
 -------------------
@@ -23841,6 +24198,13 @@ TextSegment { text = "syntax of the operation to get the `execution-records-limi
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `microprofile-health-smallrye` subsystem
+* Retrieve the `microprofile-health-smallrye` subsystem attributes
+* `microprofile-health-smallrye` subsystem description: `wildfly` extension for `microprofile` health with `smallrye`
+* operation: `/subsystem=microprofile-health-smallrye:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `microprofile-health-smallrye` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `empty-liveness-checks-status` attribute of the `microprofile-health-smallrye` subsystem
 * Retrieve the `empty-liveness-checks-status` attribute value of the `microprofile-health-smallrye` subsystem
 * `empty-liveness-checks-status` attribute description: defines the global status returned by the health checks endpoints if no liveness probes have been defined in deployments.
@@ -23866,6 +24230,13 @@ TextSegment { text = "syntax of the operation to get the `security-enabled` attr
 * Retrieve the `security-enabled` attribute value of the `microprofile-health-smallrye` subsystem
 * `security-enabled` attribute description: true if authentication is required to access the `http` endpoints on the `http` management interface.
 * operation: `/subsystem=microprofile-health-smallrye:read-attribute(name=security-enabled)`" metadata = {parent=, title=syntax of the operation to get the `security-enabled` attribute of the `microprofile-health-smallrye` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `elytron-oidc-client` subsystem
+* Retrieve the `elytron-oidc-client` subsystem attributes
+* `elytron-oidc-client` subsystem description: `wildfly` extension for elytron `oidc`.
+* operation: `/subsystem=elytron-oidc-client:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `elytron-oidc-client` subsystem} }
 -------------------
 
 -------------------
@@ -25149,6 +25520,13 @@ TextSegment { text = "syntax of the operation to get the `verify-token-audience`
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `io` subsystem
+* Retrieve the `io` subsystem attributes
+* `io` subsystem description: io subsystem
+* operation: `/subsystem=io:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `io` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `default-worker` attribute of the `io` subsystem
 * Retrieve the `default-worker` attribute value of the `io` subsystem
 * `default-worker` attribute description: specifies the default `i/o` worker
@@ -25317,6 +25695,13 @@ TextSegment { text = "syntax of the operation to get the `direct-buffers` attrib
 * Retrieve the `direct-buffers` attribute value of the `buffer-pool` resource of the `io` subsystem
 * `direct-buffers` attribute description: does the buffer pool use direct buffers, some platforms `don't` support direct buffers
 * operation: `/subsystem=io/buffer-pool=<buffer-pool name>:read-attribute(name=direct-buffers)`" metadata = {parent=, title=syntax of the operation to get the `direct-buffers` attribute of the `buffer-pool` resource of the `io` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `ejb3` subsystem
+* Retrieve the `ejb3` subsystem attributes
+* `ejb3` subsystem description: the configuration of the `ejb3` subsystem.
+* operation: `/subsystem=ejb3:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `ejb3` subsystem} }
 -------------------
 
 -------------------
@@ -26087,6 +26472,13 @@ TextSegment { text = "syntax of the operation to get the `passivation-store` att
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `microprofile-lra-participant` subsystem
+* Retrieve the `microprofile-lra-participant` subsystem attributes
+* `microprofile-lra-participant` subsystem description: the `microprofile` `lra` participant subsystem implemented by `narayana`
+* operation: `/subsystem=microprofile-lra-participant:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `microprofile-lra-participant` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `lra-coordinator-url` attribute of the `microprofile-lra-participant` subsystem
 * Retrieve the `lra-coordinator-url` attribute value of the `microprofile-lra-participant` subsystem
 * `lra-coordinator-url` attribute description: configuration of the `lra-coordinator-url`, used by the `lra` participant subsystem.
@@ -26108,6 +26500,13 @@ TextSegment { text = "syntax of the operation to get the `proxy-server` attribut
 -------------------
 
 -------------------
+TextSegment { text = "syntax of the operation to get the `microprofile-metrics-smallrye` subsystem
+* Retrieve the `microprofile-metrics-smallrye` subsystem attributes
+* `microprofile-metrics-smallrye` subsystem description: `wildfly` extension for `microprofile` metrics with `smallrye`
+* operation: `/subsystem=microprofile-metrics-smallrye:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `microprofile-metrics-smallrye` subsystem} }
+-------------------
+
+-------------------
 TextSegment { text = "syntax of the operation to get the `exposed-subsystems` attribute of the `microprofile-metrics-smallrye` subsystem
 * Retrieve the `exposed-subsystems` attribute value of the `microprofile-metrics-smallrye` subsystem
 * `exposed-subsystems` attribute description: the names of the `wildfly` subsystems that exposes their metrics (or '*' to expose any subsystem metrics).
@@ -26126,6 +26525,13 @@ TextSegment { text = "syntax of the operation to get the `security-enabled` attr
 * Retrieve the `security-enabled` attribute value of the `microprofile-metrics-smallrye` subsystem
 * `security-enabled` attribute description: true if authentication is required to access the `http` endpoint on the `http` management `interface.this` attribute overrides the value specified in the `security-enabled` attribute of the /`subsystem=metrics` resource.
 * operation: `/subsystem=microprofile-metrics-smallrye:read-attribute(name=security-enabled)`" metadata = {parent=, title=syntax of the operation to get the `security-enabled` attribute of the `microprofile-metrics-smallrye` subsystem} }
+-------------------
+
+-------------------
+TextSegment { text = "syntax of the operation to get the `microprofile-reactive-messaging-smallrye` subsystem
+* Retrieve the `microprofile-reactive-messaging-smallrye` subsystem attributes
+* `microprofile-reactive-messaging-smallrye` subsystem description: the `microprofile` reactive messaging subsystem implemented by `smallrye`
+* operation: `/subsystem=microprofile-reactive-messaging-smallrye:read-resource()`" metadata = {parent=, title=syntax of the operation to get the `microprofile-reactive-messaging-smallrye` subsystem} }
 -------------------
 
 -------------------

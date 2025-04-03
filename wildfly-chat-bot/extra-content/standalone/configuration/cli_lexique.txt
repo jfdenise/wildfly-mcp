@@ -45,6 +45,7 @@ ${jboss_home}
 /subsystem=batch-jberet:read-attribute(name=default-thread-pool)
 /subsystem=batch-jberet:read-attribute(name=restart-jobs-on-resume)
 /subsystem=batch-jberet:read-attribute(name=security-domain)
+/subsystem=batch-jberet:read-resource()
 /subsystem=bean-validation:read-resource()
 /subsystem=core-management/process-state-listener=<process-state-listener name>:read-attribute(name=class)
 /subsystem=core-management/process-state-listener=<process-state-listener name>:read-attribute(name=module)
@@ -52,6 +53,7 @@ ${jboss_home}
 /subsystem=core-management/process-state-listener=<process-state-listener name>:read-attribute(name=timeout)
 /subsystem=core-management/process-state-listener=<process-state-listener name>:read-resource()
 /subsystem=core-management/service=configuration-changes:read-attribute(name=max-history)
+/subsystem=core-management:read-resource()
 /subsystem=datasources/data-source=<data-source name>/connection-properties=<connection-properties name>:read-attribute(name=value)
 /subsystem=datasources/data-source=<data-source name>/connection-properties=<connection-properties name>:read-resource()
 /subsystem=datasources/data-source=<data-source name>:read-attribute(name=allocation-retry)
@@ -217,6 +219,7 @@ ${jboss_home}
 /subsystem=datasources/xa-data-source=<xa-data-source name>:read-attribute(name=xa-resource-timeout)
 /subsystem=datasources/xa-data-source=<xa-data-source name>:read-resource()
 /subsystem=datasources:read-attribute(name=installed-drivers)
+/subsystem=datasources:read-resource()
 /subsystem=deployment-scanner/scanner=<scanner name>:read-attribute(name=auto-deploy-exploded)
 /subsystem=deployment-scanner/scanner=<scanner name>:read-attribute(name=auto-deploy-xml)
 /subsystem=deployment-scanner/scanner=<scanner name>:read-attribute(name=auto-deploy-zipped)
@@ -227,10 +230,12 @@ ${jboss_home}
 /subsystem=deployment-scanner/scanner=<scanner name>:read-attribute(name=scan-enabled)
 /subsystem=deployment-scanner/scanner=<scanner name>:read-attribute(name=scan-interval)
 /subsystem=deployment-scanner/scanner=<scanner name>:read-resource()
+/subsystem=deployment-scanner:read-resource()
 /subsystem=discovery/aggregate-provider=<aggregate-provider name>:read-attribute(name=providers)
 /subsystem=discovery/aggregate-provider=<aggregate-provider name>:read-resource()
 /subsystem=discovery/static-provider=<static-provider name>:read-attribute(name=services)
 /subsystem=discovery/static-provider=<static-provider name>:read-resource()
+/subsystem=discovery:read-resource()
 /subsystem=distributable-ejb/client-mappings-registry=infinispan:read-attribute(name=cache)
 /subsystem=distributable-ejb/client-mappings-registry=infinispan:read-attribute(name=cache-container)
 /subsystem=distributable-ejb/infinispan-bean-management=<infinispan-bean-management name>:read-attribute(name=cache)
@@ -243,6 +248,7 @@ ${jboss_home}
 /subsystem=distributable-ejb/infinispan-timer-management=<infinispan-timer-management name>:read-attribute(name=max-active-timers)
 /subsystem=distributable-ejb/infinispan-timer-management=<infinispan-timer-management name>:read-resource()
 /subsystem=distributable-ejb:read-attribute(name=default-bean-management)
+/subsystem=distributable-ejb:read-resource()
 /subsystem=distributable-web/hotrod-session-management=<hotrod-session-management name>:read-attribute(name=cache-configuration)
 /subsystem=distributable-web/hotrod-session-management=<hotrod-session-management name>:read-attribute(name=expiration-thread-pool-size)
 /subsystem=distributable-web/hotrod-session-management=<hotrod-session-management name>:read-attribute(name=granularity)
@@ -266,6 +272,8 @@ ${jboss_home}
 /subsystem=distributable-web/routing=infinispan:read-attribute(name=cache-container)
 /subsystem=distributable-web:read-attribute(name=default-session-management)
 /subsystem=distributable-web:read-attribute(name=default-single-sign-on-management)
+/subsystem=distributable-web:read-resource()
+/subsystem=ee-security:read-resource()
 /subsystem=ee/context-service=<context-service name>:read-attribute(name=jndi-name)
 /subsystem=ee/context-service=<context-service name>:read-attribute(name=use-transaction-setup-provider)
 /subsystem=ee/context-service=<context-service name>:read-resource()
@@ -325,6 +333,7 @@ ${jboss_home}
 /subsystem=ee:read-attribute(name=global-modules)
 /subsystem=ee:read-attribute(name=jboss-descriptor-property-replacement)
 /subsystem=ee:read-attribute(name=spec-descriptor-property-replacement)
+/subsystem=ee:read-resource()
 /subsystem=ejb3/application-security-domain=<application-security-domain name>:read-attribute(name=enable-jacc)
 /subsystem=ejb3/application-security-domain=<application-security-domain name>:read-attribute(name=legacy-compliant-principal-propagation)
 /subsystem=ejb3/application-security-domain=<application-security-domain name>:read-attribute(name=referencing-deployments)
@@ -437,6 +446,7 @@ ${jboss_home}
 /subsystem=ejb3:read-attribute(name=log-system-exceptions)
 /subsystem=ejb3:read-attribute(name=server-interceptors)
 /subsystem=ejb3:read-attribute(name=statistics-enabled)
+/subsystem=ejb3:read-resource()
 /subsystem=elytron-oidc-client/provider=<provider name>:read-attribute(name=allow-any-hostname)
 /subsystem=elytron-oidc-client/provider=<provider name>:read-attribute(name=always-refresh-token)
 /subsystem=elytron-oidc-client/provider=<provider name>:read-attribute(name=auth-server-url)
@@ -621,6 +631,7 @@ ${jboss_home}
 /subsystem=elytron-oidc-client/secure-server=<secure-server name>:read-attribute(name=use-resource-role-mappings)
 /subsystem=elytron-oidc-client/secure-server=<secure-server name>:read-attribute(name=verify-token-audience)
 /subsystem=elytron-oidc-client/secure-server=<secure-server name>:read-resource()
+/subsystem=elytron-oidc-client:read-resource()
 /subsystem=elytron/add-prefix-role-mapper=<add-prefix-role-mapper name>:read-attribute(name=prefix)
 /subsystem=elytron/add-prefix-role-mapper=<add-prefix-role-mapper name>:read-resource()
 /subsystem=elytron/add-suffix-role-mapper=<add-suffix-role-mapper name>:read-attribute(name=suffix)
@@ -1141,7 +1152,9 @@ ${jboss_home}
 /subsystem=elytron:read-attribute(name=initial-providers)
 /subsystem=elytron:read-attribute(name=register-jaspi-factory)
 /subsystem=elytron:read-attribute(name=security-properties)
+/subsystem=elytron:read-resource()
 /subsystem=health:read-attribute(name=security-enabled)
+/subsystem=health:read-resource()
 /subsystem=iiop-openjdk:read-attribute(name=add-component-via-interceptor)
 /subsystem=iiop-openjdk:read-attribute(name=auth-method)
 /subsystem=iiop-openjdk:read-attribute(name=authentication-context)
@@ -1176,6 +1189,7 @@ ${jboss_home}
 /subsystem=iiop-openjdk:read-attribute(name=transactions)
 /subsystem=iiop-openjdk:read-attribute(name=trust-in-client)
 /subsystem=iiop-openjdk:read-attribute(name=trust-in-target)
+/subsystem=iiop-openjdk:read-resource()
 /subsystem=infinispan/cache-container=<cache-container name>/cache=<cache name>/component=locking:read-attribute(name=current-concurrency-level)
 /subsystem=infinispan/cache-container=<cache-container name>/cache=<cache name>/component=locking:read-attribute(name=number-of-locks-available)
 /subsystem=infinispan/cache-container=<cache-container name>/cache=<cache name>/component=locking:read-attribute(name=number-of-locks-held)
@@ -1735,6 +1749,7 @@ ${jboss_home}
 /subsystem=infinispan/remote-cache-container=<remote-cache-container name>:read-attribute(name=transaction-timeout)
 /subsystem=infinispan/remote-cache-container=<remote-cache-container name>:read-attribute(name=value-size-estimate)
 /subsystem=infinispan/remote-cache-container=<remote-cache-container name>:read-resource()
+/subsystem=infinispan:read-resource()
 /subsystem=io/buffer-pool=<buffer-pool name>:read-attribute(name=buffer-size)
 /subsystem=io/buffer-pool=<buffer-pool name>:read-attribute(name=buffers-per-slice)
 /subsystem=io/buffer-pool=<buffer-pool name>:read-attribute(name=direct-buffers)
@@ -1760,6 +1775,7 @@ ${jboss_home}
 /subsystem=io/worker=<worker name>:read-attribute(name=task-max-threads)
 /subsystem=io/worker=<worker name>:read-resource()
 /subsystem=io:read-attribute(name=default-worker)
+/subsystem=io:read-resource()
 /subsystem=jaxrs:read-attribute(name=jaxrs-2-0-request-matching)
 /subsystem=jaxrs:read-attribute(name=resteasy-add-charset)
 /subsystem=jaxrs:read-attribute(name=resteasy-buffer-exception-entity)
@@ -1784,6 +1800,7 @@ ${jboss_home}
 /subsystem=jaxrs:read-attribute(name=resteasy-wider-request-matching)
 /subsystem=jaxrs:read-attribute(name=tracing-threshold)
 /subsystem=jaxrs:read-attribute(name=tracing-type)
+/subsystem=jaxrs:read-resource()
 /subsystem=jca/archive-validation=archive-validation:read-attribute(name=enabled)
 /subsystem=jca/archive-validation=archive-validation:read-attribute(name=fail-on-error)
 /subsystem=jca/archive-validation=archive-validation:read-attribute(name=fail-on-warn)
@@ -1854,6 +1871,8 @@ ${jboss_home}
 /subsystem=jca/workmanager=<workmanager name>:read-attribute(name=elytron-enabled)
 /subsystem=jca/workmanager=<workmanager name>:read-attribute(name=name)
 /subsystem=jca/workmanager=<workmanager name>:read-resource()
+/subsystem=jca:read-resource()
+/subsystem=jdr:read-resource()
 /subsystem=jgroups/channel=<channel name>/fork=<fork name>/protocol=<protocol name>:read-attribute(name=module)
 /subsystem=jgroups/channel=<channel name>/fork=<fork name>/protocol=<protocol name>:read-attribute(name=properties)
 /subsystem=jgroups/channel=<channel name>/fork=<fork name>/protocol=<protocol name>:read-attribute(name=statistics-enabled)
@@ -1899,6 +1918,7 @@ ${jboss_home}
 /subsystem=jgroups/stack=<stack name>:read-attribute(name=statistics-enabled)
 /subsystem=jgroups/stack=<stack name>:read-resource()
 /subsystem=jgroups:read-attribute(name=default-channel)
+/subsystem=jgroups:read-resource()
 /subsystem=jmx/configuration=audit-log/handler=<handler name>:read-resource()
 /subsystem=jmx/configuration=audit-log:read-attribute(name=enabled)
 /subsystem=jmx/configuration=audit-log:read-attribute(name=log-boot)
@@ -1909,10 +1929,14 @@ ${jboss_home}
 /subsystem=jmx/remoting-connector=jmx:read-attribute(name=use-management-endpoint)
 /subsystem=jmx:read-attribute(name=non-core-mbean-sensitivity)
 /subsystem=jmx:read-attribute(name=show-model)
+/subsystem=jmx:read-resource()
 /subsystem=jpa:read-attribute(name=default-datasource)
 /subsystem=jpa:read-attribute(name=default-extended-persistence-inheritance)
+/subsystem=jpa:read-resource()
 /subsystem=jsf:read-attribute(name=default-jsf-impl-slot)
 /subsystem=jsf:read-attribute(name=disallow-doctype-decl)
+/subsystem=jsf:read-resource()
+/subsystem=jsr77:read-resource()
 /subsystem=logging/async-handler=<async-handler name>:read-attribute(name=enabled)
 /subsystem=logging/async-handler=<async-handler name>:read-attribute(name=filter)
 /subsystem=logging/async-handler=<async-handler name>:read-attribute(name=filter-spec)
@@ -2222,6 +2246,7 @@ ${jboss_home}
 /subsystem=logging/xml-formatter=<xml-formatter name>:read-resource()
 /subsystem=logging:read-attribute(name=add-logging-api-dependencies)
 /subsystem=logging:read-attribute(name=use-deployment-logging-config)
+/subsystem=logging:read-resource()
 /subsystem=mail/mail-session=<mail-session name>/custom=<custom name>:read-attribute(name=credential-reference)
 /subsystem=mail/mail-session=<mail-session name>/custom=<custom name>:read-attribute(name=outbound-socket-binding-ref)
 /subsystem=mail/mail-session=<mail-session name>/custom=<custom name>:read-attribute(name=password)
@@ -2252,6 +2277,7 @@ ${jboss_home}
 /subsystem=mail/mail-session=<mail-session name>:read-attribute(name=from)
 /subsystem=mail/mail-session=<mail-session name>:read-attribute(name=jndi-name)
 /subsystem=mail/mail-session=<mail-session name>:read-resource()
+/subsystem=mail:read-resource()
 /subsystem=messaging-activemq/connection-factory=<connection-factory name>:read-attribute(name=auto-group)
 /subsystem=messaging-activemq/connection-factory=<connection-factory name>:read-attribute(name=block-on-acknowledge)
 /subsystem=messaging-activemq/connection-factory=<connection-factory name>:read-attribute(name=block-on-durable-send)
@@ -2989,9 +3015,11 @@ ${jboss_home}
 /subsystem=messaging-activemq:read-attribute(name=global-client-thread-pool-largest-thread-count)
 /subsystem=messaging-activemq:read-attribute(name=global-client-thread-pool-max-size)
 /subsystem=messaging-activemq:read-attribute(name=global-client-thread-pool-task-count)
+/subsystem=messaging-activemq:read-resource()
 /subsystem=metrics:read-attribute(name=exposed-subsystems)
 /subsystem=metrics:read-attribute(name=prefix)
 /subsystem=metrics:read-attribute(name=security-enabled)
+/subsystem=metrics:read-resource()
 /subsystem=micrometer/registry=otlp:read-attribute(name=endpoint)
 /subsystem=micrometer/registry=otlp:read-attribute(name=step)
 /subsystem=micrometer/registry=prometheus:read-attribute(name=context)
@@ -2999,6 +3027,7 @@ ${jboss_home}
 /subsystem=micrometer:read-attribute(name=endpoint)
 /subsystem=micrometer:read-attribute(name=exposed-subsystems)
 /subsystem=micrometer:read-attribute(name=step)
+/subsystem=micrometer:read-resource()
 /subsystem=microprofile-config-smallrye/config-source-provider=<config-source-provider name>:read-attribute(name=class)
 /subsystem=microprofile-config-smallrye/config-source-provider=<config-source-provider name>:read-resource()
 /subsystem=microprofile-config-smallrye/config-source=<config-source name>:read-attribute(name=class)
@@ -3006,18 +3035,26 @@ ${jboss_home}
 /subsystem=microprofile-config-smallrye/config-source=<config-source name>:read-attribute(name=ordinal)
 /subsystem=microprofile-config-smallrye/config-source=<config-source name>:read-attribute(name=properties)
 /subsystem=microprofile-config-smallrye/config-source=<config-source name>:read-resource()
+/subsystem=microprofile-config-smallrye:read-resource()
+/subsystem=microprofile-fault-tolerance-smallrye:read-resource()
 /subsystem=microprofile-health-smallrye:read-attribute(name=empty-liveness-checks-status)
 /subsystem=microprofile-health-smallrye:read-attribute(name=empty-readiness-checks-status)
 /subsystem=microprofile-health-smallrye:read-attribute(name=empty-startup-checks-status)
 /subsystem=microprofile-health-smallrye:read-attribute(name=security-enabled)
+/subsystem=microprofile-health-smallrye:read-resource()
+/subsystem=microprofile-jwt-smallrye:read-resource()
 /subsystem=microprofile-lra-coordinator:read-attribute(name=host)
 /subsystem=microprofile-lra-coordinator:read-attribute(name=server)
+/subsystem=microprofile-lra-coordinator:read-resource()
 /subsystem=microprofile-lra-participant:read-attribute(name=lra-coordinator-url)
 /subsystem=microprofile-lra-participant:read-attribute(name=proxy-host)
 /subsystem=microprofile-lra-participant:read-attribute(name=proxy-server)
+/subsystem=microprofile-lra-participant:read-resource()
 /subsystem=microprofile-metrics-smallrye:read-attribute(name=exposed-subsystems)
 /subsystem=microprofile-metrics-smallrye:read-attribute(name=prefix)
 /subsystem=microprofile-metrics-smallrye:read-attribute(name=security-enabled)
+/subsystem=microprofile-metrics-smallrye:read-resource()
+/subsystem=microprofile-openapi-smallrye:read-resource()
 /subsystem=microprofile-opentracing-smallrye/jaeger-tracer=<jaeger-tracer name>:read-attribute(name=propagation)
 /subsystem=microprofile-opentracing-smallrye/jaeger-tracer=<jaeger-tracer name>:read-attribute(name=reporter-flush-interval)
 /subsystem=microprofile-opentracing-smallrye/jaeger-tracer=<jaeger-tracer name>:read-attribute(name=reporter-log-spans)
@@ -3034,8 +3071,12 @@ ${jboss_home}
 /subsystem=microprofile-opentracing-smallrye/jaeger-tracer=<jaeger-tracer name>:read-attribute(name=tracer_id_128bit)
 /subsystem=microprofile-opentracing-smallrye/jaeger-tracer=<jaeger-tracer name>:read-resource()
 /subsystem=microprofile-opentracing-smallrye:read-attribute(name=default-tracer)
+/subsystem=microprofile-opentracing-smallrye:read-resource()
 /subsystem=microprofile-reactive-messaging-smallrye/opentelemetry-tracing=config:read-attribute(name=amqp-connector)
 /subsystem=microprofile-reactive-messaging-smallrye/opentelemetry-tracing=config:read-attribute(name=kafka-connector)
+/subsystem=microprofile-reactive-messaging-smallrye:read-resource()
+/subsystem=microprofile-reactive-streams-operators-smallrye:read-resource()
+/subsystem=microprofile-telemetry:read-resource()
 /subsystem=modcluster/proxy=<proxy name>/load-provider=dynamic/custom-load-metric=<custom-load-metric name>:read-attribute(name=capacity)
 /subsystem=modcluster/proxy=<proxy name>/load-provider=dynamic/custom-load-metric=<custom-load-metric name>:read-attribute(name=class)
 /subsystem=modcluster/proxy=<proxy name>/load-provider=dynamic/custom-load-metric=<custom-load-metric name>:read-attribute(name=module)
@@ -3078,6 +3119,7 @@ ${jboss_home}
 /subsystem=modcluster/proxy=<proxy name>:read-attribute(name=ttl)
 /subsystem=modcluster/proxy=<proxy name>:read-attribute(name=worker-timeout)
 /subsystem=modcluster/proxy=<proxy name>:read-resource()
+/subsystem=modcluster:read-resource()
 /subsystem=naming/binding=<binding name>:read-attribute(name=binding-type)
 /subsystem=naming/binding=<binding name>:read-attribute(name=cache)
 /subsystem=naming/binding=<binding name>:read-attribute(name=class)
@@ -3087,6 +3129,7 @@ ${jboss_home}
 /subsystem=naming/binding=<binding name>:read-attribute(name=type)
 /subsystem=naming/binding=<binding name>:read-attribute(name=value)
 /subsystem=naming/binding=<binding name>:read-resource()
+/subsystem=naming:read-resource()
 /subsystem=opentelemetry:read-attribute(name=batch-delay)
 /subsystem=opentelemetry:read-attribute(name=endpoint)
 /subsystem=opentelemetry:read-attribute(name=export-timeout)
@@ -3097,6 +3140,8 @@ ${jboss_home}
 /subsystem=opentelemetry:read-attribute(name=sampler-type)
 /subsystem=opentelemetry:read-attribute(name=service-name)
 /subsystem=opentelemetry:read-attribute(name=span-processor-type)
+/subsystem=opentelemetry:read-resource()
+/subsystem=pojo:read-resource()
 /subsystem=remoting/connector=<connector name>/property=<property name>:read-attribute(name=value)
 /subsystem=remoting/connector=<connector name>/property=<property name>:read-resource()
 /subsystem=remoting/connector=<connector name>/security=sasl/property=<property name>:read-attribute(name=value)
@@ -3177,9 +3222,11 @@ ${jboss_home}
 /subsystem=remoting:read-attribute(name=server-name)
 /subsystem=remoting:read-attribute(name=transmit-window-size)
 /subsystem=remoting:read-attribute(name=worker)
+/subsystem=remoting:read-resource()
 /subsystem=request-controller:read-attribute(name=active-requests)
 /subsystem=request-controller:read-attribute(name=max-requests)
 /subsystem=request-controller:read-attribute(name=track-individual-endpoints)
+/subsystem=request-controller:read-resource()
 /subsystem=resource-adapters/resource-adapter=<resource-adapter name>/admin-objects=<admin-objects name>/config-properties=<config-properties name>:read-attribute(name=value)
 /subsystem=resource-adapters/resource-adapter=<resource-adapter name>/admin-objects=<admin-objects name>/config-properties=<config-properties name>:read-resource()
 /subsystem=resource-adapters/resource-adapter=<resource-adapter name>/admin-objects=<admin-objects name>:read-attribute(name=class-name)
@@ -3259,11 +3306,15 @@ ${jboss_home}
 /subsystem=resource-adapters/resource-adapter=<resource-adapter name>:read-attribute(name=wm-security-mapping-users)
 /subsystem=resource-adapters/resource-adapter=<resource-adapter name>:read-resource()
 /subsystem=resource-adapters:read-attribute(name=report-directory)
+/subsystem=resource-adapters:read-resource()
 /subsystem=rts:read-attribute(name=host)
 /subsystem=rts:read-attribute(name=server)
 /subsystem=rts:read-attribute(name=socket-binding)
+/subsystem=rts:read-resource()
+/subsystem=sar:read-resource()
 /subsystem=security-manager/deployment-permissions=default:read-attribute(name=maximum-permissions)
 /subsystem=security-manager/deployment-permissions=default:read-attribute(name=minimum-permissions)
+/subsystem=security-manager:read-resource()
 /subsystem=singleton/singleton-policy=<singleton-policy name>/deployment=<deployment name>:read-attribute(name=is-primary)
 /subsystem=singleton/singleton-policy=<singleton-policy name>/deployment=<deployment name>:read-attribute(name=primary-provider)
 /subsystem=singleton/singleton-policy=<singleton-policy name>/deployment=<deployment name>:read-attribute(name=providers)
@@ -3282,6 +3333,7 @@ ${jboss_home}
 /subsystem=singleton/singleton-policy=<singleton-policy name>:read-attribute(name=quorum)
 /subsystem=singleton/singleton-policy=<singleton-policy name>:read-resource()
 /subsystem=singleton:read-attribute(name=default)
+/subsystem=singleton:read-resource()
 /subsystem=transactions/commit-markable-resource=<commit-markable-resource name>:read-attribute(name=batch-size)
 /subsystem=transactions/commit-markable-resource=<commit-markable-resource name>:read-attribute(name=immediate-cleanup)
 /subsystem=transactions/commit-markable-resource=<commit-markable-resource name>:read-attribute(name=jndi-name)
@@ -3340,6 +3392,7 @@ ${jboss_home}
 /subsystem=transactions:read-attribute(name=use-hornetq-store)
 /subsystem=transactions:read-attribute(name=use-jdbc-store)
 /subsystem=transactions:read-attribute(name=use-journal-store)
+/subsystem=transactions:read-resource()
 /subsystem=undertow/application-security-domain=<application-security-domain name>/setting=single-sign-on:read-attribute(name=client-ssl-context)
 /subsystem=undertow/application-security-domain=<application-security-domain name>/setting=single-sign-on:read-attribute(name=cookie-name)
 /subsystem=undertow/application-security-domain=<application-security-domain name>/setting=single-sign-on:read-attribute(name=credential-reference)
@@ -3735,6 +3788,7 @@ ${jboss_home}
 /subsystem=undertow:read-attribute(name=instance-id)
 /subsystem=undertow:read-attribute(name=obfuscate-session-route)
 /subsystem=undertow:read-attribute(name=statistics-enabled)
+/subsystem=undertow:read-resource()
 /subsystem=webservices/client-config=<client-config name>/post-handler-chain=<post-handler-chain name>/handler=<handler name>:read-attribute(name=class)
 /subsystem=webservices/client-config=<client-config name>/post-handler-chain=<post-handler-chain name>/handler=<handler name>:read-resource()
 /subsystem=webservices/client-config=<client-config name>/post-handler-chain=<post-handler-chain name>:read-attribute(name=protocol-bindings)
@@ -3764,16 +3818,19 @@ ${jboss_home}
 /subsystem=webservices:read-attribute(name=wsdl-port)
 /subsystem=webservices:read-attribute(name=wsdl-secure-port)
 /subsystem=webservices:read-attribute(name=wsdl-uri-scheme)
+/subsystem=webservices:read-resource()
 /subsystem=weld:read-attribute(name=development-mode)
 /subsystem=weld:read-attribute(name=legacy-empty-beans-xml-treatment)
 /subsystem=weld:read-attribute(name=non-portable-mode)
 /subsystem=weld:read-attribute(name=require-bean-descriptor)
 /subsystem=weld:read-attribute(name=thread-pool-size)
+/subsystem=weld:read-resource()
 /subsystem=xts:read-attribute(name=async-registration)
 /subsystem=xts:read-attribute(name=default-context-propagation)
 /subsystem=xts:read-attribute(name=host)
 /subsystem=xts:read-attribute(name=url)
 /subsystem=xts:read-attribute(name=xts-environment)
+/subsystem=xts:read-resource()
 /system-property=<property name>:add(value=<value of the system property>)
 /system-property=<property name>:read-attribute(name=value)
 /system-property=<property name>:remove()
@@ -4620,6 +4677,7 @@ dynamic-client-ssl-context
 e.g
 eager-filter-initialization
 ear-subdeployments-isolated
+ee-security
 eis-product-name
 eis-product-version
 ejb
@@ -4923,6 +4981,8 @@ jboss.server.config.dir
 jboss.server.data.dir
 jboss.server.log.dir
 jboss.server.tmp.dir
+jboss5
+jboss6
 jbossws
 jbossws.undefined.host
 jca
@@ -4942,6 +5002,7 @@ jdbc-state-store
 jdbc-state-store-drop-table
 jdbc-state-store-table-prefix
 jdbc-store-datasource
+jdr
 jgroups
 jgroups-broadcast-group
 jgroups-channel
@@ -4992,6 +5053,9 @@ jsf
 json
 json-formatter
 jsp
+jsr-352
+jsr-77
+jsr77
 jta
 jts
 jvm
@@ -5178,14 +5242,21 @@ messages-added
 messaging-activemq
 meta-data
 meta-inf
+meta-inf/jboss-service.xml
 metadata
+microprofile
 microprofile-config-smallrye
+microprofile-fault-tolerance-smallrye
 microprofile-health-smallrye
+microprofile-jwt-smallrye
 microprofile-lra-coordinator
 microprofile-lra-participant
 microprofile-metrics-smallrye
+microprofile-openapi-smallrye
 microprofile-opentracing-smallrye
 microprofile-reactive-messaging-smallrye
+microprofile-reactive-streams-operators-smallrye
+microprofile-telemetry
 microsoft
 millis
 mime-mapping
@@ -5221,6 +5292,7 @@ name/value
 named-formatter
 namespace
 namespace-uri
+narayana
 near-cache
 near-cache-hits
 near-cache-invalidations
@@ -5308,10 +5380,12 @@ on_demand
 once_and_only_once
 only-leaf-cert
 open-connections
+openapi
 openid
 openjdk
 opentelemetry
 opentelemetry-tracing
+opentracing
 opt-in
 optimize-scriptlets
 org.apache.activemq.artemis.core.server.cluster.transformer
@@ -5383,6 +5457,7 @@ persistent-sessions
 picketbox
 pid
 plugin
+pojo
 policy-options
 pool-fair
 pool-prefill
@@ -5744,6 +5819,7 @@ size-unit
 slow-consumer-check-period
 slow-consumer-policy
 slow-consumer-threshold
+smallrye
 smap
 smax
 smtp
@@ -6052,6 +6128,7 @@ xml-formatter
 xnio
 xpc
 xss
+xst
 xts
 xts-environment
 zone-id

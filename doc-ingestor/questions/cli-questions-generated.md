@@ -1,3 +1,7 @@
+## syntax of the operation to get the `iiop-openjdk` subsystem
+Can you get the iiop-openjdk subsystem?
+Can you get the iiop-openjdk?
+Can you retrieve all the attributes of the iiop-openjdk subsystem?
 ## syntax of the operation to get the `add-component-via-interceptor` attribute of the `iiop-openjdk` subsystem
 Can you get the add-component-via-interceptor attribute of the iiop-openjdk subsystem?
 Can you get the add component via interceptor attribute of the iiop openjdk subsystem?
@@ -100,6 +104,14 @@ Can you get the trust in client attribute of the iiop openjdk subsystem?
 ## syntax of the operation to get the `trust-in-target` attribute of the `iiop-openjdk` subsystem
 Can you get the trust-in-target attribute of the iiop-openjdk subsystem?
 Can you get the trust in target attribute of the iiop openjdk subsystem?
+## syntax of the operation to get the `jsr77` subsystem
+Can you get the jsr77 subsystem?
+Can you get the jsr77?
+Can you retrieve all the attributes of the jsr77 subsystem?
+## syntax of the operation to get the `opentelemetry` subsystem
+Can you get the opentelemetry subsystem?
+Can you get the opentelemetry?
+Can you retrieve all the attributes of the opentelemetry subsystem?
 ## syntax of the operation to get the `batch-delay` attribute of the `opentelemetry` subsystem
 Can you get the batch-delay attribute of the opentelemetry subsystem?
 Can you get the batch delay attribute of the opentelemetry subsystem?
@@ -130,12 +142,20 @@ Can you get the service name attribute of the opentelemetry subsystem?
 ## syntax of the operation to get the `span-processor-type` attribute of the `opentelemetry` subsystem
 Can you get the span-processor-type attribute of the opentelemetry subsystem?
 Can you get the span processor type attribute of the opentelemetry subsystem?
+## syntax of the operation to get the `jpa` subsystem
+Can you get the jpa subsystem?
+Can you get the jpa?
+Can you retrieve all the attributes of the jpa subsystem?
 ## syntax of the operation to get the `default-datasource` attribute of the `jpa` subsystem
 Can you get the default-datasource attribute of the jpa subsystem?
 Can you get the default datasource attribute of the jpa subsystem?
 ## syntax of the operation to get the `default-extended-persistence-inheritance` attribute of the `jpa` subsystem
 Can you get the default-extended-persistence-inheritance attribute of the jpa subsystem?
 Can you get the default extended persistence inheritance attribute of the jpa subsystem?
+## syntax of the operation to get the `messaging-activemq` subsystem
+Can you get the messaging-activemq subsystem?
+Can you get the messaging-activemq?
+Can you retrieve all the attributes of the messaging-activemq subsystem?
 ## syntax of the operation to get the `global-client-scheduled-thread-pool-active-count` attribute of the `messaging-activemq` subsystem
 Can you get the global-client-scheduled-thread-pool-active-count attribute of the messaging-activemq subsystem?
 Can you get the global client scheduled thread pool active count attribute of the messaging activemq subsystem?
@@ -2435,6 +2455,10 @@ Can you get the refresh timeout attribute of the mySocketDiscoveryGroup socket d
 ## syntax of the operation to get the `socket-binding` attribute of the `socket-discovery-group` resource of the `messaging-activemq` subsystem
 Can you get the socket-binding attribute of the mySocketDiscoveryGroup socket-discovery-group resource of the messaging-activemq subsystem ?
 Can you get the socket binding attribute of the mySocketDiscoveryGroup socket discovery group resource of the messaging activemq subsystem ?
+## syntax of the operation to get the `transactions` subsystem
+Can you get the transactions subsystem?
+Can you get the transactions?
+Can you retrieve all the attributes of the transactions subsystem?
 ## syntax of the operation to get the `average-commit-time` attribute of the `transactions` subsystem
 Can you get the average-commit-time attribute of the transactions subsystem?
 Can you get the average commit time attribute of the transactions subsystem?
@@ -2615,6 +2639,10 @@ Can you get the jndi name attribute of the myCommitMarkableResource commit marka
 ## syntax of the operation to get the `name` attribute of the `commit-markable-resource` resource of the `transactions` subsystem
 Can you get the name attribute of the myCommitMarkableResource commit-markable-resource resource of the transactions subsystem ?
 Can you get the name attribute of the myCommitMarkableResource commit markable resource resource of the transactions subsystem ?
+## syntax of the operation to get the `modcluster` subsystem
+Can you get the modcluster subsystem?
+Can you get the modcluster?
+Can you retrieve all the attributes of the modcluster subsystem?
 ## syntax of the operation to get a `proxy` resource of the `modcluster` subsystem
 Can you get all the proxy resource of the modcluster subsystem?
 Can you get all the proxy resource of the modcluster subsystems?
@@ -2747,6 +2775,10 @@ Can you get the weight attribute of the myCustomLoadMetric custom load metric re
 ## syntax of the operation to get the `factor` attribute of the `simple` `load-provider` resource of the `proxy` resource of the `modcluster` subsystem
 Can you get the factor attribute of the mySimple simple myLoadProvider load-provider resource of the myProxy proxy resource of the modcluster subsystem ?
 Can you get the factor attribute of the mySimple simple myLoadProvider load provider resource of the myProxy proxy resource of the modcluster subsystem ?
+## syntax of the operation to get the `discovery` subsystem
+Can you get the discovery subsystem?
+Can you get the discovery?
+Can you retrieve all the attributes of the discovery subsystem?
 ## syntax of the operation to get a `static-provider` resource of the `discovery` subsystem
 Can you get all the static-provider resource of the discovery subsystem?
 Can you get all the static-provider resource of the discovery subsystems?
@@ -2763,6 +2795,14 @@ Can you get the foo aggregate-provider resource of the discovery subsystem?
 ## syntax of the operation to get the `providers` attribute of the `aggregate-provider` resource of the `discovery` subsystem
 Can you get the providers attribute of the myAggregateProvider aggregate-provider resource of the discovery subsystem ?
 Can you get the providers attribute of the myAggregateProvider aggregate provider resource of the discovery subsystem ?
+## syntax of the operation to get the `pojo` subsystem
+Can you get the pojo subsystem?
+Can you get the pojo?
+Can you retrieve all the attributes of the pojo subsystem?
+## syntax of the operation to get the `infinispan` subsystem
+Can you get the infinispan subsystem?
+Can you get the infinispan?
+Can you retrieve all the attributes of the infinispan subsystem?
 ## syntax of the operation to get a `cache-container` resource of the `infinispan` subsystem
 Can you get all the cache-container resource of the infinispan subsystem?
 Can you get all the cache-container resource of the infinispan subsystems?
@@ -4466,6 +4506,14 @@ Can you get the min evictable idle time attribute of the myConnectionPool connec
 ## syntax of the operation to get the `min-idle` attribute of the `connection-pool` `component` resource of the `remote-cache-container` resource of the `infinispan` subsystem
 Can you get the min-idle attribute of the myConnectionPool connection-pool myComponent component resource of the myRemoteCacheContainer remote-cache-container resource of the infinispan subsystem ?
 Can you get the min idle attribute of the myConnectionPool connection pool myComponent component resource of the myRemoteCacheContainer remote cache container resource of the infinispan subsystem ?
+## syntax of the operation to get the `microprofile-telemetry` subsystem
+Can you get the microprofile-telemetry subsystem?
+Can you get the microprofile-telemetry?
+Can you retrieve all the attributes of the microprofile-telemetry subsystem?
+## syntax of the operation to get the `metrics` subsystem
+Can you get the metrics subsystem?
+Can you get the metrics?
+Can you retrieve all the attributes of the metrics subsystem?
 ## syntax of the operation to get the `exposed-subsystems` attribute of the `metrics` subsystem
 Can you get the exposed-subsystems attribute of the metrics subsystem?
 Can you get the exposed subsystems attribute of the metrics subsystem?
@@ -4475,6 +4523,10 @@ Can you get the prefix attribute of the metrics subsystem?
 ## syntax of the operation to get the `security-enabled` attribute of the `metrics` subsystem
 Can you get the security-enabled attribute of the metrics subsystem?
 Can you get the security enabled attribute of the metrics subsystem?
+## syntax of the operation to get the `core-management` subsystem
+Can you get the core-management subsystem?
+Can you get the core-management?
+Can you retrieve all the attributes of the core-management subsystem?
 ## syntax of the operation to get the `max-history` attribute of the `configuration-changes` `service` resource of the `core-management` subsystem
 Can you get the max-history attribute of the myConfigurationChanges configuration-changes myService service resource of the core-management subsystem ?
 Can you get the max history attribute of the myConfigurationChanges configuration changes myService service resource of the core management subsystem ?
@@ -4495,6 +4547,10 @@ Can you get the properties attribute of the myProcessStateListener process state
 ## syntax of the operation to get the `timeout` attribute of the `process-state-listener` resource of the `core-management` subsystem
 Can you get the timeout attribute of the myProcessStateListener process-state-listener resource of the core-management subsystem ?
 Can you get the timeout attribute of the myProcessStateListener process state listener resource of the core management subsystem ?
+## syntax of the operation to get the `jca` subsystem
+Can you get the jca subsystem?
+Can you get the jca?
+Can you retrieve all the attributes of the jca subsystem?
 ## syntax of the operation to get the `enabled` attribute of the `bean-validation` `bean-validation` resource of the `jca` subsystem
 Can you get the enabled attribute of the myBeanValidation bean-validation myBeanValidation bean-validation resource of the jca subsystem ?
 Can you get the enabled attribute of the myBeanValidation bean validation myBeanValidation bean validation resource of the jca subsystem ?
@@ -4719,6 +4775,10 @@ Can you get the rejected count attribute of the myLongRunningThreads long runnin
 ## syntax of the operation to get the `thread-factory` attribute of the `long-running-threads` resource of the `distributed-workmanager` resource of the `jca` subsystem
 Can you get the thread-factory attribute of the myLongRunningThreads long-running-threads resource of the myDistributedWorkmanager distributed-workmanager resource of the jca subsystem ?
 Can you get the thread factory attribute of the myLongRunningThreads long running threads resource of the myDistributedWorkmanager distributed workmanager resource of the jca subsystem ?
+## syntax of the operation to get the `request-controller` subsystem
+Can you get the request-controller subsystem?
+Can you get the request-controller?
+Can you retrieve all the attributes of the request-controller subsystem?
 ## syntax of the operation to get the `active-requests` attribute of the `request-controller` subsystem
 Can you get the active-requests attribute of the request-controller subsystem?
 Can you get the active requests attribute of the request controller subsystem?
@@ -4728,6 +4788,10 @@ Can you get the max requests attribute of the request controller subsystem?
 ## syntax of the operation to get the `track-individual-endpoints` attribute of the `request-controller` subsystem
 Can you get the track-individual-endpoints attribute of the request-controller subsystem?
 Can you get the track individual endpoints attribute of the request controller subsystem?
+## syntax of the operation to get the `microprofile-config-smallrye` subsystem
+Can you get the microprofile-config-smallrye subsystem?
+Can you get the microprofile-config-smallrye?
+Can you retrieve all the attributes of the microprofile-config-smallrye subsystem?
 ## syntax of the operation to get a `config-source-provider` resource of the `microprofile-config-smallrye` subsystem
 Can you get all the config-source-provider resource of the microprofile-config-smallrye subsystem?
 Can you get all the config-source-provider resource of the microprofile-config-smallrye subsystems?
@@ -4753,6 +4817,10 @@ Can you get the ordinal attribute of the myConfigSource config source resource o
 ## syntax of the operation to get the `properties` attribute of the `config-source` resource of the `microprofile-config-smallrye` subsystem
 Can you get the properties attribute of the myConfigSource config-source resource of the microprofile-config-smallrye subsystem ?
 Can you get the properties attribute of the myConfigSource config source resource of the microprofile config smallrye subsystem ?
+## syntax of the operation to get the `undertow` subsystem
+Can you get the undertow subsystem?
+Can you get the undertow?
+Can you retrieve all the attributes of the undertow subsystem?
 ## syntax of the operation to get the `default-security-domain` attribute of the `undertow` subsystem
 Can you get the default-security-domain attribute of the undertow subsystem?
 Can you get the default security domain attribute of the undertow subsystem?
@@ -5996,12 +6064,20 @@ Can you get the buffers per region attribute of the myBufferCache buffer cache r
 ## syntax of the operation to get the `max-regions` attribute of the `buffer-cache` resource of the `undertow` subsystem
 Can you get the max-regions attribute of the myBufferCache buffer-cache resource of the undertow subsystem ?
 Can you get the max regions attribute of the myBufferCache buffer cache resource of the undertow subsystem ?
+## syntax of the operation to get the `security-manager` subsystem
+Can you get the security-manager subsystem?
+Can you get the security-manager?
+Can you retrieve all the attributes of the security-manager subsystem?
 ## syntax of the operation to get the `maximum-permissions` attribute of the `default` `deployment-permissions` resource of the `security-manager` subsystem
 Can you get the maximum-permissions attribute of the myDefault default myDeploymentPermissions deployment-permissions resource of the security-manager subsystem ?
 Can you get the maximum permissions attribute of the myDefault default myDeploymentPermissions deployment permissions resource of the security manager subsystem ?
 ## syntax of the operation to get the `minimum-permissions` attribute of the `default` `deployment-permissions` resource of the `security-manager` subsystem
 Can you get the minimum-permissions attribute of the myDefault default myDeploymentPermissions deployment-permissions resource of the security-manager subsystem ?
 Can you get the minimum permissions attribute of the myDefault default myDeploymentPermissions deployment permissions resource of the security manager subsystem ?
+## syntax of the operation to get the `datasources` subsystem
+Can you get the datasources subsystem?
+Can you get the datasources?
+Can you retrieve all the attributes of the datasources subsystem?
 ## syntax of the operation to get the `installed-drivers` attribute of the `datasources` subsystem
 Can you get the installed-drivers attribute of the datasources subsystem?
 Can you get the installed drivers attribute of the datasources subsystem?
@@ -6501,6 +6577,10 @@ Can you get the foo xa-datasource-properties resource of the xa-data-source reso
 ## syntax of the operation to get the `value` attribute of the `xa-datasource-properties` resource of the `xa-data-source` resource of the `datasources` subsystem
 Can you get the value attribute of the myXaDatasourceProperties xa-datasource-properties resource of the myXaDataSource xa-data-source resource of the datasources subsystem ?
 Can you get the value attribute of the myXaDatasourceProperties xa datasource properties resource of the myXaDataSource xa data source resource of the datasources subsystem ?
+## syntax of the operation to get the `logging` subsystem
+Can you get the logging subsystem?
+Can you get the logging?
+Can you retrieve all the attributes of the logging subsystem?
 ## syntax of the operation to get the `add-logging-api-dependencies` attribute of the `logging` subsystem
 Can you get the add-logging-api-dependencies attribute of the logging subsystem?
 Can you get the add logging api dependencies attribute of the logging subsystem?
@@ -7494,6 +7574,10 @@ Can you get the level attribute of the myLogger logger resource of the logging s
 ## syntax of the operation to get the `use-parent-handlers` attribute of the `logger` resource of the `logging` subsystem
 Can you get the use-parent-handlers attribute of the myLogger logger resource of the logging subsystem ?
 Can you get the use parent handlers attribute of the myLogger logger resource of the logging subsystem ?
+## syntax of the operation to get the `naming` subsystem
+Can you get the naming subsystem?
+Can you get the naming?
+Can you retrieve all the attributes of the naming subsystem?
 ## syntax of the operation to get a `binding` resource of the `naming` subsystem
 Can you get all the binding resource of the naming subsystem?
 Can you get all the binding resource of the naming subsystems?
@@ -7523,6 +7607,10 @@ Can you get the type attribute of the myBinding binding resource of the naming s
 ## syntax of the operation to get the `value` attribute of the `binding` resource of the `naming` subsystem
 Can you get the value attribute of the myBinding binding resource of the naming subsystem ?
 Can you get the value attribute of the myBinding binding resource of the naming subsystem ?
+## syntax of the operation to get the `webservices` subsystem
+Can you get the webservices subsystem?
+Can you get the webservices?
+Can you retrieve all the attributes of the webservices subsystem?
 ## syntax of the operation to get the `modify-wsdl-address` attribute of the `webservices` subsystem
 Can you get the modify-wsdl-address attribute of the webservices subsystem?
 Can you get the modify wsdl address attribute of the webservices subsystem?
@@ -7634,6 +7722,10 @@ Can you get the foo property resource of the endpoint-config resource of the web
 ## syntax of the operation to get the `value` attribute of the `property` resource of the `endpoint-config` resource of the `webservices` subsystem
 Can you get the value attribute of the myProperty property resource of the myEndpointConfig endpoint-config resource of the webservices subsystem ?
 Can you get the value attribute of the myProperty property resource of the myEndpointConfig endpoint config resource of the webservices subsystem ?
+## syntax of the operation to get the `micrometer` subsystem
+Can you get the micrometer subsystem?
+Can you get the micrometer?
+Can you retrieve all the attributes of the micrometer subsystem?
 ## syntax of the operation to get the `endpoint` attribute of the `micrometer` subsystem
 Can you get the endpoint attribute of the micrometer subsystem?
 Can you get the endpoint attribute of the micrometer subsystem?
@@ -7655,6 +7747,14 @@ Can you get the endpoint attribute of the myOtlp otlp myRegistry registry resour
 ## syntax of the operation to get the `step` attribute of the `otlp` `registry` resource of the `micrometer` subsystem
 Can you get the step attribute of the myOtlp otlp myRegistry registry resource of the micrometer subsystem ?
 Can you get the step attribute of the myOtlp otlp myRegistry registry resource of the micrometer subsystem ?
+## syntax of the operation to get the `jdr` subsystem
+Can you get the jdr subsystem?
+Can you get the jdr?
+Can you retrieve all the attributes of the jdr subsystem?
+## syntax of the operation to get the `xts` subsystem
+Can you get the xts subsystem?
+Can you get the xts?
+Can you retrieve all the attributes of the xts subsystem?
 ## syntax of the operation to get the `async-registration` attribute of the `xts` subsystem
 Can you get the async-registration attribute of the xts subsystem?
 Can you get the async registration attribute of the xts subsystem?
@@ -7670,6 +7770,10 @@ Can you get the url attribute of the xts subsystem?
 ## syntax of the operation to get the `xts-environment` attribute of the `xts` subsystem
 Can you get the xts-environment attribute of the xts subsystem?
 Can you get the xts environment attribute of the xts subsystem?
+## syntax of the operation to get the `deployment-scanner` subsystem
+Can you get the deployment-scanner subsystem?
+Can you get the deployment-scanner?
+Can you retrieve all the attributes of the deployment-scanner subsystem?
 ## syntax of the operation to get a `scanner` resource of the `deployment-scanner` subsystem
 Can you get all the scanner resource of the deployment-scanner subsystem?
 Can you get all the scanner resource of the deployment-scanner subsystems?
@@ -7702,6 +7806,10 @@ Can you get the scan enabled attribute of the myScanner scanner resource of the 
 ## syntax of the operation to get the `scan-interval` attribute of the `scanner` resource of the `deployment-scanner` subsystem
 Can you get the scan-interval attribute of the myScanner scanner resource of the deployment-scanner subsystem ?
 Can you get the scan interval attribute of the myScanner scanner resource of the deployment scanner subsystem ?
+## syntax of the operation to get the `rts` subsystem
+Can you get the rts subsystem?
+Can you get the rts?
+Can you retrieve all the attributes of the rts subsystem?
 ## syntax of the operation to get the `host` attribute of the `rts` subsystem
 Can you get the host attribute of the rts subsystem?
 Can you get the host attribute of the rts subsystem?
@@ -7711,6 +7819,10 @@ Can you get the server attribute of the rts subsystem?
 ## syntax of the operation to get the `socket-binding` attribute of the `rts` subsystem
 Can you get the socket-binding attribute of the rts subsystem?
 Can you get the socket binding attribute of the rts subsystem?
+## syntax of the operation to get the `distributable-web` subsystem
+Can you get the distributable-web subsystem?
+Can you get the distributable-web?
+Can you retrieve all the attributes of the distributable-web subsystem?
 ## syntax of the operation to get the `default-session-management` attribute of the `distributable-web` subsystem
 Can you get the default-session-management attribute of the distributable-web subsystem?
 Can you get the default session management attribute of the distributable web subsystem?
@@ -7788,6 +7900,10 @@ Can you get the delimiter attribute of the myRanked ranked myAffinity affinity r
 ## syntax of the operation to get the `max-routes` attribute of the `ranked` `affinity` resource of the `infinispan-session-management` resource of the `distributable-web` subsystem
 Can you get the max-routes attribute of the myRanked ranked myAffinity affinity resource of the myInfinispanSessionManagement infinispan-session-management resource of the distributable-web subsystem ?
 Can you get the max routes attribute of the myRanked ranked myAffinity affinity resource of the myInfinispanSessionManagement infinispan session management resource of the distributable web subsystem ?
+## syntax of the operation to get the `mail` subsystem
+Can you get the mail subsystem?
+Can you get the mail?
+Can you retrieve all the attributes of the mail subsystem?
 ## syntax of the operation to get a `mail-session` resource of the `mail` subsystem
 Can you get all the mail-session resource of the mail subsystem?
 Can you get all the mail-session resource of the mail subsystems?
@@ -7882,6 +7998,14 @@ Can you get the tls attribute of the myCustom custom resource of the myMailSessi
 ## syntax of the operation to get the `username` attribute of the `custom` resource of the `mail-session` resource of the `mail` subsystem
 Can you get the username attribute of the myCustom custom resource of the myMailSession mail-session resource of the mail subsystem ?
 Can you get the username attribute of the myCustom custom resource of the myMailSession mail session resource of the mail subsystem ?
+## syntax of the operation to get the `sar` subsystem
+Can you get the sar subsystem?
+Can you get the sar?
+Can you retrieve all the attributes of the sar subsystem?
+## syntax of the operation to get the `distributable-ejb` subsystem
+Can you get the distributable-ejb subsystem?
+Can you get the distributable-ejb?
+Can you retrieve all the attributes of the distributable-ejb subsystem?
 ## syntax of the operation to get the `default-bean-management` attribute of the `distributable-ejb` subsystem
 Can you get the default-bean-management attribute of the distributable-ejb subsystem?
 Can you get the default bean management attribute of the distributable ejb subsystem?
@@ -7922,6 +8046,10 @@ Can you get the cache container attribute of the myInfinispanBeanManagement infi
 ## syntax of the operation to get the `max-active-beans` attribute of the `infinispan-bean-management` resource of the `distributable-ejb` subsystem
 Can you get the max-active-beans attribute of the myInfinispanBeanManagement infinispan-bean-management resource of the distributable-ejb subsystem ?
 Can you get the max active beans attribute of the myInfinispanBeanManagement infinispan bean management resource of the distributable ejb subsystem ?
+## syntax of the operation to get the `resource-adapters` subsystem
+Can you get the resource-adapters subsystem?
+Can you get the resource-adapters?
+Can you retrieve all the attributes of the resource-adapters subsystem?
 ## syntax of the operation to get the `report-directory` attribute of the `resource-adapters` subsystem
 Can you get the report-directory attribute of the resource-adapters subsystem?
 Can you get the report directory attribute of the resource adapters subsystem?
@@ -8171,6 +8299,10 @@ Can you get the foo config-properties resource of the connection-definitions res
 ## syntax of the operation to get the `value` attribute of the `config-properties` resource of the `connection-definitions` resource of the `resource-adapter` resource of the `resource-adapters` subsystem
 Can you get the value attribute of the myConfigProperties config-properties resource of the myConnectionDefinitions connection-definitions resource of the myResourceAdapter resource-adapter resource of the resource-adapters subsystem ?
 Can you get the value attribute of the myConfigProperties config properties resource of the myConnectionDefinitions connection definitions resource of the myResourceAdapter resource adapter resource of the resource adapters subsystem ?
+## syntax of the operation to get the `jaxrs` subsystem
+Can you get the jaxrs subsystem?
+Can you get the jaxrs?
+Can you retrieve all the attributes of the jaxrs subsystem?
 ## syntax of the operation to get the `jaxrs-2-0-request-matching` attribute of the `jaxrs` subsystem
 Can you get the jaxrs-2-0-request-matching attribute of the jaxrs subsystem?
 Can you get the jaxrs 2 0 request matching attribute of the jaxrs subsystem?
@@ -8243,6 +8375,10 @@ Can you get the tracing threshold attribute of the jaxrs subsystem?
 ## syntax of the operation to get the `tracing-type` attribute of the `jaxrs` subsystem
 Can you get the tracing-type attribute of the jaxrs subsystem?
 Can you get the tracing type attribute of the jaxrs subsystem?
+## syntax of the operation to get the `ee` subsystem
+Can you get the ee subsystem?
+Can you get the ee?
+Can you retrieve all the attributes of the ee subsystem?
 ## syntax of the operation to get the `annotation-property-replacement` attribute of the `ee` subsystem
 Can you get the annotation-property-replacement attribute of the ee subsystem?
 Can you get the annotation property replacement attribute of the ee subsystem?
@@ -8430,9 +8566,17 @@ Can you get the thread factory attribute of the myManagedExecutorService managed
 ## syntax of the operation to get the `thread-priority` attribute of the `managed-executor-service` resource of the `ee` subsystem
 Can you get the thread-priority attribute of the myManagedExecutorService managed-executor-service resource of the ee subsystem ?
 Can you get the thread priority attribute of the myManagedExecutorService managed executor service resource of the ee subsystem ?
+## syntax of the operation to get the `health` subsystem
+Can you get the health subsystem?
+Can you get the health?
+Can you retrieve all the attributes of the health subsystem?
 ## syntax of the operation to get the `security-enabled` attribute of the `health` subsystem
 Can you get the security-enabled attribute of the health subsystem?
 Can you get the security enabled attribute of the health subsystem?
+## syntax of the operation to get the `remoting` subsystem
+Can you get the remoting subsystem?
+Can you get the remoting?
+Can you retrieve all the attributes of the remoting subsystem?
 ## syntax of the operation to get the `auth-realm` attribute of the `remoting` subsystem
 Can you get the auth-realm attribute of the remoting subsystem?
 Can you get the auth realm attribute of the remoting subsystem?
@@ -8697,6 +8841,10 @@ Can you get the foo property resource of the remote-outbound-connection resource
 ## syntax of the operation to get the `value` attribute of the `property` resource of the `remote-outbound-connection` resource of the `remoting` subsystem
 Can you get the value attribute of the myProperty property resource of the myRemoteOutboundConnection remote-outbound-connection resource of the remoting subsystem ?
 Can you get the value attribute of the myProperty property resource of the myRemoteOutboundConnection remote outbound connection resource of the remoting subsystem ?
+## syntax of the operation to get the `jmx` subsystem
+Can you get the jmx subsystem?
+Can you get the jmx?
+Can you retrieve all the attributes of the jmx subsystem?
 ## syntax of the operation to get the `non-core-mbean-sensitivity` attribute of the `jmx` subsystem
 Can you get the non-core-mbean-sensitivity attribute of the jmx subsystem?
 Can you get the non core mbean sensitivity attribute of the jmx subsystem?
@@ -8729,6 +8877,10 @@ Can you get the proper property format attribute of the myResolved resolved myEx
 ## syntax of the operation to get the `domain-name` attribute of the `expression` `expose-model` resource of the `jmx` subsystem
 Can you get the domain-name attribute of the myExpression expression myExposeModel expose-model resource of the jmx subsystem ?
 Can you get the domain name attribute of the myExpression expression myExposeModel expose model resource of the jmx subsystem ?
+## syntax of the operation to get the `singleton` subsystem
+Can you get the singleton subsystem?
+Can you get the singleton?
+Can you retrieve all the attributes of the singleton subsystem?
 ## syntax of the operation to get the `default` attribute of the `singleton` subsystem
 Can you get the default attribute of the singleton subsystem?
 Can you get the default attribute of the singleton subsystem?
@@ -8789,6 +8941,10 @@ Can you get the primary provider attribute of the myService service resource of 
 ## syntax of the operation to get the `providers` attribute of the `service` resource of the `singleton-policy` resource of the `singleton` subsystem
 Can you get the providers attribute of the myService service resource of the mySingletonPolicy singleton-policy resource of the singleton subsystem ?
 Can you get the providers attribute of the myService service resource of the mySingletonPolicy singleton policy resource of the singleton subsystem ?
+## syntax of the operation to get the `weld` subsystem
+Can you get the weld subsystem?
+Can you get the weld?
+Can you retrieve all the attributes of the weld subsystem?
 ## syntax of the operation to get the `development-mode` attribute of the `weld` subsystem
 Can you get the development-mode attribute of the weld subsystem?
 Can you get the development mode attribute of the weld subsystem?
@@ -8804,12 +8960,20 @@ Can you get the require bean descriptor attribute of the weld subsystem?
 ## syntax of the operation to get the `thread-pool-size` attribute of the `weld` subsystem
 Can you get the thread-pool-size attribute of the weld subsystem?
 Can you get the thread pool size attribute of the weld subsystem?
+## syntax of the operation to get the `microprofile-lra-coordinator` subsystem
+Can you get the microprofile-lra-coordinator subsystem?
+Can you get the microprofile-lra-coordinator?
+Can you retrieve all the attributes of the microprofile-lra-coordinator subsystem?
 ## syntax of the operation to get the `host` attribute of the `microprofile-lra-coordinator` subsystem
 Can you get the host attribute of the microprofile-lra-coordinator subsystem?
 Can you get the host attribute of the microprofile lra coordinator subsystem?
 ## syntax of the operation to get the `server` attribute of the `microprofile-lra-coordinator` subsystem
 Can you get the server attribute of the microprofile-lra-coordinator subsystem?
 Can you get the server attribute of the microprofile lra coordinator subsystem?
+## syntax of the operation to get the `jgroups` subsystem
+Can you get the jgroups subsystem?
+Can you get the jgroups?
+Can you retrieve all the attributes of the jgroups subsystem?
 ## syntax of the operation to get the `default-channel` attribute of the `jgroups` subsystem
 Can you get the default-channel attribute of the jgroups subsystem?
 Can you get the default channel attribute of the jgroups subsystem?
@@ -8959,6 +9123,10 @@ Can you get the foo remote-site resource of the relay.RELAY2 relay resource of t
 ## syntax of the operation to get the `channel` attribute of the `remote-site` resource of the `relay.RELAY2` `relay` resource of the `stack` resource of the `jgroups` subsystem
 Can you get the channel attribute of the myRemoteSite remote-site resource of the myRelay.RELAY2 relay.RELAY2 myRelay relay resource of the myStack stack resource of the jgroups subsystem ?
 Can you get the channel attribute of the myRemoteSite remote site resource of the myRelay.RELAY2 relay.RELAY2 myRelay relay resource of the myStack stack resource of the jgroups subsystem ?
+## syntax of the operation to get the `elytron` subsystem
+Can you get the elytron subsystem?
+Can you get the elytron?
+Can you retrieve all the attributes of the elytron subsystem?
 ## syntax of the operation to get the `default-authentication-context` attribute of the `elytron` subsystem
 Can you get the default-authentication-context attribute of the elytron subsystem?
 Can you get the default authentication context attribute of the elytron subsystem?
@@ -10707,12 +10875,40 @@ Can you get the configuration attribute of the myCustomRealm custom realm resour
 ## syntax of the operation to get the `module` attribute of the `custom-realm` resource of the `elytron` subsystem
 Can you get the module attribute of the myCustomRealm custom-realm resource of the elytron subsystem ?
 Can you get the module attribute of the myCustomRealm custom realm resource of the elytron subsystem ?
+## syntax of the operation to get the `bean-validation` subsystem
+Can you get the bean-validation subsystem?
+Can you get the bean-validation?
+Can you retrieve all the attributes of the bean-validation subsystem?
+## syntax of the operation to get the `ee-security` subsystem
+Can you get the ee-security subsystem?
+Can you get the ee-security?
+Can you retrieve all the attributes of the ee-security subsystem?
+## syntax of the operation to get the `microprofile-fault-tolerance-smallrye` subsystem
+Can you get the microprofile-fault-tolerance-smallrye subsystem?
+Can you get the microprofile-fault-tolerance-smallrye?
+Can you retrieve all the attributes of the microprofile-fault-tolerance-smallrye subsystem?
+## syntax of the operation to get the `jsf` subsystem
+Can you get the jsf subsystem?
+Can you get the jsf?
+Can you retrieve all the attributes of the jsf subsystem?
 ## syntax of the operation to get the `default-jsf-impl-slot` attribute of the `jsf` subsystem
 Can you get the default-jsf-impl-slot attribute of the jsf subsystem?
 Can you get the default jsf impl slot attribute of the jsf subsystem?
 ## syntax of the operation to get the `disallow-doctype-decl` attribute of the `jsf` subsystem
 Can you get the disallow-doctype-decl attribute of the jsf subsystem?
 Can you get the disallow doctype decl attribute of the jsf subsystem?
+## syntax of the operation to get the `microprofile-openapi-smallrye` subsystem
+Can you get the microprofile-openapi-smallrye subsystem?
+Can you get the microprofile-openapi-smallrye?
+Can you retrieve all the attributes of the microprofile-openapi-smallrye subsystem?
+## syntax of the operation to get the `microprofile-reactive-streams-operators-smallrye` subsystem
+Can you get the microprofile-reactive-streams-operators-smallrye subsystem?
+Can you get the microprofile-reactive-streams-operators-smallrye?
+Can you retrieve all the attributes of the microprofile-reactive-streams-operators-smallrye subsystem?
+## syntax of the operation to get the `microprofile-opentracing-smallrye` subsystem
+Can you get the microprofile-opentracing-smallrye subsystem?
+Can you get the microprofile-opentracing-smallrye?
+Can you retrieve all the attributes of the microprofile-opentracing-smallrye subsystem?
 ## syntax of the operation to get the `default-tracer` attribute of the `microprofile-opentracing-smallrye` subsystem
 Can you get the default-tracer attribute of the microprofile-opentracing-smallrye subsystem?
 Can you get the default tracer attribute of the microprofile opentracing smallrye subsystem?
@@ -10763,6 +10959,14 @@ Can you get the tags attribute of the myJaegerTracer jaeger tracer resource of t
 ## syntax of the operation to get the `tracer_id_128bit` attribute of the `jaeger-tracer` resource of the `microprofile-opentracing-smallrye` subsystem
 Can you get the tracer_id_128bit attribute of the myJaegerTracer jaeger-tracer resource of the microprofile-opentracing-smallrye subsystem ?
 Can you get the tracer_id_128bit attribute of the myJaegerTracer jaeger tracer resource of the microprofile opentracing smallrye subsystem ?
+## syntax of the operation to get the `microprofile-jwt-smallrye` subsystem
+Can you get the microprofile-jwt-smallrye subsystem?
+Can you get the microprofile-jwt-smallrye?
+Can you retrieve all the attributes of the microprofile-jwt-smallrye subsystem?
+## syntax of the operation to get the `batch-jberet` subsystem
+Can you get the batch-jberet subsystem?
+Can you get the batch-jberet?
+Can you retrieve all the attributes of the batch-jberet subsystem?
 ## syntax of the operation to get the `default-job-repository` attribute of the `batch-jberet` subsystem
 Can you get the default-job-repository attribute of the batch-jberet subsystem?
 Can you get the default job repository attribute of the batch jberet subsystem?
@@ -10849,6 +11053,10 @@ Can you get the data source attribute of the myJdbcJobRepository jdbc job reposi
 ## syntax of the operation to get the `execution-records-limit` attribute of the `jdbc-job-repository` resource of the `batch-jberet` subsystem
 Can you get the execution-records-limit attribute of the myJdbcJobRepository jdbc-job-repository resource of the batch-jberet subsystem ?
 Can you get the execution records limit attribute of the myJdbcJobRepository jdbc job repository resource of the batch jberet subsystem ?
+## syntax of the operation to get the `microprofile-health-smallrye` subsystem
+Can you get the microprofile-health-smallrye subsystem?
+Can you get the microprofile-health-smallrye?
+Can you retrieve all the attributes of the microprofile-health-smallrye subsystem?
 ## syntax of the operation to get the `empty-liveness-checks-status` attribute of the `microprofile-health-smallrye` subsystem
 Can you get the empty-liveness-checks-status attribute of the microprofile-health-smallrye subsystem?
 Can you get the empty liveness checks status attribute of the microprofile health smallrye subsystem?
@@ -10861,6 +11069,10 @@ Can you get the empty startup checks status attribute of the microprofile health
 ## syntax of the operation to get the `security-enabled` attribute of the `microprofile-health-smallrye` subsystem
 Can you get the security-enabled attribute of the microprofile-health-smallrye subsystem?
 Can you get the security enabled attribute of the microprofile health smallrye subsystem?
+## syntax of the operation to get the `elytron-oidc-client` subsystem
+Can you get the elytron-oidc-client subsystem?
+Can you get the elytron-oidc-client?
+Can you retrieve all the attributes of the elytron-oidc-client subsystem?
 ## syntax of the operation to get a `provider` resource of the `elytron-oidc-client` subsystem
 Can you get all the provider resource of the elytron-oidc-client subsystem?
 Can you get all the provider resource of the elytron-oidc-client subsystems?
@@ -11429,6 +11641,10 @@ Can you get the truststore password attribute of the myRealm realm resource of t
 ## syntax of the operation to get the `verify-token-audience` attribute of the `realm` resource of the `elytron-oidc-client` subsystem
 Can you get the verify-token-audience attribute of the myRealm realm resource of the elytron-oidc-client subsystem ?
 Can you get the verify token audience attribute of the myRealm realm resource of the elytron oidc client subsystem ?
+## syntax of the operation to get the `io` subsystem
+Can you get the io subsystem?
+Can you get the io?
+Can you retrieve all the attributes of the io subsystem?
 ## syntax of the operation to get the `default-worker` attribute of the `io` subsystem
 Can you get the default-worker attribute of the io subsystem?
 Can you get the default worker attribute of the io subsystem?
@@ -11512,6 +11728,10 @@ Can you get the buffers per slice attribute of the myBufferPool buffer pool reso
 ## syntax of the operation to get the `direct-buffers` attribute of the `buffer-pool` resource of the `io` subsystem
 Can you get the direct-buffers attribute of the myBufferPool buffer-pool resource of the io subsystem ?
 Can you get the direct buffers attribute of the myBufferPool buffer pool resource of the io subsystem ?
+## syntax of the operation to get the `ejb3` subsystem
+Can you get the ejb3 subsystem?
+Can you get the ejb3?
+Can you retrieve all the attributes of the ejb3 subsystem?
 ## syntax of the operation to get the `allow-ejb-name-regex` attribute of the `ejb3` subsystem
 Can you get the allow-ejb-name-regex attribute of the ejb3 subsystem?
 Can you get the allow ejb name regex attribute of the ejb3 subsystem?
@@ -11882,6 +12102,10 @@ Can you get the aliases attribute of the myCache cache resource of the ejb3 subs
 ## syntax of the operation to get the `passivation-store` attribute of the `cache` resource of the `ejb3` subsystem
 Can you get the passivation-store attribute of the myCache cache resource of the ejb3 subsystem ?
 Can you get the passivation store attribute of the myCache cache resource of the ejb3 subsystem ?
+## syntax of the operation to get the `microprofile-lra-participant` subsystem
+Can you get the microprofile-lra-participant subsystem?
+Can you get the microprofile-lra-participant?
+Can you retrieve all the attributes of the microprofile-lra-participant subsystem?
 ## syntax of the operation to get the `lra-coordinator-url` attribute of the `microprofile-lra-participant` subsystem
 Can you get the lra-coordinator-url attribute of the microprofile-lra-participant subsystem?
 Can you get the lra coordinator url attribute of the microprofile lra participant subsystem?
@@ -11891,6 +12115,10 @@ Can you get the proxy host attribute of the microprofile lra participant subsyst
 ## syntax of the operation to get the `proxy-server` attribute of the `microprofile-lra-participant` subsystem
 Can you get the proxy-server attribute of the microprofile-lra-participant subsystem?
 Can you get the proxy server attribute of the microprofile lra participant subsystem?
+## syntax of the operation to get the `microprofile-metrics-smallrye` subsystem
+Can you get the microprofile-metrics-smallrye subsystem?
+Can you get the microprofile-metrics-smallrye?
+Can you retrieve all the attributes of the microprofile-metrics-smallrye subsystem?
 ## syntax of the operation to get the `exposed-subsystems` attribute of the `microprofile-metrics-smallrye` subsystem
 Can you get the exposed-subsystems attribute of the microprofile-metrics-smallrye subsystem?
 Can you get the exposed subsystems attribute of the microprofile metrics smallrye subsystem?
@@ -11900,6 +12128,10 @@ Can you get the prefix attribute of the microprofile metrics smallrye subsystem?
 ## syntax of the operation to get the `security-enabled` attribute of the `microprofile-metrics-smallrye` subsystem
 Can you get the security-enabled attribute of the microprofile-metrics-smallrye subsystem?
 Can you get the security enabled attribute of the microprofile metrics smallrye subsystem?
+## syntax of the operation to get the `microprofile-reactive-messaging-smallrye` subsystem
+Can you get the microprofile-reactive-messaging-smallrye subsystem?
+Can you get the microprofile-reactive-messaging-smallrye?
+Can you retrieve all the attributes of the microprofile-reactive-messaging-smallrye subsystem?
 ## syntax of the operation to get the `amqp-connector` attribute of the `config` `opentelemetry-tracing` resource of the `microprofile-reactive-messaging-smallrye` subsystem
 Can you get the amqp-connector attribute of the myConfig config myOpentelemetryTracing opentelemetry-tracing resource of the microprofile-reactive-messaging-smallrye subsystem ?
 Can you get the amqp connector attribute of the myConfig config myOpentelemetryTracing opentelemetry tracing resource of the microprofile reactive messaging smallrye subsystem ?

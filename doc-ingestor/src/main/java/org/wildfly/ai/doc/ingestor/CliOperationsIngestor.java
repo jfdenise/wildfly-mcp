@@ -238,6 +238,27 @@ If you don't have enough information in the directives to generate CLI operation
                 questionsbuilder.append("Can you get all the " + unblockLine(resourceName) + "?\n");
                 questionsbuilder.append("Can you get all the " + unblockLine(resourceName) + "s?\n");
                 questionsbuilder.append("Can you get the foo " + unblockLine(resourceName) + "?\n\n");
+            } else {
+                if (resourceType != null && resourceType.equals("subsystem")) {
+                    String description = resourceNode.get("description").asText();
+                    String formattedDescription = formatDescription(dictionary, description);
+                    String title = "## syntax of the operation to get the " + resourceName + "\n";
+                    docbuilder.append(title);
+                    docbuilder.append("* Retrieve the " + resourceName + " attributes\n");
+                    docbuilder.append("* " + resourceName + " description: " + formattedDescription+"\n");
+                    docbuilder.append("* operation: `" + currentPath + ":read-resource()`\n\n");
+
+                    questionsbuilder.append(title);
+                    questionsbuilder.append("Can you get the " + unblockLine(resourceName) + "?\n");
+                    String alternative = alternative(unblockLine(resourceName));
+                    if (alternative.equals(resourceName)) {
+                        questionsbuilder.append("Can you get the " +  alternative + "?\n");
+                    }
+                    List<String> words = new ArrayList<>();
+                    getWords(resourceName, words);
+                    questionsbuilder.append("Can you get the " + unblock(words.get(0)) + "?\n");
+                    questionsbuilder.append("Can you retrieve all the attributes of the " + unblockLine(resourceName) + "?\n");
+                }
             }
             if (resourceNode.has("attributes")) {
                 JsonNode attributes = resourceNode.get("attributes");
@@ -342,8 +363,9 @@ If you don't have enough information in the directives to generate CLI operation
                 .logRequests(true)
                 .logResponses(true)
                 .build();
+        float minScore = Float.parseFloat(System.getProperty("min-score", "0.7"));
         if (Boolean.getBoolean("generate-llm")) {
-            Path generatedLLMQuestionsDoc = Paths.get("questions/cli-questions-llm-mistral-small-generated2.md");
+            Path generatedLLMQuestionsDoc = Paths.get("questions/cli-questions-llm-qwen2.5-3b-generated.md");
             Files.deleteIfExists(generatedLLMQuestionsDoc);
             Files.createFile(generatedLLMQuestionsDoc);
             List<String> lines = Files.readAllLines(generatedLLMQuestionsTemplateDoc);
@@ -352,7 +374,7 @@ If you don't have enough information in the directives to generate CLI operation
                 if (line.startsWith("#")) {
                     if (!currentQuestion.isEmpty()) {
                         System.out.println(currentQuestion);
-                        String reply = invokeLLM(mistralModel, currentQuestion.toString(), 2000);
+                        String reply = invokeLLM(model, currentQuestion.toString(), -1);
 
                         System.out.println("==>" + reply);
                         Files.write(generatedLLMQuestionsDoc, (reply + "\n\n").getBytes(), StandardOpenOption.APPEND);
@@ -575,27 +597,27 @@ If you don't have enough information in the directives to generate CLI operation
                 // redundant with qwen2.5:3b
                 //questions.addAll(Files.readAllLines(qwen2515bQuestions));
                 //questions.addAll(Files.readAllLines(qwen253bQuestions));
-                //questions.addAll(Files.readAllLines(mistralSmallQuestions));
+                questions.addAll(Files.readAllLines(mistralSmallQuestions));
                 questions.addAll(Files.readAllLines(questionsDoc));
                 // For now reuse the input doc as lexique
                 Set<String> questionHeaders = new HashSet<>();
                 Set<String> docHeaders = new HashSet<>();
 
-//                for (String line : questions) {
-//                    if (line.startsWith("#")) {
-//                        questionHeaders.add(line.trim());
-//                    }
-//                }
-//                for (String line : doc) {
-//                    if (line.startsWith("#")) {
-//                        docHeaders.add(line.trim());
-//                    }
-//                }
-//                for (String header : docHeaders) {
-//                    if (!questionHeaders.contains(header)) {
-//                        throw new RuntimeException(header + " is not covered by questions");
-//                    }
-//                }
+                for (String line : questions) {
+                    if (line.startsWith("#")) {
+                        questionHeaders.add(line.trim());
+                    }
+                }
+                for (String line : doc) {
+                    if (line.startsWith("#")) {
+                        docHeaders.add(line.trim());
+                    }
+                }
+                for (String header : docHeaders) {
+                    if (!questionHeaders.contains(header)) {
+                        throw new RuntimeException(header + " is not covered by questions");
+                    }
+                }
                 int numQuestions = 0;
                 System.out.println("Num of doc lines " + doc.size());
                 System.out.println("Num of question lines " + questions.size());
@@ -639,7 +661,7 @@ If you don't have enough information in the directives to generate CLI operation
                     boolean ranked = false;
                     for (int i = 0; i < relevant.size(); i++) {
                         EmbeddingMatch<TextSegment> match = relevant.get(i);
-                        if (match.score() >= 0.7) {
+                        if (match.score() >= minScore) {
                             if (i == 0) {
                                 //Check that the best result has the same title than the question.
                                 if (match.embedded().metadata().getString("title").equals(questionTitle)) {
@@ -653,12 +675,13 @@ If you don't have enough information in the directives to generate CLI operation
                                     augmentedContext.add(match.embedded().text());
                                     numContexts+=1;
                                     incrementScoreDistribution(scoreDistribution, match);
+                                    continue;
                                 } else {
                                     break;
                                 }
                             }
                             if (match.embedded().metadata().getString("title").equals(questionTitle)) {
-                                index = i + 1;
+                                index = i;
                                 score = match.score();
                                 break;
                             }
@@ -666,13 +689,17 @@ If you don't have enough information in the directives to generate CLI operation
                     }
                     if (!topRanked) {
                         if (index != 0) {
+                            // Keep at min 4 scores
+                            if(index < 3) {
+                                index = 3;
+                            }
                             String l = line + "[rank " + index + ", score " + score + "]";
 
                             if (Boolean.getBoolean("debug")) {
                                 l = "\n###########\n" + l + "\n" + messageBuilder;
                             }
                             questionsNotTopRanked.add(l);
-                            for (int i = 0; i < index; i++) {
+                            for (int i = 0; i <= index; i++) {
                                 EmbeddingMatch<TextSegment> match = relevant.get(i);
                                 augmentedContext.add(match.embedded().text());
                                 numContexts+=1;
@@ -687,15 +714,17 @@ If you don't have enough information in the directives to generate CLI operation
                             questionsNotRanked.add(line);
                         }
                     }
-                    augmentedContextLength += augmentedContext.size();
-                    Integer perSize = sizeDistribution.get(augmentedContext.size());
-                    if (perSize == null) {
-                        perSize = 0;
-                    }
-                    sizeDistribution.put(augmentedContext.size(), perSize + 1);
-                    if (augmentedContext.size() > maxContextSize) {
-                        maxContextSize = augmentedContext.size();
-                        maxQuestion = line;
+                    if (!augmentedContext.isEmpty()) {
+                        augmentedContextLength += augmentedContext.size();
+                        Integer perSize = sizeDistribution.get(augmentedContext.size());
+                        if (perSize == null) {
+                            perSize = 0;
+                        }
+                        sizeDistribution.put(augmentedContext.size(), perSize + 1);
+                        if (augmentedContext.size() > maxContextSize) {
+                            maxContextSize = augmentedContext.size();
+                            maxQuestion = line;
+                        }
                     }
                     if (ranked && Boolean.getBoolean("invoke-llm")) {
                         // call the LLM and see 
@@ -758,7 +787,7 @@ If you don't have enough information in the directives to generate CLI operation
                 boolean found = false;
                 for (int i = 0; i < relevant.size(); i++) {
                     EmbeddingMatch<TextSegment> match = relevant.get(i);
-                    //if (match.score() >= 0.7) {
+                    //if (match.score() >= minScore) {
                     scores.add(match.score());
                     messageBuilder.append("\n" + match.score() + " ------------\n");
                     messageBuilder.append(match.embedded().text());
@@ -770,10 +799,10 @@ If you don't have enough information in the directives to generate CLI operation
                     //}
                 }
                 if (!found) {
-                    System.out.println("Here are all the matches > 0.7");
+                    System.out.println("Here are all the matches > " + minScore);
                     for (int i = 0; i < relevant.size(); i++) {
                         EmbeddingMatch<TextSegment> match = relevant.get(i);
-                        if (match.score() >= 0.7) {
+                        if (match.score() >= minScore) {
                             System.out.println("------------------------");
                             System.out.println("score: " + match.score());
                             System.out.println("metadata: " + match.embedded().metadata());

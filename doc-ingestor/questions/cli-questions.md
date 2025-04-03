@@ -166,9 +166,7 @@ What are all the paths?
 
 ## syntax of the operation to get a subsystem
 
-Can you get the subsystem jaxrs?
 Can you get all the subsystems?
-What are the main attributes of the jaxrs subsystem
 
 # `bean-validation` subsystem
 
@@ -194,3 +192,8 @@ Can you get all the data-sources?
 Can you get all the data-source?
 Can you get the example data-source?
 Can you get all the datasources subsystem data-source?
+
+## syntax of the operation to get the `jaxrs` subsystem
+
+Can you get the subsystem jaxrs?
+What are the main attributes of the jaxrs subsystem
