@@ -606,7 +606,7 @@ If you don't have enough information in the directives to generate CLI operation
                     Files.createFile(llmRagReplies);
                 }
                 questions.addAll(Files.readAllLines(generatedQuestionsDoc));
-                //questions.addAll(Files.readAllLines(qwen253bQuestions));
+                questions.addAll(Files.readAllLines(qwen253bQuestions));
                 questions.addAll(Files.readAllLines(mistralSmallQuestions));
                 questions.addAll(Files.readAllLines(questionsDoc));
                 // For now reuse the input doc as lexique
