@@ -434,11 +434,8 @@ If you don't have enough information in the directives to generate CLI operation
         }
         if (Boolean.getBoolean("analyze-llm-replies")) {
             CommandContext ctx = CommandContextFactory.getInstance().newCommandContext();
-            Path llmHWRagReplies = Paths.get("rag-test-replies/rag-cli-replies-handwritten-questions.md");
-            //Path qwen253bRagReplies = Paths.get("rag-test-replies/rag-cli-replies-qwen2.53b-questions.md");
-            Path mistralSmallRagReplies = Paths.get("rag-test-replies/rag-cli-replies-mistrall-small-questions-old.md");
+            Path mistralSmallRagReplies = Paths.get("rag-test-replies/rag-cli-replies-mistral-small-questions.md");
             List<String> allLines = new ArrayList<>();
-            //allLines.addAll(Files.readAllLines(llmHWRagReplies));
             allLines.addAll(Files.readAllLines(mistralSmallRagReplies));
             int questions = 0;
             int noAnswer = 0;
