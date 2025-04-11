@@ -4,6 +4,8 @@ This project aims to define tooling allowing WildFly users to benefenit from the
 
 * [WildFly MCP Server](wildfly-mcp-server/README.md): A WildFly [MCP server](https://github.com/modelcontextprotocol/servers) to integrate with your AI chatbot in order to interact with WildFly server using natural language.
 
+* [WildFly Dev MCP Server](wildfly-dev-mcp-server/README.md): A WildFly Development [MCP server](https://github.com/modelcontextprotocol/servers) to integrate in your Vibe coding sessions.
+
 * [WildFly Chat Bot](wildfly-chat-bot/README.md): A WildFly Chat Bot to interact with WildFly servers. This AI chatbot allows to also integrate MCP servers (STDIO and SSE protocol).
 
 * [Container Images](container-images/README.md): Container images for mcp server and the chat bot (that contains both the chat bot and the mcp server. Ready to interact with your WildFly servers on the cloud). Example of OpenShift deployment is provided.
