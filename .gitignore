@@ -31,3 +31,5 @@ wildfly-chat-bot/target/
 /wildfly-mcp-server/common/target/
 report_messages.json
 report_summary.md
+/wildfly-dev-mcp-server/stdio/target/
+/wildfly-dev-mcp-server/common/target/
