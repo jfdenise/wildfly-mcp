@@ -4,9 +4,6 @@
  */
 package org.wildfly.mcp.dev;
 
-import io.quarkiverse.mcp.server.Prompt;
-import io.quarkiverse.mcp.server.PromptArg;
-import io.quarkiverse.mcp.server.PromptMessage;
 import io.quarkiverse.mcp.server.TextContent;
 import java.util.List;
 
@@ -17,23 +14,23 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jboss.galleon.api.config.GalleonConfigurationWithLayers;
-import org.jboss.galleon.api.config.GalleonFeaturePackConfig;
-import org.jboss.galleon.api.config.GalleonProvisioningConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URL;
+import java.net.URLConnection;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.jboss.galleon.universe.maven.repo.MavenRepoManager;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.wildfly.glow.AddOn;
 import org.wildfly.glow.Arguments;
 import org.wildfly.glow.GlowMessageWriter;
 import org.wildfly.glow.GlowSession;
-import org.wildfly.glow.Layer;
 import org.wildfly.glow.OutputFormat;
 import org.wildfly.glow.ScanArguments;
 import org.wildfly.glow.ScanResults;
@@ -43,10 +40,94 @@ public class WildFlyDevMCPServer {
 
     static final Logger LOGGER = Logger.getLogger("org.wildfly.mcp.dev.WildFlyDevMCPServer");
 
-    // TODO: Can we retrieve the latest Maven plugin version? Not sure...For now use prompting.
-    @Tool(description = "Get the WildFly Maven Plugin initial configuration used to provision a WildFly server and deploy the application.")
-    ToolResponse getWildFlyMavenPluginInitialConfiguration() {
-        String plugin = """
+    @Tool(description = "Call this tool when a wildfly-maven-plugin is already configured in the plugins of the pom.xml file. "
+            + "Follow the steps to replace the feature-packs and layers with automatic dicovery of feature-packs and layers")
+    ToolResponse refactorExistingWildFlyMavenPluginConfigurationForDiscoveryofProvisioningInformation() {
+        String steps = """
+                       1- if the <discover-provisioning-info> is already present in the WildFly Maven plugin configuration, do not follow the next steps. The plugin is already properly configured.
+                       2- Remove <feature-packs> element and its children elements.
+                       3- Remove <layers> element and its children elements.
+                       4- Remove <excluded-layers> element and its children element.
+                       5- Add <discover-provisioning-info></discover-provisioning-info> XML element
+                       """;
+        return buildResponse(steps);
+    }
+
+    @Tool(description = "Get the latest version of WildFly.Using the latest version of WildFly is a good development pattern.")
+    ToolResponse getWildFlyLatestVersion() {
+        try {
+            return buildResponse(getLatestWildFlyServerRelease());
+        } catch (Exception ex) {
+            return handleException(ex, "");
+        }
+    }
+
+    @Tool(description = "Get the WildFly BOMs (Build of Material). Add them if they don't already exist. "
+            + "If some managed dependencies with groupId org.wildfly.bom exist, replace them. "
+            + "This BOM must be used to resolve dependencies required to use Jakarta EE 11 API. ")
+    ToolResponse getWildFlyMavenBOM(@ToolArg(name = "wildfly-version", required = false) String version) {
+        try {
+            String bom = """
+                         <dependency>
+                              <groupId>org.wildfly.bom</groupId>
+                              <artifactId>wildfly-ee-with-tools</artifactId>
+                              <version>USE_LATEST_VERSION</version>
+                              <type>pom</type>
+                              <scope>import</scope>
+                         </dependency>
+                         <dependency>
+                             <groupId>org.wildfly.bom</groupId>
+                             <artifactId>wildfly-expansion</artifactId>
+                             <version>USE_LATEST_VERSION</version>
+                             <type>pom</type>
+                             <scope>import</scope>
+                         </dependency>
+                         
+                         """;
+            bom = bom.replaceAll("USE_LATEST_VERSION", version == null || version.isEmpty() ? getLatestWildFlyServerRelease() : version);
+            return buildResponse(bom);
+        } catch (Exception ex) {
+            return handleException(ex, "");
+        }
+    }
+
+    @Tool(description = "List all the maven dependencies contained in the WildFly Maven BOM. Only a subset will be needed to use Jakarta EE API.")
+    ToolResponse listAllDependenciesContainedInWildFlyBOMs(@ToolArg(name = "wildfly-version", required = false) String version) {
+        try {
+            String vers = version == null || version.isEmpty() ? getLatestWildFlyServerRelease() : version;
+            String eeDeps = getDependencies("https://repo1.maven.org/maven2/org/wildfly/bom/wildfly-ee/" + vers + "/wildfly-ee-" + vers + ".pom");
+            String deps = getDependencies("https://repo1.maven.org/maven2/org/wildfly/bom/wildfly-expansion/" + vers + "/wildfly-expansion-" + vers + ".pom");
+            return buildResponse(eeDeps+deps);
+        } catch (Exception ex) {
+            return handleException(ex, "");
+        }
+    }
+
+    private static String getDependencies(String bomURL) throws Exception {
+        URL url = new URL(bomURL);
+        URLConnection conn = url.openConnection();
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(conn.getInputStream());
+        NodeList nl = doc.getElementsByTagName("dependency");
+        StringBuilder xmlBuilder = new StringBuilder();
+        for (int i = 0; i < nl.getLength(); i++) {
+            xmlBuilder.append("<dependency>\n");
+            Element n = (Element) nl.item(i);
+            xmlBuilder.append("<groupId>" + n.getElementsByTagName("groupId").item(0).getTextContent() + "</groupId>\n");
+            xmlBuilder.append("<artifactId>" + n.getElementsByTagName("artifactId").item(0).getTextContent() + "</artifactId>\n");
+            xmlBuilder.append("</dependency>\n");
+        }
+        return xmlBuilder.toString();
+    }
+
+    @Tool(description = "Do not call this tool if wildfly-maven-plugin is already configured in the plugins of the pom.xml file."
+            + "Get the WildFly Maven Plugin configured to automatically "
+            + "provision a WildFly server and automatically deploy the application when mvn package command is called.")
+    ToolResponse getWildFlyMavenPlugin() {
+        try {
+            String plugin = """
                              <plugin>
                                 <groupId>org.wildfly.plugins</groupId>
                                 <artifactId>wildfly-maven-plugin</artifactId>
@@ -62,65 +143,43 @@ public class WildFlyDevMCPServer {
                                 <executions>
                                     <execution>
                                         <goals>
-                                            <!-- the package goal provision the server and deploy the application into it -->
+                                            <!-- Maven goal to provision the server and deploy the application into it. -->
                                             <goal>package</goal>
                                         </goals>
                                     </execution>
                                 </executions>
                             </plugin>
                             """;
-        return buildResponse(plugin);
+            plugin = plugin.replace("USE_LATEST_VERSION", getLatestWildFlyMavenPluginRelease());
+            return buildResponse(plugin);
+        } catch (Exception ex) {
+            return handleException(ex, "");
+        }
     }
 
-//    @Tool(description = "Get the WildFly feature-packs and Galleon layers required to provision a server to run this built application")
-//    ToolResponse getProvisioningInfoForFile(
-//            @ToolArg(name = "built-application-deployment-absolute-file-path", required = true) String filePath) {
-//        try {
-//            ScanArguments.Builder builder = Arguments.scanBuilder();
-//            List<Path> binaries = new ArrayList<>();
-//            Path fp = Paths.get(filePath);
-//            if (!Files.exists(fp)) {
-//                throw new Exception("The file doesn't exist. It must be an absolute path to a deployment file.");
-//            }
-//            String fileName = fp.getFileName().toString().toLowerCase();
-//            System.err.println(fileName);
-//            if (!fileName.endsWith(".war") && !fileName.endsWith(".jar") && !fileName.endsWith(".ear")) {
-//                throw new Exception("The file must be a binary jar, war or ear file.");
-//            }
-//            binaries.add(Paths.get(filePath));
-//            builder.setBinaries(binaries);
-//            builder.setOutput(OutputFormat.PROVISIONING_XML);
-//            MavenRepoManager repoManager = MavenResolver.newMavenResolver();
-//            ScanResults scanResults = GlowSession.scan(repoManager, builder.build(), GlowMessageWriter.DEFAULT);
-//            Path glowOutputFolder = Files.createTempDirectory("wildfly-dev-mcp");
-//            scanResults.outputConfig(glowOutputFolder, null);
-//            GalleonProvisioningConfig config = scanResults.getProvisioningConfig();
-//            GalleonProvisioningConfig.Builder configBuilder = GalleonProvisioningConfig.builder(config);
-//            StringBuilder strBuilder = new StringBuilder();
-//            strBuilder.append("{ \"feature-packs\":[\n");
-//            for (GalleonFeaturePackConfig fpc : config.getFeaturePackDeps()) {
-//                strBuilder.append("{ \"location\": \"" + fpc.getLocation() + "\" },");
-//            }
-//            strBuilder.append("],\n");
-//            strBuilder.append("{ \"layers\":[\n");
-//            GalleonConfigurationWithLayers c = config.getDefinedConfigs().iterator().next();
-//            for (String l : c.getIncludedLayers()) {
-//                strBuilder.append("\"" + l + "\",");
-//            }
-//            strBuilder.append("],\n}\n");
-//            //config = configBuilder.build();
-//            //Path prov = glowOutputFolder.resolve("provisioning.xml");
-//            //scanResults.getProvisioning().storeProvisioningConfig(config, prov);
-//            return buildResponse(strBuilder.toString());
-//        } catch (Exception ex) {
-//            return handleException(ex, "");
-//        }
-//    }
-    @Tool(description = "The maven command to start the server. Note that you must first have packaged the server prior to start it.")
+    @Tool(description = "The maven command to start the server. Warning: you must first use the WildFly Maven Plugin to package the server and deploy the application before to start it.")
     ToolResponse getMavenCommandToStartTheServer() {
         return buildResponse("mvn wildfly:start");
     }
-    @Tool(description = "The configuration to add to the WildFly Maven plugin to execute WildFLy CLI operations when provisioning the server.")
+    
+    @Tool(description = "The maven command to provision the WildFly server and deploy the application into it. Make sure that not server is already running when calling it.")
+    ToolResponse getMavenCommandToProvisionAndDeployTheServer() {
+        return buildResponse("mvn clean package");
+    }
+
+    @Tool(description = "The arguments required to generate an initial WildFly Maven "
+            + "project using archetype maven plugin. The generated project is complete and ready to be built with the command mvn package.")
+    ToolResponse getWildFlyMavenArchetypeGroupIdandArtifactIdGettingStarted() {
+        try {
+            return buildResponse("archetypeGroupId=org.wildfly.archetype "
+                    + "archetypeArtifactId=wildfly-getting-started-archetype -DarchetypeVersion="+getLatestWildFlyServerRelease());
+        } catch(Exception ex) {
+            return buildErrorResponse(ex.getMessage());
+        }
+    }
+
+    @Tool(description = "The configuration to add to the WildFly Maven plugin <configuration> XML element "
+            + "to execute WildFLy CLI operations when provisioning the server.")
     ToolResponse getWildFlyMavenPluginCLIOperationsConfiguration() {
         String config = """
                         <packaging-scripts>
@@ -135,24 +194,32 @@ public class WildFlyDevMCPServer {
                         """;
         return buildResponse(config);
     }
-    @Tool(description = "The maven command to stop the server. Note that you must first have started the server prior to stop it.")
+
+    @Tool(description = "The maven command to stop the server. Warning: you must first have started the server prior to stop it.")
     ToolResponse getMavenCommandToStopTheServer() {
         return buildResponse("mvn wildfly:shutdown");
     }
-    @Tool(description = "The specific configuration that could be added to the WildFly maven plugin <discover-provisioning-info> configuration when the application is to be deployed to the cloud (openshift, kubernetes, ...)")
-    ToolResponse getCloudSpecificConfiguration() {
+
+    @Tool(description = "The exact piece of XML configuration that needs to be added to "
+            + "the WildFly maven plugin <discover-provisioning-info> XML configuration element when the application is to be deployed to the cloud (openshift, kubernetes, ...)")
+    ToolResponse getWildFlyMavenPluginCloudSpecificConfiguration() {
         return buildResponse("<context>cloud</context>");
     }
-    @Tool(description = "The specific configuration that could be added to the WildFly maven plugin <discover-provisioning-info> configuration when the application is to benefit from WildFly High Availability features.")
-    ToolResponse getHASpecificConfiguration() {
+
+    @Tool(description = "The exact piece of XML configuration that needs be added to "
+            + "the WildFly maven plugin <discover-provisioning-info> XML onfiguration element when the application is to benefit from WildFly High Availability features.")
+    ToolResponse getWildFlyMavenPluginHASpecificConfiguration() {
         return buildResponse("<profile>ha</profile>");
     }
-    @Tool(description = "The specific configuration that could be added to the WildFly maven plugin <discover-provisioning-info> configuration when the application is to benefit from WildFly High Availability features.")
-    ToolResponse getWildFlyVersionSpecificConfiguration(@ToolArg(name = "wildfly-version", required = true) String wildflyVersion) {
-        return buildResponse("<server>"+wildflyVersion+"</version>");
+
+    @Tool(description = "The exact piece of XML configuration that needs be added to "
+            + "the WildFly maven plugin <discover-provisioning-info> XML configuration element in order to provision a server of the given version.")
+    ToolResponse getWildFlyMavenPluginWildFlyVersionSpecificConfiguration(@ToolArg(name = "wildfly-version", required = true) String wildflyVersion) {
+        return buildResponse("<version>" + wildflyVersion + "</version>");
     }
-    @Tool(description = "Provide the WildFly add-ons (extra server features) that could be added to the WildFly maven plugin <discover-provisioning-info> configuration. NB: The application must have been first built.")
-    ToolResponse getAddOns(
+
+    @Tool(description = "List the WildFly add-ons (extra server features) that could be added to the WildFly maven plugin <discover-provisioning-info> XML configuration element. Warning: The application must have been first built (as a war, ear, ...).")
+    ToolResponse getWildFlyMavenPluginAddOns(
             @ToolArg(name = "application-deployment-absolute-file-path", required = true) String filePath) {
         try {
             ScanArguments.Builder builder = Arguments.scanBuilder();
@@ -182,59 +249,6 @@ public class WildFlyDevMCPServer {
             return handleException(ex, "");
         }
     }
-    
-//     @Tool(description = "Provide suggestions on what are the extra features that could be enabled in the WildFly server for this deployment")
-//    ToolResponse getSuggestion(
-//            @ToolArg(name = "application-deployment-absolute-file-path", required = true) String filePath) {
-//        try {
-//            ScanArguments.Builder builder = Arguments.scanBuilder();
-//            List<Path> binaries = new ArrayList<>();
-//            Path fp = Paths.get(filePath);
-//            if (!Files.exists(fp)) {
-//                throw new Exception("The file doesn't exist. It must be an absolute path to a deployment file.");
-//            }
-//            binaries.add(Paths.get(filePath));
-//            builder.setBinaries(binaries);
-//            builder.setOutput(OutputFormat.PROVISIONING_XML);
-//            builder.setSuggest(true);
-//            MavenRepoManager repoManager = MavenResolver.newMavenResolver();
-//            ScanResults scanResults = GlowSession.scan(repoManager, builder.build(), GlowMessageWriter.DEFAULT);
-//            Path glowOutputFolder = Files.createTempDirectory("wildfly-dev-mcp");
-//            StringBuilder strBuilder = new StringBuilder();
-//            strBuilder.append("{ \"additional-layers\":[\n");
-//            Iterator<AddOn> it = scanResults.getSuggestions().getPossibleAddOns().iterator();
-//            Map<String, String> layers = new TreeMap<>();
-//            while (it.hasNext()) {
-//                AddOn addOn = it.next();
-//                System.err.println("ADD-on:" + addOn.getName() + " layers " + addOn.getLayers());
-//                for (Layer l : addOn.getLayers()) {
-//                    layers.put(l.getName(), addOn.getDescription());
-//                }
-//            }
-//            Iterator<String> layerNames = layers.keySet().iterator();
-//            while (layerNames.hasNext()) {
-//                String layer = layerNames.next();
-//                strBuilder.append("{ \"layer\": \"" + layer + "\", \n \"description\": \"" + layers.get(layer) + "\" }\n");
-//                if (layerNames.hasNext()) {
-//                    strBuilder.append(",\n");
-//                }
-//            }
-//            strBuilder.append("]\n}");
-//            return buildResponse(strBuilder.toString());
-//        } catch (Exception ex) {
-//            return handleException(ex, "");
-//        }
-//    }
-
-    @Prompt(name = "wildfly-server-memory-consumption-over-time", description = "WildFly, memory consumption over time")
-    PromptMessage memOverTimeChart(@PromptArg(name = "host",
-            description = "Optional WildFly server host name. By default localhost is used.",
-            required = false) String host,
-            @PromptArg(name = "port",
-                    description = "Optional WildFly server port. By default 9990 is used.",
-                    required = false) String port) {
-        return PromptMessage.withUserRole(new TextContent(""));
-    }
 
     private ToolResponse handleException(Exception ex, String action) {
         LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
@@ -257,5 +271,15 @@ public class WildFlyDevMCPServer {
             lst.add(text);
         }
         return new ToolResponse(isError, lst);
+    }
+
+    private String getLatestWildFlyMavenPluginRelease() throws Exception {
+        String tag = new ObjectMapper().readTree(new URL("https://api.github.com/repos/wildfly/wildfly-maven-plugin/releases/latest")).get("tag_name").asText();
+        return tag.substring(1);
+    }
+
+    private String getLatestWildFlyServerRelease() throws Exception {
+        String tag = new ObjectMapper().readTree(new URL("https://api.github.com/repos/wildfly/wildfly/releases/latest")).get("tag_name").asText();
+        return tag;
     }
 }

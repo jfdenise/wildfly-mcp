@@ -17,11 +17,10 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        
     <org.apache.httpcomponents.version>4.5.9</org.apache.httpcomponents.version>
     <org.jboss.remotingjmx.version>3.1.0.Final</org.jboss.remotingjmx.version>
     <org.wildfly.core.version>27.0.0.Final</org.wildfly.core.version>
-    <org.wildfly.glow.version>1.4.2.Final-SNAPSHOT</org.wildfly.glow.version>
+    <org.wildfly.glow.version>1.4.1.Final</org.wildfly.glow.version>
     <quarkus.platform.version>3.18.3</quarkus.platform.version>
     <quarkus.mcp.version>1.0.0</quarkus.mcp.version>
         
@@ -40,13 +39,8 @@
       </dependency>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>wildfly-mcp-server-common</artifactId>
+        <artifactId>wildfly-dev-mcp-server-common</artifactId>
         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>${org.apache.httpcomponents.version}</version>
       </dependency>
       <dependency>
         <groupId>io.quarkiverse.mcp</groupId>
@@ -59,47 +53,8 @@
         <version>${quarkus.mcp.version}</version>
       </dependency>
       <dependency>
-        <groupId>io.quarkiverse.mcp</groupId>
-        <artifactId>quarkus-mcp-server-sse</artifactId>
-        <version>${quarkus.mcp.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.remotingjmx</groupId>
-        <artifactId>remoting-jmx</artifactId>
-        <version>${org.jboss.remotingjmx.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-cli</artifactId>
-        <version>${org.wildfly.core.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.logging</groupId>
-            <artifactId>jboss-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.logmanager</groupId>
-            <artifactId>jboss-logmanager</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.glow</groupId>
-        <artifactId>wildfly-glow-core</artifactId>
-        <version>${org.wildfly.glow.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.wildfly.glow</groupId>
         <artifactId>wildfly-glow</artifactId>
-        <version>${org.wildfly.glow.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.glow</groupId>
-        <artifactId>wildfly-glow-maven-resolver</artifactId>
         <version>${org.wildfly.glow.version}</version>
       </dependency>
     </dependencies>
