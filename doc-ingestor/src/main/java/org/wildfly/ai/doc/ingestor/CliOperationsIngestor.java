@@ -349,10 +349,12 @@ If you don't have enough information in the directives to generate CLI operation
         Path mistralSmallQuestions = Paths.get("questions/cli-questions-llm-mistral-small-generated.md");
         Path questionsDoc = Paths.get("questions/cli-questions.md");
         Path generatedQuestionsDoc = Paths.get("questions/cli-questions-generated.md");
+        Path teamQuestionsDoc = Paths.get("team-questions/cli-questions-team.md");
         Path generatedLLMQuestionsTemplateDoc = Paths.get("templates/cli-questions-llm-generated.md");
 
         Path llmRagReplies = Paths.get("rag-cli-replies.md");
-
+        Files.deleteIfExists(llmRagReplies);
+        Files.createFile(llmRagReplies);
         ChatLanguageModel model = OllamaChatModel.builder()
                 .modelName("qwen2.5:3b")
                 .baseUrl("http://127.0.0.1:11434")
@@ -434,7 +436,7 @@ If you don't have enough information in the directives to generate CLI operation
         }
         if (Boolean.getBoolean("analyze-llm-replies")) {
             CommandContext ctx = CommandContextFactory.getInstance().newCommandContext();
-            Path mistralSmallRagReplies = Paths.get("rag-test-replies/rag-cli-replies-mistral-small-questions.md");
+            Path mistralSmallRagReplies = Paths.get("rag-test-replies/rag-cli-replies-team-questions.md");
             List<String> allLines = new ArrayList<>();
             allLines.addAll(Files.readAllLines(mistralSmallRagReplies));
             int questions = 0;
@@ -475,7 +477,7 @@ If you don't have enough information in the directives to generate CLI operation
                             Matcher m = p.matcher(directiveLine);
                             if (m.matches()) {
                                 String name = m.group(1);
-                                if(op == null) {
+                                if (op == null) {
                                     extraName = name;
                                 } else {
                                     String allOp = op.replace(name, "*");
@@ -580,62 +582,21 @@ If you don't have enough information in the directives to generate CLI operation
                 }
             }
         } else {
-            System.out.println("Reading doc...");
-            List<String> doc = new ArrayList<>();
-            doc.addAll(Files.readAllLines(cliDoc));
-            doc.addAll(Files.readAllLines(generatedCliDoc));
-            Set<String> lexique = Files.readAllLines(lexiqueFile).stream().collect(Collectors.toSet());
-            List<String> questionsNotTopRanked = new ArrayList<>();
-            List<String> questionsTopRanked = new ArrayList<>();
-            List<String> questionsNotRanked = new ArrayList<>();
-            System.out.println("Loading embeddings...");
-            InMemoryEmbeddingStore embeddingStore = InMemoryEmbeddingStore.fromFile(docEmbeddings);
-            System.out.println("Loading questions segments...");
-            List<String> qSegments = Files.readAllLines(questionsSegments);
-            if ("questions".equals(question)) {
-                Path notRanked = Paths.get("not-ranked.txt");
-                Files.deleteIfExists(notRanked);
-                Files.createFile(notRanked);
+            if ("team-questions".equals(question)) {
+                InMemoryEmbeddingStore embeddingStore = InMemoryEmbeddingStore.fromFile(docEmbeddings);
                 List<String> questions = new ArrayList<>();
-                System.out.println("Reading questions...");
-                if (Boolean.getBoolean("invoke-llm")) {
-                    Files.deleteIfExists(llmRagReplies);
-                    Files.createFile(llmRagReplies);
-                }
-                questions.addAll(Files.readAllLines(generatedQuestionsDoc));
-                questions.addAll(Files.readAllLines(qwen253bQuestions));
-                questions.addAll(Files.readAllLines(mistralSmallQuestions));
-                questions.addAll(Files.readAllLines(questionsDoc));
-                // For now reuse the input doc as lexique
-                Set<String> questionHeaders = new HashSet<>();
-                Set<String> docHeaders = new HashSet<>();
 
-                for (String line : questions) {
-                    if (line.startsWith("#")) {
-                        questionHeaders.add(line.trim());
-                    }
-                }
-                for (String line : doc) {
-                    if (line.startsWith("#")) {
-                        docHeaders.add(line.trim());
-                    }
-                }
-                for (String header : docHeaders) {
-                    if (!questionHeaders.contains(header)) {
-                        throw new RuntimeException(header + " is not covered by questions");
-                    }
-                }
-                int numQuestions = 0;
-                System.out.println("Num of doc lines " + doc.size());
-                System.out.println("Num of question lines " + questions.size());
-                System.out.println("Checking segments...");
+                questions.addAll(Files.readAllLines(teamQuestionsDoc));
+                int numContexts = 0;
                 int num = 0;
                 int total = 0;
+                int numQuestions = 0;
                 int augmentedContextLength = 0;
                 int maxContextSize = 0;
                 String maxQuestion = null;
                 Map<Integer, Integer> sizeDistribution = new TreeMap<>();
                 Map<Double, Integer> scoreDistribution = new TreeMap<>(Collections.reverseOrder());
+                List<String> questionsNotRanked = new ArrayList<>();
                 double boundary = minScore;
                 scoreDistribution.put(minScore, 0);
                 while (boundary < 0.9d) {
@@ -644,7 +605,6 @@ If you don't have enough information in the directives to generate CLI operation
                         scoreDistribution.put(boundary, 0);
                     }
                 }
-                int numContexts = 0;
                 for (String line : questions) {
                     line = line.trim();
                     if (line.startsWith("#") || line.isEmpty() || line.startsWith("//")) {
@@ -657,75 +617,22 @@ If you don't have enough information in the directives to generate CLI operation
                         num = 0;
                     }
                     numQuestions += 1;
-                    String filteredQuestion = line;//generalizeQuestion(line, lexique, dictionary);
-                    Embedding queryEmbedding = embeddingModel.embed(filteredQuestion.toString()).content();
+                    
+                    Embedding queryEmbedding = embeddingModel.embed(line.toString()).content();
                     List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 500);
-                    StringBuilder messageBuilder = new StringBuilder();
                     List<String> augmentedContext = new ArrayList<>();
-                    for (EmbeddingMatch<TextSegment> match : relevant) {
-                        messageBuilder.append("\n" + match.score() + " ------------\n");
-                        messageBuilder.append(match.embedded().text());
-                    }
-                    String questionTitle = getQuestionMetadata("title", qSegments, line);
-                    int index = 0;
-                    double score = 0.0;
-                    boolean topRanked = false;
-                    boolean ranked = false;
                     for (int i = 0; i < relevant.size(); i++) {
                         EmbeddingMatch<TextSegment> match = relevant.get(i);
-                        if (match.score() >= minScore) {
-                            if (i == 0) {
-                                //Check that the best result has the same title than the question.
-                                if (match.embedded().metadata().getString("title").equals(questionTitle)) {
-                                    questionsTopRanked.add(line);
-                                    topRanked = true;
-                                    ranked = true;
-                                }
-                            }
-                            if (topRanked) {
-                                if (augmentedContext.size() < 4) {
-                                    augmentedContext.add(match.embedded().text());
-                                    numContexts += 1;
-                                    incrementScoreDistribution(scoreDistribution, match);
-                                    continue;
-                                } else {
-                                    break;
-                                }
-                            }
-                            if (match.embedded().metadata().getString("title").equals(questionTitle)) {
-                                index = i;
-                                score = match.score();
-                                break;
-                            }
-                        }
-                    }
-                    if (!topRanked) {
-                        if (index != 0) {
-                            // Keep at min 4 scores
-                            if (index < 3) {
-                                index = 3;
-                            }
-                            String l = line + "[rank " + index + ", score " + score + "]";
-
-                            if (Boolean.getBoolean("debug")) {
-                                l = "\n###########\n" + l + "\n" + messageBuilder;
-                            }
-                            questionsNotTopRanked.add(l);
-                            for (int i = 0; i <= index; i++) {
-                                EmbeddingMatch<TextSegment> match = relevant.get(i);
-                                augmentedContext.add(match.embedded().text());
-                                numContexts += 1;
-                                incrementScoreDistribution(scoreDistribution, match);
-                            }
-                            ranked = true;
+                        if (match.score() >= minScore && augmentedContext.size() < 10) {
+                            augmentedContext.add(match.embedded().text());
+                            numContexts += 1;
+                            incrementScoreDistribution(scoreDistribution, match);
                         } else {
-                            // questions for which the expected doc is not in any score
-                            if (Boolean.getBoolean("debug")) {
-                                line = "\n###########\n" + line + "\n" + messageBuilder;
-                            }
-                            questionsNotRanked.add(line);
+                            break;
                         }
                     }
+                    System.out.println(line);
+                    System.out.println("Num contexts " + augmentedContext.size());
                     if (!augmentedContext.isEmpty()) {
                         augmentedContextLength += augmentedContext.size();
                         Integer perSize = sizeDistribution.get(augmentedContext.size());
@@ -737,45 +644,41 @@ If you don't have enough information in the directives to generate CLI operation
                             maxContextSize = augmentedContext.size();
                             maxQuestion = line;
                         }
-                    }
-                    if (ranked && Boolean.getBoolean("invoke-llm")) {
-                        // call the LLM and see 
-                        StringBuilder build = new StringBuilder(PROMPT + "\n");
-                        StringBuilder directivesBuilder = new StringBuilder();
-                        build.append("---" + line + "---\n");
-                        build.append("%%%\n");
-                        for (String directive : augmentedContext) {
-                            directivesBuilder.append(directive + "\n");
+                        if (Boolean.getBoolean("invoke-llm")) {
+                            // call the LLM and see 
+                            StringBuilder build = new StringBuilder(PROMPT + "\n");
+                            StringBuilder directivesBuilder = new StringBuilder();
+                            build.append("---" + line + "---\n");
+                            build.append("%%%\n");
+                            for (String directive : augmentedContext) {
+                                directivesBuilder.append(directive + "\n");
+                            }
+                            build.append(directivesBuilder.toString());
+                            build.append("%%%");
+                            System.out.println("Question " + numQuestions);
+                            StringBuilder content = new StringBuilder();
+                            content.append("# Open Team question" + "\n\n");
+                            content.append("## question\n\n");
+                            content.append(line + "\n\n");
+                            content.append("## directives\n\n");
+                            for (String directive : augmentedContext) {
+                                content.append("* " + directive + "\n");
+                            }
+                            content.append("\n## LLM reply\n\n");
+                            String reply = invokeLLM(mistralModel, build.toString(), 2000);
+                            content.append(reply + "\n\n");
+                            Files.write(llmRagReplies, content.toString().getBytes(), StandardOpenOption.APPEND);
                         }
-                        build.append(directivesBuilder.toString());
-                        build.append("%%%");
-                        System.out.println("Question " + numQuestions);
-                        StringBuilder content = new StringBuilder();
-                        content.append("# " + questionTitle + "\n\n");
-                        content.append("## question\n\n");
-                        content.append(line + "\n\n");
-                        content.append("## directives\n\n");
-                        for (String directive : augmentedContext) {
-                            content.append("* " + directive + "\n");
-                        }
-                        content.append("\n## LLM reply\n\n");
-                        String reply = invokeLLM(mistralModel, build.toString(), 2000);
-                        content.append(reply + "\n\n");
-                        Files.write(llmRagReplies, content.toString().getBytes(), StandardOpenOption.APPEND);
+                    } else {
+                        questionsNotRanked.add(line);
                     }
                 }
-                if (!questionsNotRanked.isEmpty()) {
-                    for (String str : questionsNotRanked) {
-                        Files.write(notRanked, (str + "\n").getBytes(), StandardOpenOption.APPEND);
-                    }
-                }
+
                 System.out.println("--------------------------");
                 System.out.println("TOTAL NUM OF QUESTIONS       :" + numQuestions);
                 System.out.println("AVERAGE CONTEXT SIZE         :" + augmentedContextLength / numQuestions);
                 System.out.println("MAX CONTEXT SIZE             :" + maxContextSize);
                 System.out.println("MAX CONTEXT SIZE QUESTION    :" + maxQuestion);
-                System.out.println("NUM TOP RANKED QUESTIONS     :" + questionsTopRanked.size() + " " + ((float) (questionsTopRanked.size() * 100) / numQuestions) + "%");
-                System.out.println("NUM NOT TOP RANKED QUESTIONS :" + questionsNotTopRanked.size() + " " + ((float) (questionsNotTopRanked.size() * 100) / numQuestions) + "%");
                 System.out.println("NUM NOT RANKED QUESTIONS     :" + questionsNotRanked.size() + " " + ((float) (questionsNotRanked.size() * 100) / numQuestions) + "%");
                 System.out.println("CONTEXT SIZE DISTRIBUTION  :");
                 for (Entry<Integer, Integer> entry : sizeDistribution.entrySet()) {
@@ -785,48 +688,262 @@ If you don't have enough information in the directives to generate CLI operation
                 System.out.println("SCORE DISTRIBUTION  :");
                 DecimalFormat df = new DecimalFormat("####0.00");
                 for (Entry<Double, Integer> k : scoreDistribution.entrySet()) {
-                    System.out.println(df.format(k.getKey()) + "=" + k.getValue() + " " + ((float) (k.getValue() * 100) / numContexts) + "%" );
+                    System.out.println(df.format(k.getKey()) + "=" + k.getValue() + " " + ((float) (k.getValue() * 100) / numContexts) + "%");
                 }
 
                 if (!questionsNotRanked.isEmpty()) {
+                    System.out.println("NOT RANKED QUESTIONS: ");
+                    System.out.println(questionsNotRanked);
                     throw new Exception("Some questions are not ranked!");
                 }
             } else {
-                String generalizedQuestion = question;//generalizeQuestion(question, lexique, dictionary);
-                Embedding queryEmbedding = embeddingModel.embed(generalizedQuestion).content();
-                List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 500);
-                StringBuilder messageBuilder = new StringBuilder();
-                List<Double> scores = new ArrayList<>();
-                String questionTitle = getQuestionMetadata("title", qSegments, generalizedQuestion);
-                boolean found = false;
-                for (int i = 0; i < relevant.size(); i++) {
-                    EmbeddingMatch<TextSegment> match = relevant.get(i);
-                    //if (match.score() >= minScore) {
-                    scores.add(match.score());
-                    messageBuilder.append("\n" + match.score() + " ------------\n");
-                    messageBuilder.append(match.embedded().text());
-                    if (match.embedded().metadata().getString("title").equals(questionTitle)) {
-                        System.out.println("Order " + i + " score " + match.score());
-                        found = true;
-                        break;
+                System.out.println("Reading doc...");
+                List<String> doc = new ArrayList<>();
+                doc.addAll(Files.readAllLines(cliDoc));
+                doc.addAll(Files.readAllLines(generatedCliDoc));
+                Set<String> lexique = Files.readAllLines(lexiqueFile).stream().collect(Collectors.toSet());
+                List<String> questionsNotTopRanked = new ArrayList<>();
+                List<String> questionsTopRanked = new ArrayList<>();
+                List<String> questionsNotRanked = new ArrayList<>();
+                System.out.println("Loading embeddings...");
+                InMemoryEmbeddingStore embeddingStore = InMemoryEmbeddingStore.fromFile(docEmbeddings);
+                System.out.println("Loading questions segments...");
+                List<String> qSegments = Files.readAllLines(questionsSegments);
+                if ("questions".equals(question)) {
+                    Path notRanked = Paths.get("not-ranked.txt");
+                    Files.deleteIfExists(notRanked);
+                    Files.createFile(notRanked);
+                    List<String> questions = new ArrayList<>();
+                    System.out.println("Reading questions...");
+                    if (Boolean.getBoolean("invoke-llm")) {
+                        Files.deleteIfExists(llmRagReplies);
+                        Files.createFile(llmRagReplies);
                     }
-                    //}
-                }
-                if (!found) {
-                    System.out.println("Here are all the matches > " + minScore);
+                    questions.addAll(Files.readAllLines(generatedQuestionsDoc));
+                    questions.addAll(Files.readAllLines(qwen253bQuestions));
+                    questions.addAll(Files.readAllLines(mistralSmallQuestions));
+                    questions.addAll(Files.readAllLines(questionsDoc));
+                    // For now reuse the input doc as lexique
+                    Set<String> questionHeaders = new HashSet<>();
+                    Set<String> docHeaders = new HashSet<>();
+
+                    for (String line : questions) {
+                        if (line.startsWith("#")) {
+                            questionHeaders.add(line.trim());
+                        }
+                    }
+                    for (String line : doc) {
+                        if (line.startsWith("#")) {
+                            docHeaders.add(line.trim());
+                        }
+                    }
+                    for (String header : docHeaders) {
+                        if (!questionHeaders.contains(header)) {
+                            throw new RuntimeException(header + " is not covered by questions");
+                        }
+                    }
+                    int numQuestions = 0;
+                    System.out.println("Num of doc lines " + doc.size());
+                    System.out.println("Num of question lines " + questions.size());
+                    System.out.println("Checking segments...");
+                    int num = 0;
+                    int total = 0;
+                    int augmentedContextLength = 0;
+                    int maxContextSize = 0;
+                    String maxQuestion = null;
+                    Map<Integer, Integer> sizeDistribution = new TreeMap<>();
+                    Map<Double, Integer> scoreDistribution = new TreeMap<>(Collections.reverseOrder());
+                    double boundary = minScore;
+                    scoreDistribution.put(minScore, 0);
+                    while (boundary < 0.9d) {
+                        boundary += 0.1d;
+                        if (boundary < 0.9d) {
+                            scoreDistribution.put(boundary, 0);
+                        }
+                    }
+                    int numContexts = 0;
+                    for (String line : questions) {
+                        line = line.trim();
+                        if (line.startsWith("#") || line.isEmpty() || line.startsWith("//")) {
+                            continue;
+                        }
+                        num += 1;
+                        if (num == 100) {
+                            total += num;
+                            System.out.println("Checked " + total);
+                            num = 0;
+                        }
+                        numQuestions += 1;
+                        String filteredQuestion = line;//generalizeQuestion(line, lexique, dictionary);
+                        Embedding queryEmbedding = embeddingModel.embed(filteredQuestion.toString()).content();
+                        List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 500);
+                        StringBuilder messageBuilder = new StringBuilder();
+                        List<String> augmentedContext = new ArrayList<>();
+                        for (EmbeddingMatch<TextSegment> match : relevant) {
+                            messageBuilder.append("\n" + match.score() + " ------------\n");
+                            messageBuilder.append(match.embedded().text());
+                        }
+                        String questionTitle = getQuestionMetadata("title", qSegments, line);
+                        int index = 0;
+                        double score = 0.0;
+                        boolean topRanked = false;
+                        boolean ranked = false;
+                        for (int i = 0; i < relevant.size(); i++) {
+                            EmbeddingMatch<TextSegment> match = relevant.get(i);
+                            if (match.score() >= minScore) {
+                                if (i == 0) {
+                                    //Check that the best result has the same title than the question.
+                                    if (match.embedded().metadata().getString("title").equals(questionTitle)) {
+                                        questionsTopRanked.add(line);
+                                        topRanked = true;
+                                        ranked = true;
+                                    }
+                                }
+                                if (topRanked) {
+                                    if (augmentedContext.size() < 4) {
+                                        augmentedContext.add(match.embedded().text());
+                                        numContexts += 1;
+                                        incrementScoreDistribution(scoreDistribution, match);
+                                        continue;
+                                    } else {
+                                        break;
+                                    }
+                                }
+                                if (match.embedded().metadata().getString("title").equals(questionTitle)) {
+                                    index = i;
+                                    score = match.score();
+                                    break;
+                                }
+                            }
+                        }
+                        if (!topRanked) {
+                            if (index != 0) {
+                                // Keep at min 4 scores
+                                if (index < 3) {
+                                    index = 3;
+                                }
+                                String l = line + "[rank " + index + ", score " + score + "]";
+
+                                if (Boolean.getBoolean("debug")) {
+                                    l = "\n###########\n" + l + "\n" + messageBuilder;
+                                }
+                                questionsNotTopRanked.add(l);
+                                for (int i = 0; i <= index; i++) {
+                                    EmbeddingMatch<TextSegment> match = relevant.get(i);
+                                    augmentedContext.add(match.embedded().text());
+                                    numContexts += 1;
+                                    incrementScoreDistribution(scoreDistribution, match);
+                                }
+                                ranked = true;
+                            } else {
+                                // questions for which the expected doc is not in any score
+                                if (Boolean.getBoolean("debug")) {
+                                    line = "\n###########\n" + line + "\n" + messageBuilder;
+                                }
+                                questionsNotRanked.add(line);
+                            }
+                        }
+                        if (!augmentedContext.isEmpty()) {
+                            augmentedContextLength += augmentedContext.size();
+                            Integer perSize = sizeDistribution.get(augmentedContext.size());
+                            if (perSize == null) {
+                                perSize = 0;
+                            }
+                            sizeDistribution.put(augmentedContext.size(), perSize + 1);
+                            if (augmentedContext.size() > maxContextSize) {
+                                maxContextSize = augmentedContext.size();
+                                maxQuestion = line;
+                            }
+                        }
+                        if (ranked && Boolean.getBoolean("invoke-llm")) {
+                            // call the LLM and see 
+                            StringBuilder build = new StringBuilder(PROMPT + "\n");
+                            StringBuilder directivesBuilder = new StringBuilder();
+                            build.append("---" + line + "---\n");
+                            build.append("%%%\n");
+                            for (String directive : augmentedContext) {
+                                directivesBuilder.append(directive + "\n");
+                            }
+                            build.append(directivesBuilder.toString());
+                            build.append("%%%");
+                            System.out.println("Question " + numQuestions);
+                            StringBuilder content = new StringBuilder();
+                            content.append("# " + questionTitle + "\n\n");
+                            content.append("## question\n\n");
+                            content.append(line + "\n\n");
+                            content.append("## directives\n\n");
+                            for (String directive : augmentedContext) {
+                                content.append("* " + directive + "\n");
+                            }
+                            content.append("\n## LLM reply\n\n");
+                            String reply = invokeLLM(mistralModel, build.toString(), 2000);
+                            content.append(reply + "\n\n");
+                            Files.write(llmRagReplies, content.toString().getBytes(), StandardOpenOption.APPEND);
+                        }
+                    }
+                    if (!questionsNotRanked.isEmpty()) {
+                        for (String str : questionsNotRanked) {
+                            Files.write(notRanked, (str + "\n").getBytes(), StandardOpenOption.APPEND);
+                        }
+                    }
+                    System.out.println("--------------------------");
+                    System.out.println("TOTAL NUM OF QUESTIONS       :" + numQuestions);
+                    System.out.println("AVERAGE CONTEXT SIZE         :" + augmentedContextLength / numQuestions);
+                    System.out.println("MAX CONTEXT SIZE             :" + maxContextSize);
+                    System.out.println("MAX CONTEXT SIZE QUESTION    :" + maxQuestion);
+                    System.out.println("NUM TOP RANKED QUESTIONS     :" + questionsTopRanked.size() + " " + ((float) (questionsTopRanked.size() * 100) / numQuestions) + "%");
+                    System.out.println("NUM NOT TOP RANKED QUESTIONS :" + questionsNotTopRanked.size() + " " + ((float) (questionsNotTopRanked.size() * 100) / numQuestions) + "%");
+                    System.out.println("NUM NOT RANKED QUESTIONS     :" + questionsNotRanked.size() + " " + ((float) (questionsNotRanked.size() * 100) / numQuestions) + "%");
+                    System.out.println("CONTEXT SIZE DISTRIBUTION  :");
+                    for (Entry<Integer, Integer> entry : sizeDistribution.entrySet()) {
+                        System.out.println("Context size " + entry.getKey() + " num: " + entry.getValue() + " " + ((float) (entry.getValue() * 100) / numQuestions) + "%");
+                    }
+                    System.out.println("TOTAL NUM OF CONTEXTS        : " + numContexts);
+                    System.out.println("SCORE DISTRIBUTION  :");
+                    DecimalFormat df = new DecimalFormat("####0.00");
+                    for (Entry<Double, Integer> k : scoreDistribution.entrySet()) {
+                        System.out.println(df.format(k.getKey()) + "=" + k.getValue() + " " + ((float) (k.getValue() * 100) / numContexts) + "%");
+                    }
+
+                    if (!questionsNotRanked.isEmpty()) {
+                        throw new Exception("Some questions are not ranked!");
+                    }
+                } else {
+                    String generalizedQuestion = question;//generalizeQuestion(question, lexique, dictionary);
+                    Embedding queryEmbedding = embeddingModel.embed(generalizedQuestion).content();
+                    List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.findRelevant(queryEmbedding, 500);
+                    StringBuilder messageBuilder = new StringBuilder();
+                    List<Double> scores = new ArrayList<>();
+                String questionTitle = getQuestionMetadata("title", qSegments, generalizedQuestion);
+                    boolean found = false;
                     for (int i = 0; i < relevant.size(); i++) {
                         EmbeddingMatch<TextSegment> match = relevant.get(i);
-                        if (match.score() >= minScore) {
-                            System.out.println("------------------------");
-                            System.out.println("score: " + match.score());
-                            System.out.println("metadata: " + match.embedded().metadata());
-                            System.out.println("segment: " + match.embedded().text());
+                        //if (match.score() >= minScore) {
+                        scores.add(match.score());
+                        messageBuilder.append("\n" + match.score() + " ------------\n");
+                        messageBuilder.append(match.embedded().text());
+                        if (match.embedded().metadata().getString("title").equals(questionTitle)) {
+                            System.out.println("Order " + i + " score " + match.score());
+                            found = true;
+                            break;
+                        }
+                        //}
+                    }
+                    if (!found) {
+                        System.out.println("Here are all the matches > " + minScore);
+                        for (int i = 0; i < relevant.size(); i++) {
+                            EmbeddingMatch<TextSegment> match = relevant.get(i);
+                            if (match.score() >= minScore) {
+                                System.out.println("------------------------");
+                                System.out.println("score: " + match.score());
+                                System.out.println("metadata: " + match.embedded().metadata());
+                                System.out.println("segment: " + match.embedded().text());
+                            }
                         }
                     }
                 }
             }
         }
-
     }
 
     private static void incrementScoreDistribution(Map<Double, Integer> scoreDistribution, EmbeddingMatch<TextSegment> match) {

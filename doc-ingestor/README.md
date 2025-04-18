@@ -22,11 +22,19 @@ mvn exec:java
 
 mvn exec:java -Dquestion=questions
 
+## Test semantic search only for team questions
+
+mvn exec:java -Dquestion=team-questions
+
 ## Test semantic search and ask Mistral AI LLM to compute a reply for each question
 
 This takes long time!!!!
 
 mvn exec:java -Dquestion=questions -Dinvoke-llm=true
+
+## Test semantic search and ask Mistral AI LLM to compute a reply for each team question
+
+mvn exec:java -Dquestion=team-questions -Dinvoke-llm=true
 
 ## Anayze Mistral AI LLM replies
 
@@ -90,3 +98,11 @@ NUM EXACT MATCH          :1689 14.0%
 NUM NO ANSWER            :2175 18.0%
 NUM REPLY PARSE OK       :7550 65.0%
 NUM REPLY PARSE FAILURES :109 0.0%
+
+## Analyze Mistral small replies to team questions
+
+NUM QUESTIONS            :18
+NUM EXACT MATCH          :3 16.0%
+NUM NO ANSWER            :7 38.0%
+NUM REPLY PARSE OK       :7 38.0%
+NUM REPLY PARSE FAILURES :1 5.0%
