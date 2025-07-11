@@ -20,6 +20,9 @@ import java.util.logging.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -29,8 +32,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.wildfly.glow.AddOn;
 import org.wildfly.glow.Arguments;
+import org.wildfly.glow.Env;
 import org.wildfly.glow.GlowMessageWriter;
 import org.wildfly.glow.GlowSession;
+import org.wildfly.glow.Layer;
 import org.wildfly.glow.OutputFormat;
 import org.wildfly.glow.ScanArguments;
 import org.wildfly.glow.ScanResults;
@@ -97,7 +102,7 @@ public class WildFlyDevMCPServer {
             String vers = version == null || version.isEmpty() ? getLatestWildFlyServerRelease() : version;
             String eeDeps = getDependencies("https://repo1.maven.org/maven2/org/wildfly/bom/wildfly-ee/" + vers + "/wildfly-ee-" + vers + ".pom");
             String deps = getDependencies("https://repo1.maven.org/maven2/org/wildfly/bom/wildfly-expansion/" + vers + "/wildfly-expansion-" + vers + ".pom");
-            return buildResponse(eeDeps+deps);
+            return buildResponse(eeDeps + deps);
         } catch (Exception ex) {
             return handleException(ex, "");
         }
@@ -161,8 +166,9 @@ public class WildFlyDevMCPServer {
     ToolResponse getMavenCommandToStartTheServer() {
         return buildResponse("mvn wildfly:start");
     }
-    
-    @Tool(description = "The maven command to provision the WildFly server and deploy the application into it. Make sure that not server is already running when calling it.")
+
+    @Tool(description = "The maven command to provision the WildFly server and deploy the application into it. "
+            + "Make sure that not server is already running when calling it.")
     ToolResponse getMavenCommandToProvisionAndDeployTheServer() {
         return buildResponse("mvn clean package");
     }
@@ -172,8 +178,8 @@ public class WildFlyDevMCPServer {
     ToolResponse getWildFlyMavenArchetypeGroupIdandArtifactIdGettingStarted() {
         try {
             return buildResponse("archetypeGroupId=org.wildfly.archetype "
-                    + "archetypeArtifactId=wildfly-getting-started-archetype -DarchetypeVersion="+getLatestWildFlyServerRelease());
-        } catch(Exception ex) {
+                    + "archetypeArtifactId=wildfly-getting-started-archetype -DarchetypeVersion=" + getLatestWildFlyServerRelease());
+        } catch (Exception ex) {
             return buildErrorResponse(ex.getMessage());
         }
     }
@@ -218,7 +224,7 @@ public class WildFlyDevMCPServer {
         return buildResponse("<version>" + wildflyVersion + "</version>");
     }
 
-    @Tool(description = "List the WildFly add-ons (extra server features) that could be added to the WildFly maven plugin <discover-provisioning-info> XML configuration element. Warning: The application must have been first built (as a war, ear, ...).")
+    @Tool(description = "List the WildFly add-ons (extra server features such as add-user.sh, jboss-cli.sh command lines, openAPI and more) that could be added to the WildFly maven plugin <discover-provisioning-info> XML configuration element. Warning: The application must have been first built (as a war, ear, ...).")
     ToolResponse getWildFlyMavenPluginAddOns(
             @ToolArg(name = "application-deployment-absolute-file-path", required = true) String filePath) {
         try {
