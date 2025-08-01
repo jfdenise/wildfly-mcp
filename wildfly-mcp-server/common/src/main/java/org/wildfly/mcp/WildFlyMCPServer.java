@@ -380,11 +380,15 @@ public class WildFlyMCPServer {
         return buildResponse("The deployment " + deploymentPath + " has been deployed in the WildFly server provisioned in " + target);
     }
 
-    @Tool(description = "Provision a complete latest WildFly server installation using prospero installer. Such installation can then be updated")
-    ToolResponse provisionCompleteLatestWildFlyServer(
-            @ToolArg(name = "targetDirectory", required = true, description = "Absolute path to a non existing directory. Note that the parent directory must exists.") String targetDirectory) {        try {
-            ProvisioningDefinition definition = ProvisioningDefinition.builder()
-                    .setProfile("wildfly").build();
+    @Tool(description = "Provision a complete WildFly server installation using prospero installer. Such installation can then be updated")
+    ToolResponse provisionCompleteWildFlyServer(
+            @ToolArg(name = "targetDirectory", required = true, description = "Absolute path to a non existing directory. Note that the parent directory must exists.") String targetDirectory,
+            @ToolArg(name = "serverVersion", required = false, description = "Server version. If no version is provided, the latest version is used.") String serverVersion) {
+        try {
+            String manifest = "org.wildfly.channels:wildfly";
+            manifest += serverVersion == null ? "" : ":" + serverVersion;
+                ProvisioningDefinition definition = ProvisioningDefinition.builder()
+                    .setProfile("wildfly").setManifest(manifest).build();
             LocalRepoOptions localRepoOptions = new LocalRepoOptions();
             MavenOptions.Builder mavenOptionsBuilder = localRepoOptions.toOptions();
             MavenOptions mavenOptions = mavenOptionsBuilder.build();
@@ -399,11 +403,11 @@ public class WildFlyMCPServer {
         }
     }
 
-    @Tool(description = "Provision a trimmed WildFly server using Galleon feature-packs and layers. Such installation can then be updated")
+    // TODO, when we have a published channel manifest with all supported feature-packs, allow to provide feature-packs.
+    @Tool(description = "Provision a trimmed WildFly server using Galleon layers. Such installation can then be updated")
     ToolResponse provisionTrimmedWildFlyServer(
             @ToolArg(name = "targetDirectory", required = true, description = "Absolute path to a non existing directory. Note that the parent directory must exists.") String targetDirectory,
-            @ToolArg(name = "feature-packs", required = true,
-                    description = "List of feature-packz. Format of each feature-pack is: groupId:artifactId:version") String[] featurePacks,
+            @ToolArg(name = "serverVersion", required = false, description = "Server version. If no version is provided, the latest version is used.") String serverVersion,
             @ToolArg(name = "layers", required = true,
                     description = "List of layer names") String[] layers) {
         Path tmp = null;
@@ -414,6 +418,8 @@ public class WildFlyMCPServer {
                 layersBuilder.append(LAYER_TEMPLATE.replace("###LAYER###", name) + "\n");
             }
             StringBuilder fpsBuilder = new StringBuilder();
+            List<String> featurePacks = new ArrayList<>();
+            featurePacks.add("org.wildfly:wildfly-galleon-pack:");
             for(String name : featurePacks) {
                 fpsBuilder.append(FEATURE_PACK_TEMPLATE.replace("###LOCATION###", name) + "\n");
             }
@@ -424,10 +430,12 @@ public class WildFlyMCPServer {
             List<String> remoteRepositories = new ArrayList<>();
             remoteRepositories.add("https://repository.jboss.org/nexus/content/groups/public/");
             remoteRepositories.add("https://repo1.maven.org/maven2/");
+            String manifest = "org.wildfly.channels:wildfly";
+            manifest += serverVersion == null ? "" : ":" + serverVersion;
             ProvisioningDefinition definition = ProvisioningDefinition.builder()
                     .setDefinitionFile(tmp.toUri())
                     .setOverrideRepositories(RepositoryDefinition.from(remoteRepositories))
-                    .setManifest("org.wildfly.channels:wildfly").build();
+                    .setManifest(manifest).build();
             LocalRepoOptions localRepoOptions = new LocalRepoOptions();
             MavenOptions.Builder mavenOptionsBuilder = localRepoOptions.toOptions();
             MavenOptions mavenOptions = mavenOptionsBuilder.build();
@@ -467,7 +475,7 @@ public class WildFlyMCPServer {
                 action.performUpdate();
                 StringBuilder builder = new StringBuilder();
                 for(ArtifactChange ac : set.getArtifactUpdates()) {
-                    builder.append(ac.getArtifactName() + " updated from " + ac.getOldVersion() + " to " + ac.getNewVersion() + "\n");
+                    builder.append(ac.getArtifactName() + " updated from " + ac.getOldVersion().get() + " to " + ac.getNewVersion().get() + "\n");
                 }
                 return buildResponse("Server installion has been updated. Updates \n" + builder);
             }
@@ -492,7 +500,7 @@ public class WildFlyMCPServer {
             } else {
                 StringBuilder builder = new StringBuilder();
                 for(ArtifactChange ac : set.getArtifactUpdates()) {
-                    builder.append(ac.getArtifactName() + " updated from " + ac.getOldVersion() + " to " + ac.getNewVersion() + "\n");
+                    builder.append(ac.getArtifactName() + " updated from " + ac.getOldVersion().get() + " to " + ac.getNewVersion().get() + "\n");
                 }
                 return buildResponse("Server installion has some updates: Updates \n" + builder);
             }
