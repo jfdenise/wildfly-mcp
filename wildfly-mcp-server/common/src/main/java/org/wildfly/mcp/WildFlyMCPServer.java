@@ -76,16 +76,38 @@ import org.wildfly.prospero.actions.ProvisioningAction;
 import org.wildfly.prospero.actions.UpdateAction;
 import org.wildfly.prospero.api.ArtifactChange;
 import org.wildfly.prospero.api.Console;
-import org.wildfly.prospero.api.FileConflict;
 import org.wildfly.prospero.api.MavenOptions;
 import org.wildfly.prospero.api.ProvisioningDefinition;
 import org.wildfly.prospero.api.ProvisioningProgressEvent;
 import org.wildfly.prospero.cli.ActionFactory;
 import org.wildfly.prospero.cli.ChannelUtils;
+import org.wildfly.prospero.cli.RepositoryDefinition;
 import org.wildfly.prospero.cli.commands.options.LocalRepoOptions;
 import org.wildfly.prospero.updates.UpdateSet;
 
 public class WildFlyMCPServer {
+    private static final String LAYER_TEMPLATE = "<include name=\"###LAYER###\"/>";
+    private static final String FEATURE_PACK_TEMPLATE = """
+                                                        <feature-pack location="###LOCATION###">
+                                                         <default-configs inherit="false"/>
+                                                         <packages inherit="false"/>
+                                                       </feature-pack>
+                                                        """;
+    private static final String PROVISIONING_XML_TEMPLATE = """
+                                                     <?xml version="1.0" ?>
+                                                     <installation xmlns="urn:jboss:galleon:provisioning:3.0">
+                                                         ###FEATURE_PACKS###
+                                                         <config model="standalone" name="standalone.xml">
+                                                             <layers>
+                                                                 ###LAYERS###
+                                                             </layers>
+                                                         </config>
+                                                         <options>
+                                                             <option name="jboss-fork-embedded"/>
+                                                             <option name="optional-packages" value="passive+"/>
+                                                         </options>
+                                                     </installation>
+                                                     """;
     private static final class MCPConsole implements Console {
 
         @Override
@@ -374,6 +396,57 @@ public class WildFlyMCPServer {
             return buildResponse("Server installed in " + targetDirectory);
         } catch (Exception ex) {
             return buildErrorResponse(ex.getMessage());
+        }
+    }
+
+    @Tool(description = "Provision a trimmed WildFly server using Galleon feature-packs and layers. Such installation can then be updated")
+    ToolResponse provisionTrimmedWildFlyServer(
+            @ToolArg(name = "targetDirectory", required = true, description = "Absolute path to a non existing directory. Note that the parent directory must exists.") String targetDirectory,
+            @ToolArg(name = "feature-packs", required = true,
+                    description = "List of feature-packz. Format of each feature-pack is: groupId:artifactId:version") String[] featurePacks,
+            @ToolArg(name = "layers", required = true,
+                    description = "List of layer names") String[] layers) {
+        Path tmp = null;
+        try {
+            tmp = Files.createTempFile("provisioning-from-wildfly-mcp-server", null);
+            StringBuilder layersBuilder = new StringBuilder();
+            for(String name : layers) {
+                layersBuilder.append(LAYER_TEMPLATE.replace("###LAYER###", name) + "\n");
+            }
+            StringBuilder fpsBuilder = new StringBuilder();
+            for(String name : featurePacks) {
+                fpsBuilder.append(FEATURE_PACK_TEMPLATE.replace("###LOCATION###", name) + "\n");
+            }
+            String provisioningXml = PROVISIONING_XML_TEMPLATE.replace("###FEATURE_PACKS###", fpsBuilder.toString());
+            provisioningXml = provisioningXml.replace("###LAYERS###", layersBuilder.toString());
+            Files.write(tmp, provisioningXml.getBytes());
+            // Create a channel
+            List<String> remoteRepositories = new ArrayList<>();
+            remoteRepositories.add("https://repository.jboss.org/nexus/content/groups/public/");
+            remoteRepositories.add("https://repo1.maven.org/maven2/");
+            ProvisioningDefinition definition = ProvisioningDefinition.builder()
+                    .setDefinitionFile(tmp.toUri())
+                    .setOverrideRepositories(RepositoryDefinition.from(remoteRepositories))
+                    .setManifest("org.wildfly.channels:wildfly").build();
+            LocalRepoOptions localRepoOptions = new LocalRepoOptions();
+            MavenOptions.Builder mavenOptionsBuilder = localRepoOptions.toOptions();
+            MavenOptions mavenOptions = mavenOptionsBuilder.build();
+            final GalleonProvisioningConfig provisioningConfig = definition.toProvisioningConfig();
+            final List<Channel> channels = ChannelUtils.resolveChannels(definition, mavenOptions);
+            ActionFactory factory = new ActionFactory();
+            ProvisioningAction action = factory.install(Paths.get(targetDirectory), mavenOptions, new MCPConsole());
+            action.provision(provisioningConfig, channels);
+            return buildResponse("Server installed in " + targetDirectory);
+        } catch (Exception ex) {
+            return buildErrorResponse(ex.getMessage());
+        } finally {
+            if(tmp != null) {
+                try {
+                    Files.delete(tmp);
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
     }
 
