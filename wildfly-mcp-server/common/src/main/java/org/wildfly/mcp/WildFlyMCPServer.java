@@ -31,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -56,7 +57,9 @@ import org.wildfly.mcp.WildFlyControllerClient.GetRuntimeMXBean;
 import org.wildfly.mcp.WildFlyControllerClient.RemoveLoggerRequest;
 import org.wildfly.mcp.WildFlyControllerClient.CheckDeploymentRequest;
 import org.jboss.as.cli.CommandLineException;
+import org.jboss.galleon.api.config.GalleonProvisioningConfig;
 import org.jboss.galleon.universe.maven.repo.MavenRepoManager;
+import org.wildfly.channel.Channel;
 import org.wildfly.glow.AddOn;
 import org.wildfly.glow.Arguments;
 import org.wildfly.glow.GlowMessageWriter;
@@ -69,9 +72,31 @@ import org.wildfly.glow.maven.MavenResolver;
 import org.wildfly.mcp.WildFlyControllerClient.GetLoggingMXBean;
 import org.wildfly.mcp.WildFlyControllerClient.ShutdownRequest;
 import org.wildfly.mcp.WildFlyControllerClient.UndeployRequest;
+import org.wildfly.prospero.actions.ProvisioningAction;
+import org.wildfly.prospero.actions.UpdateAction;
+import org.wildfly.prospero.api.ArtifactChange;
+import org.wildfly.prospero.api.Console;
+import org.wildfly.prospero.api.FileConflict;
+import org.wildfly.prospero.api.MavenOptions;
+import org.wildfly.prospero.api.ProvisioningDefinition;
+import org.wildfly.prospero.api.ProvisioningProgressEvent;
+import org.wildfly.prospero.cli.ActionFactory;
+import org.wildfly.prospero.cli.ChannelUtils;
+import org.wildfly.prospero.cli.commands.options.LocalRepoOptions;
+import org.wildfly.prospero.updates.UpdateSet;
 
 public class WildFlyMCPServer {
+    private static final class MCPConsole implements Console {
 
+        @Override
+        public void progressUpdate(ProvisioningProgressEvent ppe) {
+        }
+
+        @Override
+        public void println(String string) {
+        }
+    
+}
     static final Logger LOGGER = Logger.getLogger("org.wildfly.mcp.WildFlyMCPServer");
 
     public record Status(
@@ -283,7 +308,7 @@ public class WildFlyMCPServer {
         }
     }
 
-    @Tool(description = "Provision a WildFly server or WildFly Bootable JAR by inspecting the content of a deployment. The deployment is then deployed to the server ready to be run.")
+    @Tool(description = "Provision a WildFly server or WildFly Bootable JAR by inspecting the content of a deployment. The deployment is then deployed to the server ready to be run. The provisioning is operated using WildFly Glow.")
     ToolResponse provisionWildFlyServerForDeployment(@ToolArg(name = "deploymentPath", required = true, description = "Absolute path to an existing deployment") String deploymentPath,
             @ToolArg(name = "targetDirectory", required = true, description = "Absolute path to a non existing directory. Note that the parent directory must exists.") String targetDirectory,
             @ToolArg(name = "addOns", required = false, description = "A list of Glow AddOns to enable") String[] addOns,
@@ -331,6 +356,76 @@ public class WildFlyMCPServer {
             return buildErrorResponse(ex.getMessage());
         }
         return buildResponse("The deployment " + deploymentPath + " has been deployed in the WildFly server provisioned in " + target);
+    }
+
+    @Tool(description = "Provision a complete latest WildFly server installation using prospero installer. Such installation can then be updated")
+    ToolResponse provisionCompleteLatestWildFlyServer(
+            @ToolArg(name = "targetDirectory", required = true, description = "Absolute path to a non existing directory. Note that the parent directory must exists.") String targetDirectory) {        try {
+            ProvisioningDefinition definition = ProvisioningDefinition.builder()
+                    .setProfile("wildfly").build();
+            LocalRepoOptions localRepoOptions = new LocalRepoOptions();
+            MavenOptions.Builder mavenOptionsBuilder = localRepoOptions.toOptions();
+            MavenOptions mavenOptions = mavenOptionsBuilder.build();
+            final GalleonProvisioningConfig provisioningConfig = definition.toProvisioningConfig();
+            final List<Channel> channels = ChannelUtils.resolveChannels(definition, mavenOptions);
+            ActionFactory factory = new ActionFactory();
+            ProvisioningAction action = factory.install(Paths.get(targetDirectory), mavenOptions, new MCPConsole());
+            action.provision(provisioningConfig, channels);
+            return buildResponse("Server installed in " + targetDirectory);
+        } catch (Exception ex) {
+            return buildErrorResponse(ex.getMessage());
+        }
+    }
+
+    @Tool(description = "Update a WildFly server installation that has been provisioned using prospero installer.")
+    ToolResponse updateWildFlyServer(
+            @ToolArg(name = "targetDirectory", required = true, description = "Absolute path to a non existing directory. Note that the parent directory must exists.") String targetDirectory) {        try {
+            ProvisioningDefinition definition = ProvisioningDefinition.builder()
+                    .setProfile("wildfly").build();
+            LocalRepoOptions localRepoOptions = new LocalRepoOptions();
+            MavenOptions.Builder mavenOptionsBuilder = localRepoOptions.toOptions();
+            MavenOptions mavenOptions = mavenOptionsBuilder.build();
+            ActionFactory factory = new ActionFactory();
+            UpdateAction action = factory.update(Paths.get(targetDirectory), mavenOptions, new MCPConsole(), Collections.emptyList());
+            UpdateSet set = action.findUpdates();
+            if(set.isEmpty()) {
+                return buildResponse("Server installion is already up to date.");
+            } else {
+                action.performUpdate();
+                StringBuilder builder = new StringBuilder();
+                for(ArtifactChange ac : set.getArtifactUpdates()) {
+                    builder.append(ac.getArtifactName() + " updated from " + ac.getOldVersion() + " to " + ac.getNewVersion() + "\n");
+                }
+                return buildResponse("Server installion has been updated. Updates \n" + builder);
+            }
+        } catch (Exception ex) {
+            return buildErrorResponse(ex.getMessage());
+        }
+    }
+
+    @Tool(description = "Check for updates for an existing WildFly server installation. Such server must have been provisioned previously using prospero installer.")
+    ToolResponse checkForUpdatesWildFlyServer(
+            @ToolArg(name = "targetDirectory", required = true, description = "Absolute path to a non existing directory. Note that the parent directory must exists.") String targetDirectory) {        try {
+            ProvisioningDefinition definition = ProvisioningDefinition.builder()
+                    .setProfile("wildfly").build();
+            LocalRepoOptions localRepoOptions = new LocalRepoOptions();
+            MavenOptions.Builder mavenOptionsBuilder = localRepoOptions.toOptions();
+            MavenOptions mavenOptions = mavenOptionsBuilder.build();
+            ActionFactory factory = new ActionFactory();
+            UpdateAction action = factory.update(Paths.get(targetDirectory), mavenOptions, new MCPConsole(), Collections.emptyList());
+            UpdateSet set = action.findUpdates();
+            if(set.isEmpty()) {
+                return buildResponse("Server installion is already up to date.");
+            } else {
+                StringBuilder builder = new StringBuilder();
+                for(ArtifactChange ac : set.getArtifactUpdates()) {
+                    builder.append(ac.getArtifactName() + " updated from " + ac.getOldVersion() + " to " + ac.getNewVersion() + "\n");
+                }
+                return buildResponse("Server installion has some updates: Updates \n" + builder);
+            }
+        } catch (Exception ex) {
+            return buildErrorResponse(ex.getMessage());
+        }
     }
 
     @Tool(description = "Stop a running server")
