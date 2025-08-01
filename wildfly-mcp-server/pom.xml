@@ -39,6 +39,7 @@
         <org.jboss.remotingjmx.version>3.1.0.Final</org.jboss.remotingjmx.version>
         <org.wildfly.core.version>29.0.0.Beta6</org.wildfly.core.version>
         <org.wildfly.glow.version>1.4.1.Final</org.wildfly.glow.version>
+        <org.wildfly.prospero.version>1.4.0.Beta1</org.wildfly.prospero.version>
         <quarkus.platform.version>3.24.1</quarkus.platform.version>
         <quarkus.mcp.version>1.3.1</quarkus.mcp.version>
         
@@ -128,6 +129,28 @@
               <groupId>org.wildfly.glow</groupId>
               <artifactId>wildfly-glow</artifactId>
               <version>${org.wildfly.glow.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.wildfly.prospero</groupId>
+              <artifactId>prospero-cli</artifactId>
+              <version>${org.wildfly.prospero.version}</version>
+              <exclusions>
+                <exclusion>
+                   <groupId>org.apache.maven.resolver</groupId>
+                   <artifactId>*</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency>
+            <dependency>
+              <groupId>org.wildfly.prospero</groupId>
+              <artifactId>prospero-common</artifactId>
+              <version>${org.wildfly.prospero.version}</version>
+              <exclusions>
+                <exclusion>
+                   <groupId>org.apache.maven.resolver</groupId>
+                   <artifactId>*</artifactId>
+                </exclusion>
+              </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>

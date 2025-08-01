@@ -52,6 +52,14 @@
       <groupId>org.wildfly.glow</groupId>
       <artifactId>wildfly-glow</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.wildfly.prospero</groupId>
+      <artifactId>prospero-cli</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.wildfly.prospero</groupId>
+      <artifactId>prospero-common</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
