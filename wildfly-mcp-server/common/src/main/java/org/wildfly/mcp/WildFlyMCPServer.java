@@ -475,7 +475,7 @@ public class WildFlyMCPServer {
                 action.performUpdate();
                 StringBuilder builder = new StringBuilder();
                 for(ArtifactChange ac : set.getArtifactUpdates()) {
-                    builder.append(ac.getArtifactName() + " updated from " + ac.getOldVersion().get() + " to " + ac.getNewVersion().get() + "\n");
+                    builder.append(ac.getArtifactName() + " updated from " + ac.getOldVersion().orElse("none") + " to " + ac.getNewVersion().orElse("none") + "\n");
                 }
                 return buildResponse("Server installion has been updated. Updates \n" + builder);
             }
@@ -500,7 +500,7 @@ public class WildFlyMCPServer {
             } else {
                 StringBuilder builder = new StringBuilder();
                 for(ArtifactChange ac : set.getArtifactUpdates()) {
-                    builder.append(ac.getArtifactName() + " updated from " + ac.getOldVersion().get() + " to " + ac.getNewVersion().get() + "\n");
+                    builder.append(ac.getArtifactName() + " updated from " + ac.getOldVersion().orElse("none") + " to " + ac.getNewVersion().orElse("none") + "\n");
                 }
                 return buildResponse("Server installion has some updates: Updates \n" + builder);
             }
