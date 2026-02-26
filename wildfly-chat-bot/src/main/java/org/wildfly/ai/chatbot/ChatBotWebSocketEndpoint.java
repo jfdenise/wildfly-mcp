@@ -17,6 +17,7 @@ import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
 import dev.langchain4j.mcp.client.transport.McpTransport;
+import dev.langchain4j.mcp.client.transport.http.HttpMcpTransport;
 import dev.langchain4j.mcp.client.transport.stdio.StdioMcpTransport;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.service.AiServices;
@@ -51,7 +52,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.wildfly.ai.chatbot.MCPConfig.MCPServerSSEConfig;
 import org.wildfly.ai.chatbot.MCPConfig.MCPServerStdioConfig;
 import org.wildfly.ai.chatbot.Recorder.UserQuestion;
-import org.wildfly.ai.chatbot.http.HttpMcpTransport;
 
 @ServerEndpoint(value = "/chatbot")
 public class ChatBotWebSocketEndpoint {
@@ -91,7 +91,6 @@ public class ChatBotWebSocketEndpoint {
     private Bot bot;
     private ReportGenerator reportGenerator;
     private List<McpClient> clients = new ArrayList<>();
-    private final List<McpTransport> transports = new ArrayList<>();
     private Session session;
     private final ExecutorService executor = Executors.newFixedThreadPool(1);
     private final BlockingQueue<String> workQueue = new ArrayBlockingQueue<>(1);
@@ -123,7 +122,6 @@ public class ChatBotWebSocketEndpoint {
                                 .command(cmd)
                                 .logEvents(true)
                                 .build();
-                        transports.add(transport);
                         McpClient mcpClient = new DefaultMcpClient.Builder()
                                 .transport(transport)
                                 .clientName(entry.getKey())
@@ -148,16 +146,19 @@ public class ChatBotWebSocketEndpoint {
                             tokenProviders.put(entry.getKey(), tokenProvider);
                             transport = new HttpMcpTransport.Builder()
                                     .timeout(Duration.ZERO)
-                                    .tokenProvider(tokenProvider)
+                                    .customHeaders(new TokenHeadersSupplier(tokenProvider))
                                     .sseUrl(entry.getValue().url)
+                                    .logRequests(true)
+                                    .logResponses(true)
                                     .build();
                         } else {
                             transport = new HttpMcpTransport.Builder()
                                     .timeout(Duration.ZERO)
                                     .sseUrl(entry.getValue().url)
+                                    .logRequests(true)
+                                    .logResponses(true)
                                     .build();
                         }
-                        transports.add(transport);
                         DefaultMcpClient.Builder builder = new DefaultMcpClient.Builder()
                                 .transport(transport)
                                 .clientName(entry.getKey());
@@ -170,7 +171,7 @@ public class ChatBotWebSocketEndpoint {
             }
             initProviders.addAll(tokenProviders.values());
 
-            promptHandler = new PromptHandler(transports);
+            promptHandler = new PromptHandler(clients);
             toolHandler = new ToolHandler(clients);
             if (llmName != null) {
                 if (llmName.equals("ollama")) {

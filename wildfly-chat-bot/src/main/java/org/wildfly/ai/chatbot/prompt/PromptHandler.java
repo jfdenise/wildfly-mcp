@@ -4,17 +4,18 @@
  */
 package org.wildfly.ai.chatbot.prompt;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import dev.langchain4j.mcp.client.transport.McpTransport;
+import dev.langchain4j.data.message.ContentType;
+import dev.langchain4j.data.message.TextContent;
+import dev.langchain4j.mcp.client.McpClient;
+import dev.langchain4j.mcp.client.McpGetPromptResult;
+import dev.langchain4j.mcp.client.McpPrompt;
+import dev.langchain4j.mcp.client.McpPromptMessage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import org.wildfly.ai.chatbot.prompt.PromptDescription.PromptArg;
 
 public class PromptHandler {
     class PromptComparator implements Comparator<PromptDescription> {
@@ -35,34 +36,19 @@ public class PromptHandler {
                                               Create a section with the date. The section contains 2 sections. User section: 
                                               contains a summary of the user question in less than 100 words, Assistant section: a summary of the assistant reply in less than 200 words. 
             """;
-    private final List<McpTransport> transports;
-    private final Map<String, McpTransport> promptToTransport = new HashMap<>();
+    private final List<McpClient> clients;
+    private final Map<String, McpClient> promptToClient = new HashMap<>();
 
-    public PromptHandler(List<McpTransport> transports) {
-        this.transports = transports;
+    public PromptHandler(List<McpClient> clients) {
+        this.clients = clients;
     }
 
     public List<PromptDescription> getPrompts() throws Exception {
         List<PromptDescription> prompts = new ArrayList<>();
-
-        for (McpTransport t : transports) {
-            CompletableFuture<JsonNode> resp = t.executeOperationWithResponse(new ListPrompts(1l));
-            System.out.println(resp.get().toPrettyString());
-            ArrayNode promptsArray = (ArrayNode) resp.get().get("result").get("prompts");
-            for (JsonNode p : promptsArray) {
-                List<PromptArg> pargs = new ArrayList<>();
-                if (p.has("arguments")) {
-                    ArrayNode args = (ArrayNode) p.get("arguments");
-                    for (JsonNode a : args) {
-                        PromptArg pa = new PromptArg();
-                        pa.name = a.get("name").asText();
-                        pa.required = a.get("required").asText();
-                        pa.description = a.get("description").asText();
-                        pargs.add(pa);
-                    }
-                }
-                promptToTransport.put(p.get("name").asText(), t);
-                prompts.add(new PromptDescription(p.get("name").asText(), p.get("description").asText(), pargs));
+        for (McpClient client : clients) {
+            for (McpPrompt prompt : client.listPrompts()) {
+                promptToClient.put(prompt.name(), client);
+                prompts.add(new PromptDescription(prompt.name(), prompt.description(),prompt.arguments()));
             }
         }
         Collections.sort(prompts, new PromptComparator());
@@ -70,19 +56,23 @@ public class PromptHandler {
     }
 
     public String getPrompt(SelectedPrompt prompt) throws Exception {
-        McpTransport t = promptToTransport.get(prompt.name);
-        GetPrompt getPrompt = new GetPrompt(1l);
-        getPrompt.params.name = prompt.name;
+        McpClient client = promptToClient.get(prompt.name);
+        Map<String, Object> args = new HashMap<>();
         for (SelectedPrompt.PromptArg arg : prompt.arguments) {
             if (arg.value != null) {
-                getPrompt.params.arguments.put(arg.name, arg.value);
+                args.put(arg.name, arg.value);
             }
         }
-        CompletableFuture<JsonNode> resp = t.executeOperationWithResponse(getPrompt);
-        ArrayNode messagesArray = (ArrayNode) resp.get().get("result").get("messages");
+        McpGetPromptResult res = client.getPrompt(prompt.name, args);
         StringBuilder builder = new StringBuilder();
-        for (JsonNode m : messagesArray) {
-            builder.append(m.get("content").get("text").asText()).append("\n");
+        for(McpPromptMessage msg : res.messages()) {
+            if(ContentType.TEXT.equals(msg.content().toContent().type())) {
+                TextContent text = (TextContent)msg.content().toContent();
+                builder.append(text.text()).append("\n");
+            } else {
+                builder.append(msg.content().toContent()).append("\n");
+            }
+            
         }
         return builder.toString();
     }

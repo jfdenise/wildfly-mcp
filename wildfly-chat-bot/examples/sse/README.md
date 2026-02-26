@@ -8,7 +8,7 @@ In this example,we are configuring the chatbot to access to the WildFly MCP SSE 
 
 ```
 podman run --name keycloak --rm -e KC_BOOTSTRAP_ADMIN_USERNAME=admin \
--e KC_BOOTSTRAP_ADMIN_PASSWORD=admin  -p 8180:8080 quay.io/keycloak/keycloak:26.1.2 start-dev
+-e KC_BOOTSTRAP_ADMIN_PASSWORD=admin  -p 8180:8080 quay.io/keycloak/keycloak:26.5 start-dev
 ```
 
 ### Import the keycloak realm used by this example

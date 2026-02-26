@@ -18,13 +18,12 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.wildfly.ai.chatbot.http.HttpMcpTransport.TokenProvider;
 
 /**
  *
  * @author jdenise
  */
-public class DefaultTokenProvider implements TokenProvider {
+public class DefaultTokenProvider {
     public String name;
     public String providerUrl;
     public String clientId;
@@ -36,7 +35,7 @@ public class DefaultTokenProvider implements TokenProvider {
         this.password = password;
         getToken();
     }
-    @Override
+
     public String getToken() throws Exception {
         String valueToEncode = clientId + ":" + secret;
         String basic = Base64.getEncoder().encodeToString(valueToEncode.getBytes());

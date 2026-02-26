@@ -2,12 +2,12 @@
 
 * Starts the WildFly server you want to interact with. Management interface should be secured with a user and password.
 
-* Starts the 'ollama' container with `qwen2.5:3b` loaded.
+* Starts the 'ollama' container with `ministral-3:3b` loaded.
 
 ```shell
 podman run -d --rm --name ollama --replace --pull=always -p 11434:11434 -v ollama:/root/.ollama --stop-signal=SIGKILL mirror.gcr.io/ollama/ollama
 
-podman exec -it ollama ollama run qwen2.5:3b
+podman exec -it ollama ollama run ministral-3:3b
 ```
 
 To quit the Ollama prompt, type **/bye**.

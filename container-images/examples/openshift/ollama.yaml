@@ -38,7 +38,7 @@ spec:
           - name: OLLAMA_ORIGINS
             value: "http://wildfly-chat-bot"
           - name: MODEL_ID
-            value: "qwen2.5:3b"
+            value: "ministral-3:3b"
           - name: OLLAMA_KEEP_ALIVE
             value: "-1"
         lifecycle:

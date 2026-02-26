@@ -67,7 +67,7 @@ public class ToolHandler {
         jsonArguments.append("}");
         ToolExecutionRequest req = ToolExecutionRequest.builder().arguments(jsonArguments.toString()).id("1").name(tool.name).build();
 
-        return client.executeTool(req);
+        return client.executeTool(ToolExecutionRequest.builder().name(tool.name).id("1").arguments(jsonArguments.toString()).build()).resultText();
     }
 
     public String executeCLITool(String operation) throws Exception {

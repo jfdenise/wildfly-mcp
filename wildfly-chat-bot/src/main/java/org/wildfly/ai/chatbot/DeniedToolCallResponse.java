@@ -4,8 +4,6 @@
  */
 package org.wildfly.ai.chatbot;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import dev.langchain4j.mcp.client.protocol.McpClientMessage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

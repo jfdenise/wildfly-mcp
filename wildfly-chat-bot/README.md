@@ -31,7 +31,7 @@ You can start the chatbot thanks to its container image. You can check [this doc
 mvn clean install
 ```
 
-4) Start the chat bot using local `ollama` (by default uses the `qwen2.5:3b`) model, once started it listens on port `8090`:
+4) Start the chat bot using local `ollama` (by default uses the `ministral-3:3b`) model, once started it listens on port `8090`:
 
 By default the file `./mcp.json` is read. You can configure it with `-Dwildfly.chatbot.mcp.config.file=<path to file>`
 
@@ -41,8 +41,6 @@ NOTE: You must use JDK21+ to run the chatbot.
 java -jar target/wildfly-chat-bot-bootable.jar
 
 ```
-
-This chatbot has also been tried with the `llama3.2:3b` and provided good results.
 
 4) Start the chat bot using [groq](https://console.groq.com/docs/openai), once started it listens on port `8090`:
 
